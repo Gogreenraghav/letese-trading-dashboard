@@ -30,7 +30,7 @@ class BaseAIPOT(ABC):
     async def start(self):
         """Start Kafka consumer + producer, Redis, heartbeat loop, consume loop."""
         from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
-        import aioredis
+        import redis.asyncio as aioredis
 
         self.consumer = AIOKafkaConsumer(
             self.input_topic,

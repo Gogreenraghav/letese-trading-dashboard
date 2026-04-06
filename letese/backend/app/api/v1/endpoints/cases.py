@@ -16,6 +16,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
 from app.db.database import get_db
+from app.models.models import Case  # noqa: F401 — used in SQL query
 
 router = APIRouter()
 

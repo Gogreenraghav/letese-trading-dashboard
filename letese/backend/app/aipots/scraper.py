@@ -4,6 +4,7 @@ Consumes: letese.scraper.jobs
 Produces: letese.diary.updates, letese.orders.new
 Supports: PHAHC, DHC, SC, NCDRC, CHD_DC, CONSUMER_PH, TIS_HAZ, SAKET
 """
+import asyncio
 import hashlib
 import random
 from app.aipots.base import BaseAIPOT
@@ -127,8 +128,8 @@ class AIPOTScraper(BaseAIPOT):
         """Route to Playwright or httpx based on JS requirement."""
         proxy = None
         if self.redis:
-            proxy = await self.redis.lmove(
-                "scraper:proxy:pool", "scraper:proxy:pool", "LEFT", "RIGHT")
+            proxy = await self._proxy_lmove(
+                self.redis, "scraper:proxy:pool", "scraper:proxy:pool")
 
         ua = random.choice(USER_AGENTS)
 
@@ -137,10 +138,21 @@ class AIPOTScraper(BaseAIPOT):
         else:
             return await self._httpx_scrape(config, case_number, proxy, ua)
 
+    async def _proxy_lmove(self, redis_client, src: str, dst: str) -> str | None:
+        """Redis LPOP via LPUSH for proxy rotation — works on all Redis versions."""
+        try:
+            val = await redis_client.lpop(src)
+            if val:
+                await redis_client.rpush(dst, val)
+            return val
+        except Exception:
+            return None
+
     async def _playwright_scrape(
         self, config: dict, case_number: str, proxy: str | None, ua: str
     ) -> dict:
         """Scrape JS-heavy court portals using Playwright."""
+        from playwright.async_api import async_playwright
         async with async_playwright() as p:
             kwargs = {"headless": True}
             if proxy:

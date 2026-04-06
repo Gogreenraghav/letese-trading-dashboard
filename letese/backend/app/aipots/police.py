@@ -24,7 +24,7 @@ class AIPOTPolice(BaseAIPOT):
 
     async def start(self):
         from aiokafka import AIOKafkaProducer
-        import aioredis
+        import redis.asyncio as aioredis
 
         self.producer = AIOKafkaProducer(
             bootstrap_servers=self.kafka_servers,

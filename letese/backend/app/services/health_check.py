@@ -9,7 +9,7 @@ import time
 from dataclasses import dataclass
 from typing import Optional
 
-import aioredis
+import redis.asyncio as aioredis
 import httpx
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession

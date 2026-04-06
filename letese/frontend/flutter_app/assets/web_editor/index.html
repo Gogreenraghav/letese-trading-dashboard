@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>LETESE● Legal Editor</title>
+
+  <!-- Google Fonts: Gurmukhi + Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gurmukhi:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tiptap CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/@tiptap/extension-placeholder@2.10.3/dist/placeholder.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tiptap/starter-kit@2.10.3/dist/starter-kit.min.css" />
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Y.js -->
+  <script src="https://cdn.jsdelivr.net/npm/yjs@13.6.23/dist/yjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/y-websocket@1.5.4/dist/y-websocket.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/y-prosemirror@1.2.12/dist/y-prosemirror.min.js"></script>
+</head>
+<body>
+
+<!-- ===== Language Toggle Bar ===== -->
+<div id="lang-bar">
+  <span class="lang-btn active" data-lang="en">English</span>
+  <span class="lang-btn" data-lang="pa">ਪੰਜਾਬੀ</span>
+  <span class="lang-btn" data-lang="hi">हिन्दी</span>
+  <div id="word-count">Words: <span id="wc-val">0</span></div>
+</div>
+
+<!-- ===== Toolbar ===== -->
+<div id="toolbar">
+  <div class="toolbar-group">
+    <button class="tb-btn" id="btn-bold" title="Bold (Ctrl+B)">B</button>
+    <button class="tb-btn tb-italic" id="btn-italic" title="Italic (Ctrl+I)">I</button>
+    <button class="tb-btn tb-underline" id="btn-underline" title="Underline (Ctrl+U)">U</button>
+  </div>
+  <div class="toolbar-sep"></div>
+  <div class="toolbar-group">
+    <button class="tb-btn tb-heading" id="btn-h1" title="Heading 1">H1</button>
+    <button class="tb-btn tb-heading" id="btn-h2" title="Heading 2">H2</button>
+    <button class="tb-btn tb-heading" id="btn-h3" title="Heading 3">H3</button>
+  </div>
+  <div class="toolbar-sep"></div>
+  <div class="toolbar-group">
+    <button class="tb-btn" id="btn-bullet-list" title="Bullet List">• List</button>
+    <button class="tb-btn" id="btn-ordered-list" title="Ordered List">1. List</button>
+    <button class="tb-btn" id="btn-indent" title="Indent">↦</button>
+  </div>
+  <div class="toolbar-sep"></div>
+  <div class="toolbar-group">
+    <button class="tb-btn tb-template" id="btn-template" title="Apply Template">📋 Templates ▾</button>
+  </div>
+  <div class="toolbar-sep"></div>
+  <div class="toolbar-group" id="collab-users">
+    <!-- cursor colors injected here -->
+  </div>
+</div>
+
+<!-- ===== Template Dropdown ===== -->
+<div id="template-dropdown" class="hidden">
+  <button class="tmpl-item" data-tmpl="cwp">Writ Petition (CWP)</button>
+  <button class="tmpl-item" data-tmpl="slp">SLP Draft</button>
+  <button class="tmpl-item" data-tmpl="plaint">Plaint (CS)</button>
+  <button class="tmpl-item" data-tmpl="affidavit">Affidavit</button>
+</div>
+
+<!-- ===== Editor Area ===== -->
+<div id="editor-wrap">
+  <div id="editor"></div>
+</div>
+
+<!-- ===== Status Bar ===== -->
+<div id="status-bar">
+  <span id="conn-status" class="status-dot disconnected">● Disconnected</span>
+  <span id="collab-count"></span>
+</div>
+
+<!-- Tiptap v2 -->
+<script src="https://cdn.jsdelivr.net/npm/@tiptap/core@2.10.3/dist/tiptap.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tiptap/extension-underline@2.10.3/dist/extension-underline.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tiptap/extension-placeholder@2.10.3/dist/extension-placeholder.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tiptap/extension-collaboration@2.10.3/dist/extension-collaboration.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tiptap/extension-collaboration-cursor@2.10.3/dist/extension-collaboration-cursor.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tiptap/extension-document@2.10.3/dist/extension-document.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tiptap/extension-paragraph@2.10.3/dist/extension-paragraph.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tiptap/extension-text@2.10.3/dist/extension-text.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tiptap/extension-history@2.10.3/dist/extension-history.umd.min.js"></script>
+
+<script src="editor.js"></script>
+</body>
+</html>
