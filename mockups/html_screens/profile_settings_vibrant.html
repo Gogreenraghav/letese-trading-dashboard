@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LETESE - Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-variant": "#d9dde4",
+                      "on-tertiary-fixed": "#004529",
+                      "surface-tint": "#2b51c7",
+                      "tertiary-fixed-dim": "#3eea9b",
+                      "on-secondary-fixed-variant": "#00567c",
+                      "primary-dim": "#1a44ba",
+                      "primary": "#2b51c7",
+                      "inverse-primary": "#6889ff",
+                      "on-secondary": "#e9f4ff",
+                      "secondary-fixed": "#a4d8ff",
+                      "surface-container-low": "#eef1f6",
+                      "secondary-fixed-dim": "#82ccff",
+                      "primary-fixed": "#819bff",
+                      "on-secondary-fixed": "#003853",
+                      "on-primary": "#f2f1ff",
+                      "secondary-dim": "#00557b",
+                      "on-tertiary-fixed-variant": "#00653e",
+                      "outline-variant": "#aaadb2",
+                      "on-surface-variant": "#585c60",
+                      "error-container": "#f74b6d",
+                      "on-primary-fixed-variant": "#002377",
+                      "surface": "#f4f6fb",
+                      "tertiary": "#006940",
+                      "on-primary-fixed": "#000000",
+                      "on-surface": "#2c2f33",
+                      "secondary": "#00618c",
+                      "outline": "#74777b",
+                      "on-background": "#2c2f33",
+                      "background": "#f4f6fb",
+                      "surface-container-highest": "#d9dde4",
+                      "on-error-container": "#510017",
+                      "on-tertiary-container": "#005a37",
+                      "inverse-surface": "#0b0f12",
+                      "tertiary-dim": "#005c38",
+                      "tertiary-fixed": "#52f9a8",
+                      "surface-container-high": "#dfe3e9",
+                      "tertiary-container": "#52f9a8",
+                      "on-primary-container": "#001b61",
+                      "surface-dim": "#d0d5dc",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-on-surface": "#9a9da2",
+                      "surface-container": "#e5e8ee",
+                      "primary-container": "#819bff",
+                      "on-error": "#ffefef",
+                      "primary-fixed-dim": "#6d8cff",
+                      "on-secondary-container": "#004c6f",
+                      "error-dim": "#a70138",
+                      "secondary-container": "#a4d8ff",
+                      "on-tertiary": "#caffdb",
+                      "error": "#b41340",
+                      "surface-bright": "#f4f6fb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Manrope"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .bg-sky-gradient {
+            background: linear-gradient(135deg, #2b51c7 0%, #819bff 100%);
+        }
+        .profile-ring {
+            box-shadow: 0 0 20px 2px rgba(129, 155, 255, 0.6);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen pb-32">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(43,81,199,0.08)] flex justify-between items-center px-6 py-4">
+<div class="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-1 font-headline tracking-tight">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400">gavel</span>
+            LETESE
+        </div>
+<div class="flex gap-4 items-center">
+<button class="text-slate-500 dark:text-slate-400 hover:opacity-80 transition-opacity active:scale-90 transition-transform">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</nav>
+<!-- Profile Header Section -->
+<header class="pt-24 pb-12 px-6 bg-sky-gradient relative overflow-hidden rounded-b-[3rem]">
+<!-- Decorative Glow -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+<div class="flex flex-col items-center text-center relative z-10">
+<!-- Avatar -->
+<div class="relative group">
+<div class="w-32 h-32 rounded-full border-4 border-white/30 profile-ring bg-primary-container flex items-center justify-center text-white text-4xl font-headline font-bold">
+                    AS
+                </div>
+<button class="absolute bottom-1 right-1 bg-white p-2 rounded-full shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary text-xl">edit</span>
+</button>
+</div>
+<!-- Profile Info -->
+<h1 class="mt-6 text-3xl font-headline font-extrabold text-white">Arjun Singh</h1>
+<p class="text-white/90 font-medium tracking-wide">Advocate • Enrolled 2018</p>
+<div class="mt-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+<span class="text-white/80 text-xs font-mono uppercase tracking-widest">PB-2018-49271</span>
+</div>
+</div>
+<!-- Stats Bento Grid Row -->
+<div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+<span class="text-primary font-headline font-extrabold text-xl">247</span>
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">Cases</span>
+</div>
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+<span class="text-primary font-headline font-extrabold text-xl">1,200</span>
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">Hearings</span>
+</div>
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+<span class="text-primary font-headline font-extrabold text-xl">98%</span>
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">Win Rate</span>
+</div>
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+<span class="text-primary font-headline font-extrabold text-xl">₹48L</span>
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">Revenue</span>
+</div>
+</div>
+</header>
+<!-- Settings Menu Section -->
+<main class="max-w-xl mx-auto px-6 -mt-8 relative z-20">
+<div class="space-y-3">
+<!-- Settings Card -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-sm hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">settings</span>
+</div>
+<div class="flex-1">
+<p class="text-on-surface font-bold text-sm">Settings</p>
+<p class="text-on-surface-variant text-xs">App preferences</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<!-- Security Card -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-sm hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">lock</span>
+</div>
+<div class="flex-1">
+<p class="text-on-surface font-bold text-sm">Security</p>
+<p class="text-on-surface-variant text-xs">Password, 2FA</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<!-- Billing Card -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-sm hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">credit_card</span>
+</div>
+<div class="flex-1">
+<p class="text-on-surface font-bold text-sm">Billing</p>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">Pro</span>
+<p class="text-on-surface-variant text-xs">Renewal: Dec 2024</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<!-- Team Card -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-sm hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">groups</span>
+</div>
+<div class="flex-1">
+<p class="text-on-surface font-bold text-sm">Team</p>
+<p class="text-on-surface-variant text-xs">3 members • Manage RBAC</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<!-- Linked Accounts Card -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-sm hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">phonelink</span>
+</div>
+<div class="flex-1">
+<p class="text-on-surface font-bold text-sm">Linked Accounts</p>
+<p class="text-on-surface-variant text-xs">Google, WhatsApp</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<!-- Analytics Card -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-sm hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<div class="flex-1">
+<p class="text-on-surface font-bold text-sm">Analytics</p>
+<p class="text-on-surface-variant text-xs">Usage &amp; performance</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<!-- Support Card -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-sm hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">help_center</span>
+</div>
+<div class="flex-1">
+<p class="text-on-surface font-bold text-sm">Help &amp; Support</p>
+<p class="text-on-surface-variant text-xs">FAQ, Chat</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<!-- Logout Card -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-sm hover:bg-error-container/10 transition-colors cursor-pointer group mt-6">
+<div class="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-error">logout</span>
+</div>
+<div class="flex-1">
+<p class="text-error font-bold text-sm">Logout</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-8 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl">
+<div class="flex justify-around items-center w-full max-w-lg m-6 rounded-3xl overflow-hidden shadow-[0_-4px_24px_0_rgba(43,81,199,0.1)] bg-white/70 dark:bg-slate-900/70 py-2">
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</div>
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="briefcase">briefcase_meal</span>
+</div>
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</div>
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</div>
+<div class="flex items-center justify-center bg-blue-600/10 dark:bg-blue-400/20 text-blue-600 dark:text-blue-400 rounded-2xl p-3 active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+</div>
+</div>
+</body></html>
