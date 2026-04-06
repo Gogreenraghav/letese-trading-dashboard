@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LETESE● Cases Schema",
+  "type": "object",
+  "definitions": {
+    "CaseStatus": {
+      "type": "string",
+      "enum": ["active", "closed", "stayed", "transferred", "archived"]
+    },
+    "UrgencyLevel": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low"]
+    },
+    "CourtCode": {
+      "type": "string",
+      "enum": [
+        "PHAHC", "DHC", "SC", "NCDRC", "BHC", "MHC", "CHC", "AHC",
+        "CHD_DC", "CONSUMER_PH", "TIS_HAZ", "SAKET", "NCLT_P", "NCLT_CH", "ITAT_CH"
+      ]
+    },
+    "CaseObject": {
+      "type": "object",
+      "required": ["case_id", "case_title", "court_code", "client_name", "client_phone"],
+      "properties": {
+        "case_id": { "type": "string", "format": "uuid" },
+        "tenant_id": { "type": "string", "format": "uuid" },
+        "assigned_user_id": { "type": "string", "format": "uuid" },
+        "case_number": { "type": "string" },
+        "case_title": { "type": "string", "maxLength": 600 },
+        "court_code": { "$ref": "#/definitions/CourtCode" },
+        "court_display_name": { "type": "string" },
+        "petition_type": { "type": "string" },
+        "client_name": { "type": "string" },
+        "client_phone": { "type": "string", "pattern": "^\\+[1-9]\\d{6,14}$" },
+        "client_email": { "type": "string", "format": "email" },
+        "client_whatsapp": { "type": "string" },
+        "status": { "$ref": "#/definitions/CaseStatus" },
+        "urgency_level": { "$ref": "#/definitions/UrgencyLevel" },
+        "next_hearing_at": { "type": "string", "format": "date-time" },
+        "last_order_text": { "type": "string" },
+        "last_order_date": { "type": "string", "format": "date" },
+        "last_order_summary": { "type": "string" },
+        "notes": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "CaseCreateRequest": {
+      "type": "object",
+      "required": ["case_title", "court_code", "client_name", "client_phone"],
+      "additionalProperties": false,
+      "properties": {
+        "case_title": { "type": "string", "maxLength": 600 },
+        "court_code": { "$ref": "#/definitions/CourtCode" },
+        "petition_type": { "type": "string" },
+        "case_number": { "type": "string" },
+        "client_name": { "type": "string" },
+        "client_phone": { "type": "string" },
+        "client_email": { "type": "string", "format": "email" },
+        "client_whatsapp": { "type": "string" },
+        "next_hearing_at": { "type": "string", "format": "date-time" },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

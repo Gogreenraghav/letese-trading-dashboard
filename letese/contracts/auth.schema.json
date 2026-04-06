@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LETESE● Auth Schema",
+  "description": "JWT payload, RBAC role enum, auth request/response schemas",
+  "type": "object",
+  "definitions": {
+    "Role": {
+      "type": "string",
+      "enum": ["super_admin", "admin", "advocate", "clerk", "paralegal", "intern"]
+    },
+    "Plan": {
+      "type": "string",
+      "enum": ["basic", "professional", "elite", "enterprise"]
+    },
+    "JWTPayload": {
+      "type": "object",
+      "required": ["sub", "tenant_id", "role", "plan", "email", "iat", "exp", "type"],
+      "properties": {
+        "sub": { "type": "string", "format": "uuid", "description": "user_id" },
+        "tenant_id": { "type": "string", "format": "uuid" },
+        "role": { "$ref": "#/definitions/Role" },
+        "plan": { "$ref": "#/definitions/Plan" },
+        "email": { "type": "string", "format": "email" },
+        "iat": { "type": "integer", "description": "Issued at (Unix timestamp)" },
+        "exp": { "type": "integer", "description": "Expiry (Unix timestamp)" },
+        "type": { "type": "string", "enum": ["access", "refresh"] }
+      }
+    },
+    "LoginResponse": {
+      "type": "object",
+      "properties": {
+        "access_token": { "type": "string" },
+        "refresh_token": { "type": "string" },
+        "token_type": { "type": "string", "const": "Bearer" },
+        "user": { "$ref": "#/definitions/UserObject" },
+        "tenant": { "$ref": "#/definitions/TenantObject" }
+      }
+    },
+    "UserObject": {
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string", "format": "uuid" },
+        "email": { "type": "string" },
+        "full_name": { "type": "string" },
+        "role": { "$ref": "#/definitions/Role" },
+        "tenant_id": { "type": "string", "format": "uuid" }
+      }
+    },
+    "TenantObject": {
+      "type": "object",
+      "properties": {
+        "tenant_id": { "type": "string", "format": "uuid" },
+        "name": { "type": "string" },
+        "plan": { "$ref": "#/definitions/Plan" },
+        "status": { "type": "string" }
+      }
+    }
+  }
+}

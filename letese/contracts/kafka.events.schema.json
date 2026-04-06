@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LETESE● Kafka Events Schema",
+  "description": "All Kafka event schemas for LETESE AIPOT system",
+  "type": "object",
+  "definitions": {
+    "ScraperJob": {
+      "title": "letese.scraper.jobs",
+      "type": "object",
+      "required": ["case_id", "court_code", "case_number", "tenant_id", "client_phone", "client_name", "case_title"],
+      "properties": {
+        "case_id": { "type": "string", "format": "uuid" },
+        "court_code": { "type": "string" },
+        "case_number": { "type": "string" },
+        "tenant_id": { "type": "string", "format": "uuid" },
+        "client_phone": { "type": "string" },
+        "client_name": { "type": "string" },
+        "case_title": { "type": "string" },
+        "advocate_name": { "type": "string" },
+        "priority": { "type": "string", "enum": ["normal", "high", "urgent"] }
+      }
+    },
+    "OrderDetected": {
+      "title": "letese.orders.new",
+      "type": "object",
+      "required": ["case_id", "tenant_id", "court_code", "order_text", "order_date"],
+      "properties": {
+        "case_id": { "type": "string", "format": "uuid" },
+        "tenant_id": { "type": "string", "format": "uuid" },
+        "court_code": { "type": "string" },
+        "order_text": { "type": "string" },
+        "order_date": { "type": "string", "format": "date" },
+        "client_phone": { "type": "string" },
+        "client_name": { "type": "string" },
+        "case_title": { "type": "string" },
+        "advocate_name": { "type": "string" },
+        "next_hearing": { "type": "string", "format": "date-time" }
+      }
+    },
+    "DiaryUpdate": {
+      "title": "letese.diary.updates",
+      "type": "object",
+      "required": ["case_id", "tenant_id", "court_code"],
+      "properties": {
+        "case_id": { "type": "string", "format": "uuid" },
+        "tenant_id": { "type": "string", "format": "uuid" },
+        "court_code": { "type": "string" },
+        "next_hearing": { "type": "string" },
+        "bench": { "type": "string" },
+        "purpose": { "type": "string" }
+      }
+    },
+    "CommunicationDispatch": {
+      "title": "letese.communications.dispatch",
+      "type": "object",
+      "required": ["case_id", "tenant_id", "message_type", "channel"],
+      "properties": {
+        "case_id": { "type": "string", "format": "uuid" },
+        "tenant_id": { "type": "string", "format": "uuid" },
+        "message_type": {
+          "type": "string",
+          "enum": ["reminder_15d", "reminder_7d", "reminder_48h", "reminder_24h", "order_alert", "payment_reminder", "document_chase"]
+        },
+        "channel": { "type": "string", "enum": ["whatsapp", "sms", "email", "ai_call"] },
+        "recipient_phone": { "type": "string" },
+        "recipient_email": { "type": "string", "format": "email" },
+        "template_params": { "type": "object" },
+        "schedule_id": { "type": "string", "format": "uuid" },
+        "priority": { "type": "string", "enum": ["normal", "high"] }
+      }
+    },
+    "PoliceHeartbeat": {
+      "title": "letese.police.heartbeats",
+      "type": "object",
+      "required": ["agent_id", "timestamp", "status"],
+      "properties": {
+        "agent_id": { "type": "string", "enum": ["AIPOT-SCRAPER", "AIPOT-COMPLIANCE", "AIPOT-COMMUNICATOR", "AIPOT-POLICE"] },
+        "timestamp": { "type": "number" },
+        "status": { "type": "string", "enum": ["alive", "sleeping", "error"] },
+        "active_jobs": { "type": "integer" },
+        "memory_mb": { "type": "number" }
+      }
+    },
+    "BuildStatus": {
+      "title": "letese.build.status",
+      "type": "object",
+      "required": ["agent_id", "module", "day", "status"],
+      "properties": {
+        "agent_id": { "type": "string" },
+        "module": { "type": "string" },
+        "day": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "status": { "type": "string", "enum": ["COMPLETE", "IN_PROGRESS", "BLOCKED"] },
+        "blocker": { "type": ["string", "null"] },
+        "output_url": { "type": ["string", "null"] },
+        "triggered_by": { "type": "string" },
+        "audit_type": { "type": "string" }
+      }
+    }
+  }
+}

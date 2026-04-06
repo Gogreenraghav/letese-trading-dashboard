@@ -1,0 +1,1 @@
+# LETESE● Pydantic Schemas
