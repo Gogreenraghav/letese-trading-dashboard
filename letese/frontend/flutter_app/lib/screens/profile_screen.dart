@@ -147,7 +147,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget _buildProfileCard(SessionData session) {
     return Container(
       decoration: BoxDecoration(
-        color: LatticeColors.surface,
+        color: LatticeColors.glassHi,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(color: LatticeColors.shadow, blurRadius: 20, offset: Offset(0, 5)),
@@ -426,13 +426,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget get _divider => Container(width: 1, height: 40, color: LatticeColors.cardBorder);
-  Widget get _divider2 => const Divider(color: LatticeColors.cardBorder, height: 1);
+  Widget get _divider2 => const Divider(color: LatticeColors.textDim.withAlpha(20), height: 1);
 
   Future<void> _logout() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: LatticeColors.surface,
+        backgroundColor: LatticeColors.glassHi,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text('Logout?', style: GoogleFonts.manrope(color: LatticeColors.textPrimary, fontWeight: FontWeight.w700)),
         content: Text('Are you sure you want to logout of LETESE?', style: GoogleFonts.inter(color: LatticeColors.textSecondary)),
@@ -479,7 +479,7 @@ class _CardWrapper extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: LatticeColors.surface,
+        color: LatticeColors.glassHi,
         borderRadius: BorderRadius.circular(14),
         boxShadow: const [
           BoxShadow(color: LatticeColors.shadow, blurRadius: 16, offset: Offset(0, 4)),

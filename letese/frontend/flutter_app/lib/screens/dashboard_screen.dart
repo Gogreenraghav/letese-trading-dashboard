@@ -384,10 +384,10 @@ class _StatusChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
         decoration: BoxDecoration(
-          color: LatticeColors.surface,
-          borderRadius: BorderRadius.circular(14),
+          color: LatticeColors.glassHi,
+          borderRadius: BorderRadius.circular(16),
           boxShadow: const [
-            BoxShadow(color: LatticeColors.shadow, blurRadius: 12, offset: Offset(0, 3)),
+            BoxShadow(color: LatticeColors.shadow, blurRadius: 12, offset: Offset(0, 3), spreadRadius: -2),
           ],
         ),
         child: Row(
@@ -439,17 +439,15 @@ class _HearingHeroCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: LatticeColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: const Border(
-          left: BorderSide(color: LatticeColors.primary, width: 4),
-        ),
-        boxShadow: const [
-          BoxShadow(color: LatticeColors.shadow, blurRadius: 20, offset: Offset(0, 5)),
+        color: LatticeColors.glassHi,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(color: LatticeColors.shadow.withAlpha(20), blurRadius: 24, offset: const Offset(0, 8)),
+          BoxShadow(color: LatticeColors.shadow.withAlpha(8), blurRadius: 6, offset: const Offset(0, 2)),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -581,58 +579,42 @@ class _HearingHeroCard extends StatelessWidget {
 
 // ── Quick Action Card ──────────────────────────────────────────────────────
 
+// ── Quick Action Card — Floating Row style ──────────────────────────────
 class _QuickActionCard extends StatelessWidget {
   final String label;
   final Color color;
   final String emoji;
   final VoidCallback onTap;
-
-  const _QuickActionCard({
-    required this.label,
-    required this.color,
-    required this.emoji,
-    required this.onTap,
-  });
+  const _QuickActionCard({required this.label, required this.color, required this.emoji, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: LatticeColors.surface,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: LatticeColors.cardBorder),
-          boxShadow: const [
-            BoxShadow(color: LatticeColors.shadow, blurRadius: 12, offset: Offset(0, 3)),
-          ],
+          color: LatticeColors.glassHi,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: ElevShadow.md(color),
         ),
         child: Row(
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 44, height: 44,
               decoration: BoxDecoration(
                 color: color.withAlpha(20),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Center(
-                child: Text(emoji, style: const TextStyle(fontSize: 20)),
-              ),
+              child: Center(child: Text(emoji, style: const TextStyle(fontSize: 20))),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
-                label,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: LatticeColors.textPrimary,
-                ),
-              ),
+              child: Text(label,
+                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600,
+                  color: LatticeColors.text)),
             ),
-            Icon(Icons.arrow_forward_ios, size: 14, color: LatticeColors.textTertiary),
+            Icon(Icons.arrow_forward_ios, size: 14, color: LatticeColors.textDim),
           ],
         ),
       ),
@@ -656,96 +638,56 @@ class _AipotMiniCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: LatticeColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: const Border(
-          left: BorderSide(color: LatticeColors.primary, width: 3),
-        ),
-        boxShadow: const [
-          BoxShadow(color: LatticeColors.shadow, blurRadius: 10, offset: Offset(0, 2)),
-        ],
+        color: LatticeColors.glassHi,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: ElevShadow.sm(LatticeColors.primary),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Row(
-          children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: LatticeColors.primary.withAlpha(20),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text(
-                  judgment.courtType == 'SC' ? '🏛️' : '⚖️',
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ),
+      child: Row(
+        children: [
+          Container(
+            width: 42, height: 42,
+            decoration: BoxDecoration(
+              color: LatticeColors.primary.withAlpha(20),
+              borderRadius: BorderRadius.circular(10),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: LatticeColors.primary.withAlpha(20),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          judgment.courtLabel,
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: LatticeColors.primary,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        _timeAgo(judgment.date),
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          color: LatticeColors.textTertiary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    judgment.parties,
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: LatticeColors.textPrimary,
+            child: Center(child: Text(judgment.courtType == 'SC' ? '🏛️' : '⚖️', style: const TextStyle(fontSize: 18))),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: LatticeColors.primary.withAlpha(20),
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    child: Text(judgment.courtLabel,
+                      style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: LatticeColors.primary)),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    judgment.subject,
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      color: LatticeColors.textSecondary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
+                  const SizedBox(width: 6),
+                  Text(_timeAgo(judgment.date),
+                    style: GoogleFonts.inter(fontSize: 11, color: LatticeColors.textDim)),
+                ]),
+                const SizedBox(height: 4),
+                Text(judgment.parties,
+                  style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: LatticeColors.text),
+                  maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(judgment.subject,
+                  style: GoogleFonts.inter(fontSize: 11, color: LatticeColors.textSec),
+                  maxLines: 1, overflow: TextOverflow.ellipsis),
+              ],
             ),
-            IconButton(
-              icon: Icon(Icons.bookmark_outline, color: LatticeColors.textTertiary, size: 20),
-              onPressed: () {},
-            ),
-          ],
-        ),
+          ),
+          IconButton(
+            icon: Icon(Icons.bookmark_outline, color: LatticeColors.textDim, size: 20),
+            onPressed: () {},
+          ),
+        ],
       ),
     );
   }
