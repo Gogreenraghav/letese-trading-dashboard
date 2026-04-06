@@ -1,223 +1,249 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { Check, X, Zap } from 'lucide-react'
-import Link from 'next/link'
+import { Check, Zap } from 'lucide-react'
 
 const plans = [
   {
-    name: 'Basic',
-    price: '₹999',
-    period: '/month',
-    description: 'For solo advocates starting out',
-    cta: 'Start Free Trial',
+    name: 'Starter',
+    price: '₹0',
+    period: 'forever',
+    description: 'Perfect for fresh advocates getting started.',
+    features: [
+      '50 active cases',
+      '1 user',
+      'Basic AI drafting',
+      'Email support',
+      'Standard case diary',
+      '5 GB storage',
+    ],
+    cta: 'Get Started Free',
     highlight: false,
-    features: {
-      'Active Cases': '30',
-      'Storage': '5 GB',
-      'Users': '1',
-      'Court Scraper': false,
-      'AI Drafting': false,
-      'Translation': false,
-      'Voice Calls': false,
-      'Smart Billing': true,
-      'Mobile App': true,
-      'Email Support': 'Community',
-    },
   },
   {
-    name: 'Professional',
-    price: '₹3,999',
+    name: 'Pro',
+    price: '₹2,000',
     period: '/month',
-    description: 'For growing firms up to 3 advocates',
-    cta: 'Start Free Trial',
+    description: 'Everything you need to run a modern law practice.',
+    features: [
+      'Unlimited cases',
+      '10 team members',
+      'Full AI drafting suite',
+      'AIPOT live feed',
+      'WhatsApp Business API',
+      'Priority support',
+      'Razorpay billing',
+      '50 GB storage',
+      'Collaborative editor',
+    ],
+    cta: 'Start Pro Trial',
     highlight: true,
-    features: {
-      'Active Cases': '200',
-      'Storage': '25 GB',
-      'Users': '3',
-      'Court Scraper': '8 courts',
-      'AI Drafting': false,
-      'Translation': false,
-      'Voice Calls': false,
-      'Smart Billing': true,
-      'Mobile App': true,
-      'Email Support': '48h response',
-    },
-  },
-  {
-    name: 'Elite',
-    price: '₹8,999',
-    period: '/month',
-    description: 'For established firms up to 7 advocates',
-    cta: 'Start Free Trial',
-    highlight: false,
-    features: {
-      'Active Cases': '500',
-      'Storage': '100 GB',
-      'Users': '7',
-      'Court Scraper': 'All courts',
-      'AI Drafting': true,
-      'Translation': true,
-      'Voice Calls': false,
-      'Smart Billing': true,
-      'Mobile App': true,
-      'Email Support': '12h priority',
-    },
+    badge: 'MOST POPULAR',
   },
   {
     name: 'Enterprise',
     price: 'Custom',
     period: '',
-    description: 'For large firms with custom requirements',
+    description: 'For large law firms and corporate legal teams.',
+    features: [
+      'Everything in Pro',
+      'Unlimited users',
+      'Dedicated account manager',
+      'Custom AI fine-tuning',
+      'API access',
+      'SLA guarantee',
+      'SSO & advanced RBAC',
+      'White-label option',
+      'Unlimited storage',
+    ],
     cta: 'Contact Sales',
     highlight: false,
-    features: {
-      'Active Cases': 'Unlimited',
-      'Storage': 'Custom',
-      'Users': 'Unlimited',
-      'Court Scraper': '+ Custom',
-      'AI Drafting': true,
-      'Translation': true,
-      'Voice Calls': true,
-      'Smart Billing': true,
-      'Mobile App': true,
-      'Email Support': 'Dedicated',
-    },
   },
 ]
 
-const featureLabels = [
-  'Active Cases',
-  'Storage',
-  'Users',
-  'Court Scraper',
-  'AI Drafting',
-  'Translation',
-  'Voice Calls',
-  'Smart Billing',
-  'Mobile App',
-  'Email Support',
-]
-
-function FeatureValue({ value }: { value: string | boolean }) {
-  if (value === true) return <Check className="w-4 h-4 text-brand-green mx-auto" />
-  if (value === false) return <X className="w-4 h-4 text-gray-600 mx-auto" />
-  return <span className="text-gray-300 text-xs">{value}</span>
-}
-
 export default function PricingTable() {
   return (
-    <section className="relative py-24" id="pricing">
-      <div className="absolute inset-0 bg-gradient-to-b from-bg-dark via-bg-dark-3 to-bg-dark" />
-      {/* Cyan glow */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-brand-cyan/5 blur-[120px] pointer-events-none" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="pricing" style={{ padding: '100px 0', background: '#F0F3FA' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <span className="text-brand-cyan text-sm font-semibold tracking-wider uppercase">
-            Pricing
+        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+          <span style={{
+            display: 'inline-block',
+            padding: '6px 16px',
+            background: 'rgba(80,112,224,0.08)',
+            borderRadius: '9999px',
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#5070E0',
+            marginBottom: '16px',
+          }}>
+            💳 SIMPLE PRICING
           </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-white">
-            Simple, Transparent Pricing
+          <h2 style={{
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: 'clamp(28px, 4vw, 44px)',
+            fontWeight: 800,
+            color: '#1A1D26',
+            lineHeight: 1.15,
+            marginBottom: '16px',
+          }}>
+            Plans for Every Advocate
           </h2>
-          <p className="mt-4 text-gray-400 max-w-xl mx-auto">
-            No hidden fees. No surprise bills. Scale as your firm grows.
-          </p>
-          <p className="mt-2 text-brand-green text-xs">
-            <Zap className="w-3 h-3 inline" /> 14-day free trial on all plans. Cancel anytime.
+          <p style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '16px',
+            color: '#5A6070',
+            maxWidth: '520px',
+            margin: '0 auto',
+            lineHeight: 1.7,
+          }}>
+            Start free. Upgrade when you need more power. No hidden fees, cancel anytime.
           </p>
         </div>
 
-        {/* Mobile: scrollable table on small screens */}
-        <div className="overflow-x-auto pb-4 -mx-4 px-4">
-          <div className="min-w-[700px]">
-            {/* Plan headers */}
-            <div className="grid grid-cols-5 gap-3 mb-4">
-              <div className="glass rounded-xl p-4">
-                <p className="text-gray-400 text-xs font-medium mb-1">Feature</p>
+        {/* Cards */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '24px',
+          alignItems: 'stretch',
+        }}>
+          {plans.map((plan) => (
+            <div
+              key={plan.name}
+              style={{
+                background: plan.highlight
+                  ? 'linear-gradient(135deg, #5070E0, #3050B0)'
+                  : 'rgba(255,255,255,0.88)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                borderRadius: '28px',
+                padding: '32px',
+                border: plan.highlight
+                  ? '2px solid #3050B0'
+                  : '1px solid rgba(80,112,224,0.12)',
+                boxShadow: plan.highlight
+                  ? '0 24px 64px rgba(80,112,224,0.3)'
+                  : '0 4px 24px rgba(80,112,224,0.08)',
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              {plan.badge && (
+                <div style={{
+                  position: 'absolute',
+                  top: '-14px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  background: '#59FEAE',
+                  color: '#1A1D26',
+                  padding: '4px 20px',
+                  borderRadius: '9999px',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  letterSpacing: '0.5px',
+                  boxShadow: '0 4px 12px rgba(89,254,174,0.4)',
+                }}>
+                  <Zap size={10} style={{ display: 'inline', marginRight: '4px' }} />
+                  {plan.badge}
+                </div>
+              )}
+
+              <div style={{ marginBottom: '24px' }}>
+                <h3 style={{
+                  fontFamily: "'Manrope', sans-serif",
+                  fontSize: '22px',
+                  fontWeight: 800,
+                  color: plan.highlight ? 'white' : '#1A1D26',
+                  marginBottom: '8px',
+                }}>
+                  {plan.name}
+                </h3>
+                <p style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '13px',
+                  color: plan.highlight ? 'rgba(255,255,255,0.7)' : '#5A6070',
+                  lineHeight: 1.5,
+                }}>
+                  {plan.description}
+                </p>
               </div>
-              {plans.map((plan, i) => (
-                <div
-                  key={i}
-                  className={`rounded-xl p-4 text-center ${
-                    plan.highlight
-                      ? 'bg-brand-blue/20 border-2 border-brand-blue shadow-lg shadow-brand-blue/20'
-                      : 'glass'
-                  }`}
-                >
-                  {plan.highlight && (
-                    <div className="flex justify-center mb-2">
-                      <span className="text-[10px] bg-brand-blue text-white px-2 py-0.5 rounded-full font-semibold">
-                        POPULAR
-                      </span>
-                    </div>
-                  )}
-                  <p className="text-white font-bold text-sm">{plan.name}</p>
-                  <div className="mt-1 flex items-baseline justify-center gap-0.5">
-                    <span className="text-xl font-bold text-brand-cyan">{plan.price}</span>
-                    {plan.period && (
-                      <span className="text-gray-400 text-xs">{plan.period}</span>
-                    )}
-                  </div>
-                  <p className="text-gray-500 text-[10px] mt-1 hidden sm:block">
-                    {plan.description}
-                  </p>
-                </div>
-              ))}
-            </div>
 
-            {/* Feature rows */}
-            <div className="space-y-2">
-              {featureLabels.map((label, i) => (
-                <div key={i} className="grid grid-cols-5 gap-3">
-                  <div className="glass rounded-lg p-3 flex items-center">
-                    <span className="text-gray-400 text-xs">{label}</span>
-                  </div>
-                  {plans.map((plan, j) => (
-                    <div
-                      key={j}
-                      className={`glass rounded-lg p-3 flex items-center justify-center ${
-                        plan.highlight ? 'bg-brand-blue/10' : ''
-                      }`}
-                    >
-                      <FeatureValue value={plan.features[label as keyof typeof plan.features] as string | boolean} />
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
+              <div style={{ marginBottom: '28px' }}>
+                <span style={{
+                  fontFamily: "'Manrope', sans-serif",
+                  fontSize: 'clamp(32px, 4vw, 44px)',
+                  fontWeight: 800,
+                  color: plan.highlight ? 'white' : '#1A1D26',
+                }}>
+                  {plan.price}
+                </span>
+                {plan.period && (
+                  <span style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '14px',
+                    color: plan.highlight ? 'rgba(255,255,255,0.6)' : '#8B92A0',
+                  }}>
+                    {' '}{plan.period}
+                  </span>
+                )}
+              </div>
 
-            {/* CTA row */}
-            <div className="grid grid-cols-5 gap-3 mt-4">
-              <div className="glass rounded-xl p-4" />
-              {plans.map((plan, i) => (
-                <div
-                  key={i}
-                  className={`rounded-xl p-4 text-center ${
-                    plan.highlight ? 'bg-brand-blue/20 border-2 border-brand-blue' : 'glass'
-                  }`}
-                >
-                  <Link
-                    href={
-                      plan.name === 'Enterprise'
-                        ? 'mailto:info@letese.xyz'
-                        : 'https://app.letese.xyz/register'
-                    }
-                    className={`block text-xs font-semibold py-2 rounded-lg transition-all ${
-                      plan.highlight
-                        ? 'bg-brand-blue hover:bg-brand-blue-light text-white'
-                        : 'text-brand-cyan hover:text-white'
-                    }`}
-                  >
-                    {plan.cta}
-                  </Link>
-                </div>
-              ))}
+              {/* CTA */}
+              <button style={{
+                width: '100%',
+                padding: '14px',
+                borderRadius: '9999px',
+                background: plan.highlight ? 'white' : 'transparent',
+                color: plan.highlight ? '#5070E0' : 'white',
+                border: plan.highlight ? 'none' : '1.5px solid rgba(255,255,255,0.4)',
+                fontFamily: "'Manrope', sans-serif",
+                fontWeight: 700,
+                fontSize: '14px',
+                cursor: 'pointer',
+                marginBottom: '28px',
+                boxShadow: plan.highlight ? '0 4px 16px rgba(0,0,0,0.15)' : 'none',
+              }}>
+                {plan.cta}
+              </button>
+
+              {/* Features */}
+              <ul style={{ listStyle: 'none', flex: 1 }}>
+                {plan.features.map((feature) => (
+                  <li key={feature} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '8px 0',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '14px',
+                    color: plan.highlight ? 'rgba(255,255,255,0.85)' : '#5A6070',
+                  }}>
+                    <Check
+                      size={16}
+                      color={plan.highlight ? '#59FEAE' : '#59FEAE'}
+                      strokeWidth={3}
+                    />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
+          ))}
         </div>
+
+        {/* Bottom note */}
+        <p style={{
+          textAlign: 'center',
+          marginTop: '40px',
+          fontFamily: "'Inter', sans-serif",
+          fontSize: '14px',
+          color: '#8B92A0',
+        }}>
+          All plans include GST. Enterprise billed annually. Prices in INR.
+        </p>
       </div>
     </section>
   )

@@ -1,88 +1,107 @@
+'use client'
+
+import { Scale } from 'lucide-react'
 import Link from 'next/link'
-import { Scale, Twitter, Linkedin, MessageCircle, Mail } from 'lucide-react'
-
-const footerLinks = {
-  Product: [
-    { href: '/features', label: 'Features' },
-    { href: '/pricing', label: 'Pricing' },
-    { href: 'https://app.letese.xyz', label: 'App Login' },
-    { href: 'https://app.letese.xyz/register', label: 'Free Trial' },
-  ],
-  Company: [
-    { href: '#', label: 'About Us' },
-    { href: '#', label: 'Blog' },
-    { href: '#', label: 'Careers' },
-    { href: 'mailto:info@letese.xyz', label: 'Contact' },
-  ],
-  Legal: [
-    { href: '/privacy', label: 'Privacy Policy' },
-    { href: '/terms', label: 'Terms of Service' },
-    { href: '/security', label: 'Security' },
-    { href: '/compliance', label: 'Compliance' },
-  ],
-  Support: [
-    { href: '#', label: 'Documentation' },
-    { href: '#', label: 'Help Center' },
-    { href: '#', label: 'Community' },
-    { href: '#', label: 'Status Page' },
-  ],
-}
-
-const socials = [
-  { icon: Twitter, href: 'https://twitter.com/letese_xyz', label: 'Twitter' },
-  { icon: Linkedin, href: 'https://linkedin.com/company/letese', label: 'LinkedIn' },
-  { icon: MessageCircle, href: 'https://wa.me/919876543210', label: 'WhatsApp' },
-  { icon: Mail, href: 'mailto:info@letese.xyz', label: 'Email' },
-]
 
 export default function Footer() {
+  const links = {
+    Product: ['Features', 'Pricing', 'Changelog', 'Roadmap'],
+    Company: ['About', 'Blog', 'Careers', 'Contact'],
+    Legal: ['Privacy Policy', 'Terms of Service', 'Security', 'Compliance'],
+    Support: ['Documentation', 'API Reference', 'Help Center', 'Status'],
+  }
+
   return (
-    <footer className="relative border-t border-white/5">
+    <footer style={{
+      background: '#1A1D26',
+      color: 'rgba(255,255,255,0.85)',
+      paddingTop: '72px',
+    }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main footer */}
-        <div className="py-12 grid grid-cols-2 md:grid-cols-6 gap-8">
-          {/* Brand column */}
-          <div className="col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <Scale className="w-6 h-6 text-brand-blue" strokeWidth={2.5} />
-              <span className="text-lg font-bold text-brand-blue">LETESE</span>
-              <span className="text-brand-green font-bold text-sm">●</span>
-            </Link>
-            <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
-              AI-powered legal practice management SaaS for Indian law firms. Track cases, automate reminders, draft faster.
+        {/* Top: Logo + Links */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '2fr repeat(4, 1fr)',
+          gap: '48px',
+          marginBottom: '64px',
+        }}>
+          {/* Brand */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+              <div style={{
+                background: 'linear-gradient(135deg, #5070E0, #3050B0)',
+                padding: '6px 10px',
+                borderRadius: '10px',
+                display: 'flex', alignItems: 'center',
+              }}>
+                <Scale className="w-5 h-5 text-white" strokeWidth={2.5} />
+              </div>
+              <span style={{
+                fontFamily: "'Manrope', sans-serif",
+                fontSize: '18px',
+                fontWeight: 800,
+                color: 'white',
+              }}>LETESE</span>
+              <span style={{ color: '#59FEAE', fontWeight: 800, marginTop: '2px' }}>●</span>
+            </div>
+            <p style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '14px',
+              color: 'rgba(255,255,255,0.5)',
+              lineHeight: 1.65,
+              maxWidth: '240px',
+              marginBottom: '24px',
+            }}>
+              AI-powered legal management for Indian advocates. Built with ❤️ in India.
             </p>
-            <div className="mt-5 flex gap-3">
-              {socials.map((social, i) => {
-                const Icon = social.icon
-                return (
-                  <a
-                    key={i}
-                    href={social.href}
-                    aria-label={social.label}
-                    className="w-8 h-8 rounded-lg glass flex items-center justify-center text-gray-400 hover:text-brand-cyan transition-colors"
-                  >
-                    <Icon className="w-4 h-4" />
-                  </a>
-                )
-              })}
+            {/* Social */}
+            <div style={{ display: 'flex', gap: '12px' }}>
+              {['Twitter', 'LinkedIn', 'YouTube', 'Instagram'].map((social) => (
+                <a key={social} href="#" style={{
+                  width: '36px', height: '36px',
+                  background: 'rgba(255,255,255,0.06)',
+                  borderRadius: '10px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'rgba(255,255,255,0.5)',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  transition: 'all 0.2s',
+                }}>
+                  {social[0]}
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Link columns */}
-          {Object.entries(footerLinks).map(([category, links]) => (
+          {/* Links */}
+          {Object.entries(links).map(([category, items]) => (
             <div key={category}>
-              <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-4">
-                {category}
+              <h4 style={{
+                fontFamily: "'Manrope', sans-serif",
+                fontSize: '13px',
+                fontWeight: 700,
+                color: 'white',
+                marginBottom: '16px',
+                letterSpacing: '0.5px',
+              }}>
+                {category.toUpperCase()}
               </h4>
-              <ul className="space-y-2.5">
-                {links.map((link, i) => (
-                  <li key={i}>
-                    <Link
-                      href={link.href}
-                      className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {items.map((item) => (
+                  <li key={item}>
+                    <a href="#" style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: '13px',
+                      color: 'rgba(255,255,255,0.5)',
+                      textDecoration: 'none',
+                      transition: 'color 0.2s',
+                    }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
                     >
-                      {link.label}
-                    </Link>
+                      {item}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -90,14 +109,43 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-white/5 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-gray-600 text-xs">
-            © {new Date().getFullYear()} LETESE Legal Technologies Pvt. Ltd. All rights reserved.
-          </p>
-          <div className="flex items-center gap-2 text-xs text-gray-600">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse" />
-            <span>All systems operational</span>
+        {/* Divider */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '28px', paddingBottom: '28px' }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '16px',
+          }}>
+            <p style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '13px',
+              color: 'rgba(255,255,255,0.35)',
+            }}>
+              © {new Date().getFullYear()} LETESE Technologies Pvt. Ltd. All rights reserved.
+            </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{
+                width: '8px', height: '8px', borderRadius: '50%',
+                background: '#59FEAE',
+                boxShadow: '0 0 8px #59FEAE',
+              }} />
+              <span style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '13px',
+                color: 'rgba(255,255,255,0.35)',
+              }}>
+                All systems operational
+              </span>
+            </div>
+            <p style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '12px',
+              color: 'rgba(255,255,255,0.25)',
+            }}>
+              Powered by Lattice Technologies
+            </p>
           </div>
         </div>
       </div>

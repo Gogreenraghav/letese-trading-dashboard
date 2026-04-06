@@ -1,81 +1,115 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { ArrowRight, Calendar } from 'lucide-react'
-import Link from 'next/link'
+import { ArrowRight, Scale } from 'lucide-react'
 
 export default function CTASection() {
   return (
-    <section className="relative py-24 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-brand-blue/20 via-bg-dark to-brand-purple/20" />
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,212,255,0.5) 1px, transparent 1px),
-                             linear-gradient(90deg, rgba(0,212,255,0.5) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
-        }}
-      />
+    <section style={{
+      padding: '80px 0',
+      background: 'linear-gradient(135deg, #5070E0 0%, #3050B0 100%)',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Decorative */}
+      <div style={{
+        position: 'absolute',
+        top: '-60px', right: '-60px',
+        width: '300px', height: '300px',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(89,254,174,0.15) 0%, transparent 70%)',
+      }} />
+      <div style={{
+        position: 'absolute',
+        bottom: '-40px', left: '-40px',
+        width: '200px', height: '200px',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)',
+      }} />
 
-      {/* Glow orbs */}
-      <div className="absolute top-[-100px] left-[10%] w-[400px] h-[400px] rounded-full bg-brand-cyan/10 blur-[100px]" />
-      <div className="absolute bottom-[-100px] right-[10%] w-[400px] h-[400px] rounded-full bg-brand-purple/10 blur-[100px]" />
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+        {/* Icon */}
+        <div style={{
+          width: '64px', height: '64px',
+          background: 'rgba(255,255,255,0.15)',
+          backdropFilter: 'blur(16px)',
+          borderRadius: '20px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto 28px',
+          border: '1px solid rgba(255,255,255,0.2)',
+        }}>
+          <Scale size={28} color="white" strokeWidth={2} />
+        </div>
 
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          {/* Tag */}
-          <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 mb-8">
-            <Calendar className="w-3.5 h-3.5 text-brand-cyan" />
-            <span className="text-brand-cyan text-xs font-medium">
-              Limited: 3 months free on annual billing
-            </span>
-          </div>
+        <h2 style={{
+          fontFamily: "'Manrope', sans-serif",
+          fontSize: 'clamp(28px, 4vw, 42px)',
+          fontWeight: 800,
+          color: 'white',
+          lineHeight: 1.2,
+          marginBottom: '16px',
+        }}>
+          Ready to Transform Your Practice?
+        </h2>
+        <p style={{
+          fontFamily: "'Inter', sans-serif",
+          fontSize: '16px',
+          color: 'rgba(255,255,255,0.8)',
+          lineHeight: 1.7,
+          marginBottom: '40px',
+          maxWidth: '500px',
+          margin: '0 auto 40px',
+        }}>
+          Join 247+ advocates already using LETESE to win more cases, save time, and delight clients.
+          Start your free trial today — no credit card required.
+        </p>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-            Ready to Transform
-            <br />
-            <span className="gradient-text">Your Legal Practice?</span>
-          </h2>
+        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '10px',
+            padding: '16px 36px',
+            background: 'white',
+            color: '#5070E0',
+            borderRadius: '9999px',
+            fontFamily: "'Manrope', sans-serif",
+            fontWeight: 700,
+            fontSize: '15px',
+            border: 'none',
+            cursor: 'pointer',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+          }}>
+            Start Free Trial
+            <ArrowRight size={18} />
+          </button>
+          <button style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '10px',
+            padding: '16px 36px',
+            background: 'rgba(255,255,255,0.12)',
+            backdropFilter: 'blur(16px)',
+            color: 'white',
+            borderRadius: '9999px',
+            fontFamily: "'Manrope', sans-serif",
+            fontWeight: 700,
+            fontSize: '15px',
+            border: '1.5px solid rgba(255,255,255,0.3)',
+            cursor: 'pointer',
+          }}>
+            Book a Demo
+          </button>
+        </div>
 
-          <p className="mt-6 text-gray-400 text-lg max-w-2xl mx-auto">
-            Join 500+ law firms already saving 40% on admin time. Start your free 14-day trial today — no credit card required.
-          </p>
-
-          {/* CTA buttons */}
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link
-              href="https://app.letese.xyz/register"
-              className="group flex items-center gap-2 bg-brand-blue hover:bg-brand-blue-light text-white px-8 py-4 rounded-xl font-bold text-base transition-all hover:shadow-2xl hover:shadow-brand-blue/40 hover:-translate-y-1"
-            >
-              Start Free Trial — No Card Needed
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              href="mailto:info@letese.xyz"
-              className="flex items-center gap-2 glass text-white hover:text-brand-cyan px-8 py-4 rounded-xl font-medium text-base transition-all hover:-translate-y-1"
-            >
-              Talk to Sales
-            </Link>
-          </div>
-
-          {/* Trust badges */}
-          <div className="mt-10 flex flex-wrap justify-center gap-6 text-gray-500 text-xs">
-            {[
-              '✓ No credit card required',
-              '✓ 14-day free trial',
-              '✓ Setup in 30 minutes',
-              '✓ Cancel anytime',
-            ].map((item, i) => (
-              <span key={i}>{item}</span>
-            ))}
-          </div>
-        </motion.div>
+        {/* Trust */}
+        <p style={{
+          marginTop: '28px',
+          fontFamily: "'Inter', sans-serif",
+          fontSize: '13px',
+          color: 'rgba(255,255,255,0.6)',
+        }}>
+          🔒 Enterprise-grade security • ⚡ Setup in 5 minutes • 🚀 Cancel anytime
+        </p>
       </div>
     </section>
   )

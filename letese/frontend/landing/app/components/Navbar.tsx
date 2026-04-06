@@ -15,14 +15,39 @@ export default function Navbar() {
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass">
+    <nav className="fixed top-0 left-0 right-0 z-50" style={{
+      background: 'rgba(255,255,255,0.88)',
+      backdropFilter: 'blur(24px)',
+      WebkitBackdropFilter: 'blur(24px)',
+      borderBottom: '1px solid rgba(255,255,255,0.7)',
+      boxShadow: '0 2px 16px rgba(80,112,224,0.06)',
+    }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <Scale className="w-7 h-7 text-brand-blue" strokeWidth={2.5} />
-            <span className="text-xl font-bold text-brand-blue">LETESE</span>
-            <span className="text-brand-green font-bold text-lg">●</span>
+            <div style={{
+              background: 'linear-gradient(135deg, #5070E0, #3050B0)',
+              padding: '6px 10px',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+            }}>
+              <Scale className="w-5 h-5 text-white" strokeWidth={2.5} />
+            </div>
+            <span style={{
+              fontFamily: "'Manrope', sans-serif",
+              fontSize: '20px',
+              fontWeight: 800,
+              color: '#5070E0',
+              letterSpacing: '-0.5px',
+            }}>LETESE</span>
+            <span style={{
+              color: '#59FEAE',
+              fontWeight: 800,
+              fontSize: '16px',
+              marginTop: '2px',
+            }}>●</span>
           </Link>
 
           {/* Desktop nav */}
@@ -31,50 +56,98 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-gray-300 hover:text-white text-sm font-medium transition-colors"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: '#5A6070',
+                  textDecoration: 'none',
+                  transition: 'color 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#5070E0'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#5A6070'}
               >
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="https://app.letese.xyz"
-              className="bg-brand-blue hover:bg-brand-blue-light text-white px-5 py-2 rounded-lg text-sm font-semibold transition-all hover:shadow-lg hover:shadow-brand-blue/30"
-            >
-              Open App
+            <Link href="/login" style={{
+              fontFamily: "'Manrope', sans-serif",
+              fontSize: '14px',
+              fontWeight: 700,
+              color: '#5A6070',
+              textDecoration: 'none',
+            }}>
+              Log in
+            </Link>
+            <Link href="/register" style={{
+              fontFamily: "'Manrope', sans-serif",
+              fontSize: '14px',
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #5070E0, #3050B0)',
+              color: 'white',
+              padding: '10px 22px',
+              borderRadius: '9999px',
+              textDecoration: 'none',
+              boxShadow: '0 4px 16px rgba(80,112,224,0.3)',
+              display: 'inline-flex',
+              alignItems: 'center',
+            }}>
+              Start Free Trial →
             </Link>
           </div>
 
           {/* Mobile toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden text-gray-300 hover:text-white"
+            className="md:hidden p-2 rounded-xl"
+            style={{ color: '#5070E0' }}
           >
-            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
-
-        {/* Mobile menu */}
-        {mobileOpen && (
-          <div className="md:hidden pb-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="block py-2 text-gray-300 hover:text-white text-sm"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              href="https://app.letese.xyz"
-              className="mt-2 block text-center bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-semibold"
-            >
-              Open App
-            </Link>
-          </div>
-        )}
       </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="md:hidden" style={{
+          background: 'rgba(255,255,255,0.95)',
+          backdropFilter: 'blur(24px)',
+          borderTop: '1px solid rgba(80,112,224,0.1)',
+          padding: '16px',
+        }}>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              style={{
+                display: 'block',
+                padding: '12px 0',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '15px',
+                fontWeight: 500,
+                color: '#5A6070',
+                textDecoration: 'none',
+                borderBottom: '1px solid rgba(80,112,224,0.08)',
+              }}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+            <Link href="/login" style={{
+              flex: 1, textAlign: 'center', padding: '12px',
+              borderRadius: '9999px', border: '1.5px solid #5070E0',
+              fontFamily: "'Manrope', sans-serif", fontWeight: 700, color: '#5070E0', textDecoration: 'none',
+            }}>Log in</Link>
+            <Link href="/register" style={{
+              flex: 1, textAlign: 'center', padding: '12px',
+              borderRadius: '9999px', background: 'linear-gradient(135deg, #5070E0, #3050B0)',
+              fontFamily: "'Manrope', sans-serif", fontWeight: 700, color: 'white', textDecoration: 'none',
+            }}>Start Free →</Link>
+          </div>
+        </div>
+      )}
     </nav>
   )
 }

@@ -1,207 +1,269 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { Play, ArrowRight } from 'lucide-react'
-import Link from 'next/link'
-
-// Phone mockup screens as inline SVGs (representing app views)
-function PhoneMockup() {
-  return (
-    <div className="phone-mockup w-64 flex-shrink-0">
-      <div className="phone-screen">
-        {/* Status bar */}
-        <div className="bg-bg-dark px-4 py-2 flex justify-between items-center text-xs text-gray-400">
-          <span>9:41</span>
-          <div className="flex gap-1">
-            <span>●●●●</span>
-            <span>📶</span>
-            <span>🔋</span>
-          </div>
-        </div>
-        {/* App header */}
-        <div className="bg-brand-blue px-4 py-3">
-          <p className="text-white text-xs font-semibold">LETESE</p>
-          <p className="text-brand-cyan text-[10px]">Case Diary</p>
-        </div>
-        {/* Case entries */}
-        <div className="px-3 py-3 space-y-2 bg-bg-dark">
-          {[
-            { case: 'CWP-4567/2024', court: 'P&H HC', date: '15 Apr', status: 'Hearing' },
-            { case: 'SLP-123/2024', court: 'Supreme Court', date: '18 Apr', status: 'Listed' },
-            { case: 'WPC-789/2024', court: 'Delhi HC', date: '22 Apr', status: 'Pending' },
-          ].map((c, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.2 + 0.5 }}
-              className="glass rounded-lg p-2 text-xs"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-white font-medium text-[10px]">{c.case}</p>
-                  <p className="text-gray-400 text-[9px]">{c.court}</p>
-                </div>
-                <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-brand-blue/30 text-brand-cyan">
-                  {c.date}
-                </span>
-              </div>
-              <div className="mt-1 flex items-center gap-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse" />
-                <span className="text-brand-green text-[8px]">{c.status}</span>
-              </div>
-            </motion.div>
-          ))}
-          {/* WhatsApp reminder preview */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2 }}
-            className="mt-3 glass rounded-lg p-2"
-          >
-            <p className="text-[9px] text-gray-400 mb-1">🔔 Reminder</p>
-            <div className="bg-green-800/50 rounded-lg rounded-tl-none p-2">
-              <p className="text-[9px] text-green-100">
-                Hearing tomorrow at 10:00 AM in P&H HC.
-                Case: CWP-4567/2024
-              </p>
-            </div>
-          </motion.div>
-          {/* AI Draft preview */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5 }}
-            className="glass rounded-lg p-2"
-          >
-            <p className="text-[9px] text-gray-400 mb-1">✏️ AI Draft</p>
-            <div className="space-y-1">
-              <div className="h-1.5 bg-brand-purple/50 rounded w-full" />
-              <div className="h-1.5 bg-brand-purple/30 rounded w-4/5" />
-              <div className="h-1.5 bg-brand-purple/30 rounded w-3/5" />
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
-}
+import { Scale, Play, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { useState } from 'react'
 
 export default function Hero() {
+  const [playing, setPlaying] = useState(false)
+
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
-      {/* Animated background orbs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="orb orb-blue top-[-200px] left-[-100px]" />
-        <div className="orb orb-purple top-[20%] right-[-150px]" />
-        <div className="orb orb-cyan bottom-[10%] left-[20%]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-bg-dark via-bg-dark/95 to-bg-dark" />
+    <section
+      className="relative min-h-screen flex items-center overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, #B0C0F0 0%, #819BFF 25%, #5070E0 60%, #3050B0 100%)',
+      }}
+    >
+      {/* Decorative circles */}
+      <div className="absolute top-20 right-20 w-80 h-80 rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)' }} />
+      <div className="absolute bottom-40 left-10 w-60 h-60 rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)' }} />
+      <div className="absolute top-1/3 left-1/4 w-40 h-40 rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(89,254,174,0.1) 0%, transparent 70%)' }} />
+
+      {/* Floating badge */}
+      <div className="absolute top-28 left-1/2 -translate-x-1/2 z-10">
+        <div style={{
+          background: 'rgba(255,255,255,0.85)',
+          backdropFilter: 'blur(16px)',
+          borderRadius: '9999px',
+          padding: '8px 20px',
+          boxShadow: '0 8px 32px rgba(80,112,224,0.15)',
+          border: '1px solid rgba(255,255,255,0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}>
+          <span style={{
+            width: '8px', height: '8px', borderRadius: '50%',
+            background: '#59FEAE',
+            boxShadow: '0 0 8px #59FEAE',
+            display: 'inline-block',
+          }} />
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: '#3050B0' }}>
+            India's #1 Legal AI Platform
+          </span>
+        </div>
       </div>
 
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,212,255,0.5) 1px, transparent 1px),
-                             linear-gradient(90deg, rgba(0,212,255,0.5) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
-        }}
-      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-32 pb-20">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left: Text */}
+          <div>
+            <h1
+              className="font-display"
+              style={{
+                fontFamily: "'Manrope', sans-serif",
+                fontSize: 'clamp(40px, 5vw, 64px)',
+                fontWeight: 800,
+                lineHeight: 1.1,
+                letterSpacing: '-1px',
+                color: 'white',
+                marginBottom: '24px',
+              }}
+            >
+              LETESE
+              <span style={{ color: '#59FEAE', marginLeft: '4px' }}>●</span>
+            </h1>
+            <p style={{
+              fontFamily: "'Manrope', sans-serif",
+              fontSize: 'clamp(24px, 3vw, 36px)',
+              fontWeight: 700,
+              color: 'rgba(255,255,255,0.95)',
+              lineHeight: 1.3,
+              marginBottom: '16px',
+            }}>
+              Advocate Suite
+            </p>
+            <p style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '16px',
+              color: 'rgba(255,255,255,0.85)',
+              marginBottom: '32px',
+              lineHeight: 1.7,
+            }}>
+              वकीलों के लिए AI powered legal management
+            </p>
+            <p style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '15px',
+              color: 'rgba(255,255,255,0.75)',
+              lineHeight: 1.7,
+              maxWidth: '480px',
+              marginBottom: '40px',
+            }}>
+              AI-powered case management, instant legal drafting &amp; 24/7 court
+              judgment monitoring for Indian advocates. Win more cases with
+              intelligent automation.
+            </p>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid lg:grid-cols-2 gap-12 items-center"
-        >
-          {/* Left: Text content */}
-          <div className="space-y-8">
-            {/* Badge */}
-            <motion.div variants={itemVariants} className="inline-flex">
-              <div className="glass rounded-full px-4 py-1.5 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-brand-green animate-pulse" />
-                <span className="text-brand-cyan text-xs font-medium">
-                  Trusted by 500+ Law Firms across India
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Hero heading */}
-            <motion.div variants={itemVariants} className="space-y-4">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-                <span className="text-white">Legal Practice</span>
-                <br />
-                <span className="gradient-text">Management,</span>
-                <br />
-                <span className="text-white">Reimagined</span>
-              </h1>
-              <p className="text-lg sm:text-xl text-gray-400 max-w-lg">
-                Track cases. Automate reminders. Draft faster. Win more.
-              </p>
-            </motion.div>
-
-            {/* CTA buttons */}
-            <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
-              <Link
-                href="https://app.letese.xyz/register"
-                className="group flex items-center gap-2 bg-brand-blue hover:bg-brand-blue-light text-white px-7 py-3.5 rounded-xl font-semibold text-base transition-all hover:shadow-xl hover:shadow-brand-blue/30 hover:-translate-y-0.5"
-              >
+            {/* CTA Buttons */}
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '48px' }}>
+              <button style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '16px 32px',
+                background: 'white',
+                color: '#5070E0',
+                borderRadius: '9999px',
+                fontFamily: "'Manrope', sans-serif",
+                fontWeight: 700,
+                fontSize: '15px',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+              }}>
                 Start Free Trial
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <button className="group flex items-center gap-2 glass text-white hover:text-brand-cyan px-7 py-3.5 rounded-xl font-medium text-base transition-all hover:-translate-y-0.5">
-                <Play className="w-4 h-4 fill-current" />
+                <ArrowRight size={18} />
+              </button>
+              <button
+                onClick={() => setPlaying(!playing)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '16px 32px',
+                  background: 'rgba(255,255,255,0.15)',
+                  backdropFilter: 'blur(16px)',
+                  color: 'white',
+                  borderRadius: '9999px',
+                  fontFamily: "'Manrope', sans-serif",
+                  fontWeight: 700,
+                  fontSize: '15px',
+                  border: '1.5px solid rgba(255,255,255,0.3)',
+                  cursor: 'pointer',
+                }}
+              >
+                <div style={{
+                  width: '36px', height: '36px',
+                  background: 'rgba(255,255,255,0.2)',
+                  borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <Play size={16} fill="white" />
+                </div>
                 Watch Demo
               </button>
-            </motion.div>
+            </div>
 
-            {/* Stats bar */}
-            <motion.div
-              variants={itemVariants}
-              className="glass-strong rounded-2xl px-6 py-4 grid grid-cols-2 sm:grid-cols-4 gap-4"
-            >
+            {/* Trust indicators */}
+            <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
               {[
-                { value: '500+', label: 'Law Firms' },
-                { value: '50,000+', label: 'Cases Tracked' },
-                { value: '99.9%', label: 'Uptime' },
-                { value: '4.8★', label: 'Rating' },
-              ].map((stat, i) => (
-                <div key={i} className="text-center">
-                  <p className="text-brand-cyan font-bold text-lg sm:text-xl neon-text">
-                    {stat.value}
-                  </p>
-                  <p className="text-gray-400 text-xs mt-0.5">{stat.label}</p>
+                'No credit card required',
+                '14-day free trial',
+                'Cancel anytime',
+              ].map((item) => (
+                <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <CheckCircle2 size={16} color="#59FEAE" />
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>
+                    {item}
+                  </span>
                 </div>
               ))}
-            </motion.div>
+            </div>
           </div>
 
           {/* Right: Phone mockup */}
-          <motion.div
-            variants={itemVariants}
-            className="hidden lg:flex justify-center items-center"
-          >
-            <div className="relative">
-              {/* Glow behind phone */}
-              <div className="absolute inset-0 bg-brand-blue/20 blur-3xl rounded-full scale-75" />
-              <PhoneMockup />
+          <div className="hidden lg:flex justify-center">
+            <div style={{
+              position: 'relative',
+              width: '280px',
+              height: '580px',
+              background: '#0A0E1A',
+              borderRadius: '44px',
+              padding: '8px',
+              boxShadow: '0 40px 80px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,255,255,0.1)',
+            }}>
+              {/* Phone notch */}
+              <div style={{
+                position: 'absolute',
+                top: '8px', left: '50%', transform: 'translateX(-50%)',
+                width: '100px', height: '28px',
+                background: '#0A0E1A',
+                borderRadius: '0 0 20px 20px',
+                zIndex: 10,
+              }} />
+              {/* Screen */}
+              <div style={{
+                width: '100%', height: '100%',
+                borderRadius: '36px',
+                overflow: 'hidden',
+                background: 'linear-gradient(180deg, #B0C0F0 0%, #5070E0 100%)',
+                position: 'relative',
+              }}>
+                {/* Mock UI */}
+                <div style={{ padding: '40px 16px 16px', height: '100%', position: 'relative' }}>
+                  {/* Logo mock */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginBottom: '20px' }}>
+                    <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '16px', fontWeight: 800, color: 'white' }}>LETESE</span>
+                    <span style={{ color: '#59FEAE', fontWeight: 800 }}>●</span>
+                  </div>
+
+                  {/* Status chips */}
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', justifyContent: 'center' }}>
+                    {[['🔴 Live', '#B41340'], ['🟡 Pending', '#FFB547'], ['🟢 Done', '#59FEAE']].map(([label, color]) => (
+                      <div key={label as string} style={{
+                        padding: '6px 12px', borderRadius: '20px',
+                        background: 'rgba(255,255,255,0.9)',
+                        fontSize: '11px', fontWeight: 700,
+                        color: color as string,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      }}>{label as string}</div>
+                    ))}
+                  </div>
+
+                  {/* Case card */}
+                  <div style={{
+                    background: 'rgba(255,255,255,0.92)',
+                    borderRadius: '16px',
+                    padding: '14px',
+                    marginBottom: '12px',
+                    borderLeft: '4px solid #5070E0',
+                  }}>
+                    <div style={{ fontSize: '10px', fontWeight: 700, color: '#5070E0', marginBottom: '4px' }}>Next Up • Court 4</div>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#1A1D26', marginBottom: '4px' }}>State of Maharashtra vs. K. Deshmukh</div>
+                    <div style={{ fontSize: '10px', color: '#5A6070', marginBottom: '8px' }}>11:30 AM</div>
+                    <div style={{ height: '4px', background: '#E8EBF5', borderRadius: '2px' }}>
+                      <div style={{ height: '100%', width: '68%', background: '#5070E0', borderRadius: '2px' }} />
+                    </div>
+                  </div>
+
+                  {/* Quick actions */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+                    {[['📝', 'New Case', '#EFF6FF'], ['🤖', 'AI Draft', '#ECFDF5']].map(([icon, label, bg]) => (
+                      <div key={label as string} style={{
+                        background: bg as string,
+                        borderRadius: '12px', padding: '12px',
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+                      }}>
+                        <span style={{ fontSize: '18px' }}>{icon as string}</span>
+                        <span style={{ fontSize: '10px', fontWeight: 600, color: '#5070E0' }}>{label as string}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* AIPOT preview */}
+                  <div style={{
+                    background: 'rgba(255,255,255,0.92)',
+                    borderRadius: '16px', padding: '14px',
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 700, color: '#1A1D26' }}>⚡ AIPOT Live</span>
+                      <span style={{ fontSize: '9px', fontWeight: 700, color: '#B41340', background: 'rgba(180,19,64,0.1)', padding: '2px 8px', borderRadius: '10px' }}>● LIVE</span>
+                    </div>
+                    {['🏛️ Landmark Ruling Digital Privacy', '⚖️ Amendment Corporate Insolvency', '⚖️ Tenant Protection Act 2024'].map((text, i) => (
+                      <div key={i} style={{
+                        background: '#F8FAFF', borderRadius: '8px', padding: '8px', marginBottom: '6px',
+                        fontSize: '9px', color: '#5A6070',
+                      }}>{text}</div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   )
