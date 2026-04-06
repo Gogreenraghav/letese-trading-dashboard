@@ -153,13 +153,20 @@ async def get_download_url(
 @router.post("/{doc_id}/translate")
 async def translate_document(
     doc_id: UUID,
+    source_language: str = "hi",
     target_language: str = "en",
     db: AsyncSession = Depends(get_db),
     user: dict = Depends(get_current_user),
 ):
-    """Translate document. Elite/Enterprise plan required."""
+    """
+    Translate document. Elite/Enterprise plan required.
+    1. Extract text from PDF via S3
+    2. Translate using IndicTrans2 (Punjabi/Hindi) or Google Translate
+    3. Calculate accuracy
+    4. Store translated document
+    """
     from app.models.models import Document
-    from app.services.llm_gateway import LLMGateway
+    from app.services.translation_service import TranslationService, LANGUAGE_NAMES
 
     if user["plan"] not in ("elite", "enterprise"):
         raise HTTPException(403, "Translation requires Elite or Enterprise plan")
@@ -168,42 +175,45 @@ async def translate_document(
     if not doc or str(doc.tenant_id) != user["tenant_id"]:
         raise HTTPException(404, "Document not found")
 
-    # Extract text from PDF/DOCX (simplified — full impl uses pdfplumber/python-docx)
-    extracted_text = "[Document text would be extracted here via pdfplumber or mammoth]"
+    # Extract text
+    service = TranslationService()
+    text = await service.extract_text_from_pdf(doc.s3_key)
 
-    language_names = {"en": "English", "hi": "Hindi", "pa": "Punjabi", "ta": "Tamil"}
-    prompt = f"Translate the following legal document to {language_names.get(target_language, 'English')}. Maintain formal legal language:\n\n{extracted_text}"
+    if not text:
+        raise HTTPException(400, "Could not extract text from document. Is it a scanned PDF?")
 
-    result = await LLMGateway.complete(
-        prompt=prompt,
-        system="You are a professional legal document translator. Preserve legal terminology and formatting.",
-        task_type="draft",
-        max_tokens=4000,
-    )
+    # Translate
+    result = await service.translate(text, source_language, target_language)
 
+    # Create translated document record
     translated_doc = Document(
         case_id=doc.case_id,
-        tenant_id=doc.tenant_id,
+        tenant_id=UUID(user["tenant_id"]),
         uploaded_by=UUID(user["sub"]),
-        name=f"[Translated] {doc.name}",
+        name=f"[Translated → {LANGUAGE_NAMES.get(target_language, target_language)}] {doc.name}",
         doc_type="translated",
         file_format=doc.file_format,
         s3_bucket=doc.s3_bucket,
         s3_key=f"dev/translated/{uuid.uuid4()}.txt",
-        file_size_bytes=len(result.text.encode()),
+        file_size_bytes=len(result["translated_text"].encode()),
         language=target_language,
         translation_of=doc_id,
-        accuracy_pct=85.0,  # Would be calculated from IndicTrans2 BLEU score
-        is_filing_ready=False,
+        accuracy_pct=result["accuracy_pct"],
+        is_filing_ready=result["accuracy_pct"] >= 90,
     )
     db.add(translated_doc)
     await db.commit()
     await db.refresh(translated_doc)
 
+    readiness = service.get_filing_readiness(result["accuracy_pct"])
+
     return {
         "translated_doc_id": str(translated_doc.doc_id),
-        "accuracy_pct": 85.0,
-        "status": "REVIEW_REQUIRED",
+        "accuracy_pct": result["accuracy_pct"],
+        "bleu_score": result["bleu_score"],
+        "engine": result["engine"],
+        "filing_readiness": readiness,
+        "translated_preview": result["translated_text"][:200] + "...",
     }
 
 
