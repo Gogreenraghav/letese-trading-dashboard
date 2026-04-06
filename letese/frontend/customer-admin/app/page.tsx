@@ -1,209 +1,311 @@
-"use client";
-import React, { useEffect, useState } from "next";
-import AdminShell from "@/components/AdminShell";
-import { StatCard } from "@/components/UsageChart";
-import { billingApi, analyticsApi } from "@/lib/api";
-import { Scale, Users, FileText, Zap, AlertTriangle } from "lucide-react";
+'use client'
 
-interface DashboardStats {
-  cases_active_count: number;
-  plan: string;
-  storage_gb_used: number;
-  limits: { cases: number; users: number; storage_gb: number; features: string[] };
-  users_total?: number;
-  invoices_pending?: number;
-  ai_cost?: number;
-  whatsapp_sent?: number;
-}
+import { useState } from 'react'
+import { Scale } from 'lucide-react'
 
-const QUICK_ACTIONS = [
-  { label: "Add Team Member", href: "/admin/team", icon: "👥", desc: "Invite advocates or clerks" },
-  { label: "View Billing", href: "/admin/billing", icon: "💳", desc: "Manage subscription" },
-  { label: "Usage Analytics", href: "/admin/analytics", icon: "📊", desc: "AI calls & costs" },
-  { label: "Firm Settings", href: "/admin/settings", icon: "⚙️", desc: "Profile & notifications" },
-];
+const navItems = [
+  { icon: '📊', label: 'Dashboard', active: true },
+  { icon: '⚖️', label: 'Cases' },
+  { icon: '👥', label: 'Team' },
+  { icon: '🤖', label: 'AI & Drafts' },
+  { icon: '💬', label: 'Communications' },
+  { icon: '📊', label: 'Analytics' },
+  { icon: '💳', label: 'Billing' },
+  { icon: '📱', label: 'WhatsApp' },
+  { icon: '📋', label: 'Reports' },
+  { icon: '⚙️', label: 'Settings' },
+]
 
-export default function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const firmName = typeof window !== "undefined" ? localStorage.getItem("firm_name") || "Your Law Firm" : "Your Law Firm";
+const mockCases = [
+  { status: '🔴', case: 'S.C.Jain vs State', court: 'P&H HC', hearing: '30 Jul • 10:30 AM', active: true },
+  { status: '🟡', case: 'Mehta vs Union', court: 'Delhi HC', hearing: '02 Aug • 11:00 AM', active: false },
+  { status: '🟢', case: 'R.Singh vs Steel', court: 'SC', hearing: 'Reserved', active: false },
+  { status: '🔴', case: 'State vs Kumar', court: 'Dist. Court', hearing: '15 Aug • 2:00 PM', active: false },
+]
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const sub = await billingApi.getSubscription();
-        const now = new Date();
-        const currentPlan = sub.plan;
+const mockTeam = [
+  { name: 'Rajesh Sharma', role: 'Admin', initials: 'RS', status: '🟢', active: true },
+  { name: 'Priya Mehta', role: 'Advocate', initials: 'PM', status: '🟢', active: true },
+  { name: 'Amit Kumar', role: 'Paralegal', initials: 'AK', status: '🟡', active: false },
+  { name: 'Sneha R', role: 'Intern', initials: 'SR', status: '⚫', active: false },
+]
 
-        // Fetch analytics for AI cost
-        let aiCost = 0;
-        let whatsappSent = 0;
-        try {
-          const analytics = await analyticsApi.getUsage("30d");
-          aiCost = analytics.ai_calls.cost_inr;
-          whatsappSent = Object.values(analytics.communications)
-            .reduce((sum: number, c: Record<string, number>) => sum + Object.values(c).reduce((a: number, b: number) => a + b, 0), 0);
-        } catch { /* optional */ }
+const mockDrafts = [
+  { title: 'Reply to Section 5 Application', case: 'SC-2024-00412', time: '10 min ago', ai: true },
+  { title: 'Viva Voce Arguments Draft', case: 'WP-2024-1182', time: '1h ago', ai: true },
+  { title: 'Counter Affidavit', case: 'CA-2023-8891', time: '2h ago', ai: false },
+  { title: 'LOC Reply Draft', case: 'CRLP-2024-224', time: '3h ago', ai: true },
+]
 
-        setStats({
-          cases_active_count: sub.cases_active_count,
-          plan: currentPlan,
-          storage_gb_used: sub.storage_gb_used,
-          limits: sub.limits,
-          ai_cost: aiCost,
-          whatsapp_sent: whatsappSent,
-        });
-      } catch (err) {
-        // Show placeholder data in dev
-        setStats({
-          cases_active_count: 47,
-          plan: "professional",
-          storage_gb_used: 3.2,
-          limits: { cases: 100, users: 10, storage_gb: 20, features: ["ai_drafting", "whatsapp"] },
-          ai_cost: 234,
-          whatsapp_sent: 892,
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
-
-  const isOverLimit = stats && stats.cases_active_count > stats.limits.cases;
+export default function CustomerAdmin() {
+  const [activeNav, setActiveNav] = useState('Dashboard')
 
   return (
-    <AdminShell firmName={firmName} plan={stats?.plan || "professional"}>
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Page header */}
-        <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-sm text-white/40 mt-1">
-            Welcome back — here's your firm overview
-          </p>
+    <div style={{ display: 'flex', height: '100vh', background: 'rgb(240,243,250)', fontFamily: "'Inter', sans-serif" }}>
+      {/* ── Sidebar ── */}
+      <aside style={{
+        width: '260px',
+        background: 'rgba(255,255,255,0.92)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderRight: '1px solid rgba(80,112,224,0.08)',
+        boxShadow: '4px 0 24px rgba(80,112,224,0.05)',
+        display: 'flex', flexDirection: 'column',
+        padding: '0 12px',
+      }}>
+        {/* Logo */}
+        <div style={{ padding: '20px 12px 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #5070E0, #3050B0)',
+            padding: '6px 10px', borderRadius: '10px',
+            display: 'flex', alignItems: 'center',
+          }}>
+            <Scale size={18} color="white" strokeWidth={2.5} />
+          </div>
+          <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '18px', fontWeight: 800, color: '#5070E0' }}>
+            LETESE<span style={{ color: '#59FEAE' }}>●</span>
+          </span>
+        </div>
+        <div style={{ padding: '0 12px 12px', fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#8B92A0', borderBottom: '1px solid rgba(80,112,224,0.08)', marginBottom: '12px' }}>
+          Sharma Law Partners
         </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="rounded-xl border border-glass-border bg-glass-bg h-28 animate-pulse" />
+        {/* Nav */}
+        <nav style={{ flex: 1 }}>
+          {navItems.map((item) => (
+            <div
+              key={item.label}
+              onClick={() => setActiveNav(item.label)}
+              style={{
+                padding: '10px 14px',
+                borderRadius: '12px',
+                margin: '2px 0',
+                cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: '10px',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '13px',
+                fontWeight: item.active ? 600 : 500,
+                color: item.active ? '#5070E0' : '#5A6070',
+                background: item.active ? 'rgba(80,112,224,0.1)' : 'transparent',
+                transition: 'all 0.2s',
+              }}
+            >
+              <span style={{ fontSize: '16px' }}>{item.icon}</span>
+              {item.label}
+            </div>
+          ))}
+        </nav>
+
+        {/* User */}
+        <div style={{
+          padding: '16px 12px',
+          borderTop: '1px solid rgba(80,112,224,0.08)',
+          display: 'flex', alignItems: 'center', gap: '10px',
+        }}>
+          <div style={{
+            width: '38px', height: '38px',
+            background: 'linear-gradient(135deg, #5070E0, #3050B0)',
+            borderRadius: '10px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: "'Manrope', sans-serif", fontSize: '13px', fontWeight: 800, color: 'white',
+          }}>RS</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: '13px', fontWeight: 700, color: '#1A1D26' }}>Rajesh Sharma</div>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#8B92A0' }}>Admin</div>
+          </div>
+          <span style={{ fontSize: '14px', color: '#8B92A0' }}>✏️</span>
+        </div>
+      </aside>
+
+      {/* ── Main ── */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {/* Top bar */}
+        <div style={{
+          height: '60px',
+          background: 'linear-gradient(90deg, rgba(176,192,240,0.5) 0%, rgba(80,112,224,0.3) 100%)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          display: 'flex', alignItems: 'center',
+          padding: '0 28px',
+          gap: '16px',
+        }}>
+          <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '20px', fontWeight: 700, color: '#1A1D26' }}>
+            Welcome back, Rajesh 👋
+          </span>
+          <div style={{ flex: 1 }} />
+          <div style={{
+            padding: '6px 14px',
+            background: 'rgba(255,255,255,0.7)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '9999px',
+            display: 'flex', alignItems: 'center', gap: '6px',
+            fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#5A6070',
+          }}>
+            <span>🔔</span>
+            <span style={{ fontWeight: 600, color: '#1A1D26' }}>5</span>
+          </div>
+          <button style={{
+            padding: '8px 20px',
+            background: 'linear-gradient(135deg, #5070E0, #3050B0)',
+            color: 'white', borderRadius: '9999px',
+            fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '13px',
+            border: 'none', cursor: 'pointer',
+            boxShadow: '0 4px 16px rgba(80,112,224,0.3)',
+          }}>+ Quick Add</button>
+        </div>
+
+        {/* Content */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
+          {/* Stats */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
+            {[
+              { label: 'Active Cases', value: '47', icon: '⚖️', color: '#5070E0' },
+              { label: 'Team Members', value: '8', icon: '👥', color: '#5070E0' },
+              { label: 'Hearings This Week', value: '12', icon: '📅', color: '#5070E0' },
+              { label: 'Revenue', value: '₹2.4L', icon: '💰', color: '#59FEAE' },
+            ].map((stat) => (
+              <div key={stat.label} style={{
+                background: 'rgba(255,255,255,0.92)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                borderRadius: '20px',
+                padding: '20px',
+                boxShadow: '0 4px 24px rgba(80,112,224,0.08)',
+                border: '1px solid rgba(255,255,255,0.8)',
+              }}>
+                <div style={{ fontSize: '24px', marginBottom: '10px' }}>{stat.icon}</div>
+                <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: '28px', fontWeight: 800, color: stat.color, letterSpacing: '-0.5px' }}>{stat.value}</div>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: '#8B92A0' }}>{stat.label}</div>
+              </div>
             ))}
           </div>
-        ) : (
-          <>
-            {/* Alert if over case limit */}
-            {isOverLimit && (
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10">
-                <AlertTriangle className="w-5 h-5 text-red-400 shrink-0" />
-                <div>
-                  <div className="text-sm font-medium text-red-300">Case limit exceeded</div>
-                  <div className="text-xs text-red-400/70 mt-0.5">
-                    You've used {stats!.cases_active_count}/{stats!.limits.cases} cases.
-                    Upgrade to Elite for 300 cases.
+
+          {/* Two column */}
+          <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: '20px', marginBottom: '24px' }}>
+            {/* Cases */}
+            <div style={{
+              background: 'rgba(255,255,255,0.92)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              borderRadius: '20px', padding: '24px',
+              boxShadow: '0 4px 24px rgba(80,112,224,0.08)',
+              border: '1px solid rgba(255,255,255,0.8)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '18px', fontWeight: 700, color: '#1A1D26' }}>Active Cases</span>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#5070E0', cursor: 'pointer', fontWeight: 600 }}>View All →</span>
+              </div>
+              {mockCases.map((c) => (
+                <div key={c.case} style={{
+                  background: c.active ? 'rgba(80,112,224,0.06)' : '#F8F9FC',
+                  borderRadius: '14px', padding: '14px',
+                  marginBottom: '10px',
+                  display: 'flex', alignItems: 'center', gap: '12px',
+                  border: c.active ? '1px solid rgba(80,112,224,0.15)' : '1px solid rgba(80,112,224,0.05)',
+                }}>
+                  <span style={{ fontSize: '14px' }}>{c.status}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: '13px', fontWeight: 600, color: '#1A1D26' }}>{c.case}</div>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#8B92A0' }}>{c.court} • {c.hearing}</div>
                   </div>
+                  <span style={{ color: '#8B92A0', fontSize: '16px' }}>›</span>
                 </div>
-                <a
-                  href="/admin/billing"
-                  className="ml-auto px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/40 text-xs text-red-300 hover:bg-red-500/30 transition-colors whitespace-nowrap"
-                >
-                  Upgrade Plan
-                </a>
-              </div>
-            )}
-
-            {/* Stats grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <StatCard
-                label="Active Cases"
-                value={stats?.cases_active_count ?? 0}
-                sub={`of ${stats?.limits.cases ?? "∞"}`}
-                trend={isOverLimit ? "down" : undefined}
-                icon={<FileText className="w-4 h-4 text-neon-cyan" />}
-                accentColor="#00D4FF"
-              />
-              <StatCard
-                label="Storage Used"
-                value={`${stats?.storage_gb_used?.toFixed(1) ?? 0} GB`}
-                sub={`of ${stats?.limits.storage_gb ?? "∞"} GB`}
-                icon={<Scale className="w-4 h-4 text-purple-400" />}
-                accentColor="#8B5CF6"
-              />
-              <StatCard
-                label="AI Cost (30d)"
-                value={`₹${stats?.ai_cost?.toFixed(0) ?? 0}`}
-                icon={<Zap className="w-4 h-4 text-neon-green" />}
-                accentColor="#00FF88"
-              />
-              <StatCard
-                label="WhatsApp Sent (30d)"
-                value={stats?.whatsapp_sent ?? 0}
-                icon={<Users className="w-4 h-4 text-neon-amber" />}
-                accentColor="#F59E0B"
-              />
+              ))}
+              <button style={{
+                width: '100%', padding: '12px',
+                background: 'linear-gradient(135deg, #5070E0, #3050B0)',
+                color: 'white', borderRadius: '9999px',
+                fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: '13px',
+                border: 'none', cursor: 'pointer', marginTop: '8px',
+              }}>+ Add New Case</button>
             </div>
 
-            {/* Plan overview */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Plan badge + features */}
-              <div className="rounded-2xl border border-glass-border bg-glass-bg shadow-glass p-6">
-                <h3 className="text-sm font-semibold text-white/60 uppercase tracking-wider mb-4">Current Plan</h3>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className={[
-                    "px-3 py-1 rounded-full text-xs font-bold uppercase border",
-                    stats?.plan === "enterprise" ? "bg-amber-500/20 border-amber-500/40 text-amber-300" :
-                    stats?.plan === "elite" ? "bg-purple-500/20 border-purple-500/40 text-purple-300" :
-                    stats?.plan === "professional" ? "bg-blue-500/20 border-blue-500/40 text-blue-300" :
-                    "bg-gray-500/20 border-gray-500/40 text-gray-300",
-                  ].join(" ")}>
-                    {stats?.plan || "basic"}
-                  </span>
-                </div>
-                <div className="space-y-2">
-                  {stats?.limits.features.map(f => (
-                    <div key={f} className="flex items-center gap-2 text-xs text-white/60">
-                      <svg className="w-3.5 h-3.5 text-neon-green shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                      {f.replace(/_/g, " ")}
-                    </div>
-                  ))}
-                </div>
-                <a
-                  href="/admin/billing"
-                  className="mt-4 block w-full px-4 py-2.5 rounded-lg bg-brand-gradient text-white text-sm font-medium text-center shadow-neon-cyan hover:opacity-90 transition-opacity"
-                >
-                  Manage Subscription
-                </a>
+            {/* Team */}
+            <div style={{
+              background: 'rgba(255,255,255,0.92)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              borderRadius: '20px', padding: '24px',
+              boxShadow: '0 4px 24px rgba(80,112,224,0.08)',
+              border: '1px solid rgba(255,255,255,0.8)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '18px', fontWeight: 700, color: '#1A1D26' }}>Team Members</span>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#5070E0', cursor: 'pointer', fontWeight: 600 }}>Manage →</span>
               </div>
-
-              {/* Quick actions */}
-              <div className="lg:col-span-2 rounded-2xl border border-glass-border bg-glass-bg shadow-glass p-6">
-                <h3 className="text-sm font-semibold text-white/60 uppercase tracking-wider mb-4">Quick Actions</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {QUICK_ACTIONS.map(action => (
-                    <a
-                      key={action.href}
-                      href={action.href}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all group"
-                    >
-                      <div className="text-2xl">{action.icon}</div>
-                      <div>
-                        <div className="text-sm font-medium text-white group-hover:text-neon-cyan transition-colors">
-                          {action.label}
-                        </div>
-                        <div className="text-xs text-white/30">{action.desc}</div>
-                      </div>
-                      <svg className="ml-auto w-4 h-4 text-white/20 group-hover:text-white/50 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </a>
-                  ))}
+              {mockTeam.map((m) => (
+                <div key={m.name} style={{
+                  display: 'flex', alignItems: 'center', gap: '12px',
+                  padding: '10px 0',
+                  borderBottom: '1px solid rgba(80,112,224,0.06)',
+                }}>
+                  <div style={{
+                    width: '36px', height: '36px',
+                    background: m.active ? 'linear-gradient(135deg, #5070E0, #3050B0)' : '#E8EBF5',
+                    borderRadius: '10px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: "'Manrope', sans-serif", fontSize: '12px', fontWeight: 800,
+                    color: m.active ? 'white' : '#8B92A0',
+                  }}>{m.initials}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: '13px', fontWeight: 600, color: '#1A1D26' }}>{m.name}</div>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#8B92A0' }}>{m.role}</div>
+                  </div>
+                  <span style={{ fontSize: '14px' }}>{m.status}</span>
                 </div>
+              ))}
+              <div style={{ marginTop: '12px', fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#5070E0', fontWeight: 600, cursor: 'pointer' }}>+ Invite Member</div>
+            </div>
+          </div>
+
+          {/* AI Drafts */}
+          <div style={{
+            background: 'rgba(255,255,255,0.92)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            borderRadius: '20px', padding: '24px',
+            boxShadow: '0 4px 24px rgba(80,112,224,0.08)',
+            border: '1px solid rgba(255,255,255,0.8)',
+            marginBottom: '24px',
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '18px', fontWeight: 700, color: '#1A1D26' }}>Recent AI Drafts</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{
+                  padding: '4px 12px', borderRadius: '9999px',
+                  background: 'rgba(89,254,174,0.15)', color: '#59FEAE',
+                  fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 700,
+                }}>🤖 AI ✓</span>
               </div>
             </div>
-          </>
-        )}
+            {mockDrafts.map((d) => (
+              <div key={d.title} style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '12px 0',
+                borderBottom: '1px solid rgba(80,112,224,0.06)',
+              }}>
+                <div style={{
+                  width: '36px', height: '36px',
+                  background: d.ai ? 'rgba(89,254,174,0.15)' : 'rgba(255,181,71,0.15)',
+                  borderRadius: '10px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '16px',
+                }}>🤖</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#1A1D26', fontWeight: 500 }}>{d.title}</div>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#8B92A0' }}>{d.case} • {d.time}</div>
+                </div>
+                <span style={{
+                  padding: '3px 10px', borderRadius: '9999px',
+                  background: d.ai ? 'rgba(89,254,174,0.15)' : 'rgba(255,181,71,0.15)',
+                  color: d.ai ? '#59FEAE' : '#FFB547',
+                  fontFamily: "'Inter', sans-serif", fontSize: '10px', fontWeight: 700,
+                }}>{d.ai ? 'AI ✓' : 'Pending'}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </AdminShell>
-  );
+    </div>
+  )
 }
