@@ -36,6 +36,14 @@ async def readiness_check():
     return {"status": "ready"}
 
 
+# ── Prometheus Metrics ─────────────────────────────────────────────
+@app.get("/metrics")
+async def metrics():
+    """Prometheus-compatible metrics endpoint."""
+    from app.services.metrics_service import get_metrics
+    return await get_metrics()
+
+
 # ── Include Routers ────────────────────────────────────────────────
 from app.api.v1.endpoints import auth, cases, documents, communications, tasks, invoices, admin
 
