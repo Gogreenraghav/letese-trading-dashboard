@@ -1,0 +1,18 @@
+# production/resources.yaml
+# Production resource limits
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+patches:
+  # API: higher CPU/memory for production load
+  - patch: |-
+      spec:
+        template:
+          spec:
+            containers:
+              - name: api
+                resources:
+                  requests: {cpu: "500m", memory: "512Mi"}
+                  limits: {cpu: "2000m", memory: "2Gi"}
+    target:
+      kind: Deployment
+      name: letese-api

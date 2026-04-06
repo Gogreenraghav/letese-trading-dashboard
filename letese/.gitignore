@@ -6,12 +6,17 @@
 
 # Secrets — NEVER commit key files
 backend/secrets/
+infrastructure/secrets/
 *.pem
 *.key
 
 # Node modules
 frontend/landing/node_modules/
 frontend/landing/.next/
+
+# Frontend build outputs
+frontend/super-admin/.next/
+frontend/customer-admin/.next/
 
 # Flutter build artifacts
 frontend/flutter_app/build/

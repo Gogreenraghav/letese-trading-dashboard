@@ -1,0 +1,79 @@
+groups:
+  - name: letese-prod
+    interval: 30s
+    rules:
+      # ── API Alerts ──────────────────────────────────────────
+      - alert: LETESEAPI Down
+        expr: up{job="letese-api"} == 0
+        for: 2m
+        labels: {severity: critical}
+        annotations:
+          summary: "LETESE API is down"
+          description: "API pod has been unreachable for 2 minutes."
+
+      - alert: APIHighLatency
+        expr: histogram_quantile(0.95, rate(letese_api_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "API P95 latency above 1s"
+          description: "Current P95: {{ $value }}s"
+
+      # ── AIPOT Alerts ──────────────────────────────────────────
+      - alert: AIPOTScraperHeartbeatMissing
+        expr: time() - letese_aipot_heartbeat_age_seconds{agent_id="AIPOT-SCRAPER"} > 180
+        for: 3m
+        labels: {severity: critical}
+        annotations:
+          summary: "AIPOT-SCRAPER heartbeat missing"
+          description: "Scraper last heartbeat {{ $value }}s ago. Pod may be stuck."
+
+      - alert: AIPOTPoliceDown
+        expr: up{job="letese-aipot"} == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations:
+          summary: "AIPOT-POLICE is down — monitoring compromised"
+          description: "Police agent has been down for 1 minute."
+
+      # ── Kafka Alerts ───────────────────────────────────────────
+      - alert: KafkaConsumerLagHigh
+        expr: letese_kafka_consumer_lag > 500
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: "Kafka consumer lag above 500 messages"
+          description: "Topic {{ $labels.topic }} has {{ $value }} messages behind."
+
+      # ── Database Alerts ───────────────────────────────────────
+      - alert: PostgreSQLDown
+        expr: up{job="letese-postgres"} == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations:
+          summary: "PostgreSQL is down"
+          description: "Primary database is unreachable."
+
+      - alert: PostgresPoolExhausted
+        expr: letese_postgres_pool_used / letese_postgres_pool_max > 0.9
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "PostgreSQL connection pool > 90% utilized"
+
+      # ── Cost Alerts ───────────────────────────────────────────
+      - alert: LLMHighSpend
+        expr: rate(letese_llm_cost_inr_total[1h]) * 86400 > 10000
+        for: 1h
+        labels: {severity: warning}
+        annotations:
+          summary: "LLM daily spend tracking above ₹10,000"
+          description: "Current projected daily cost: ₹{{ $value }}"
+
+      # ── Cases Alerts ──────────────────────────────────────────
+      - alert: TenantCaseLimitExceeded
+        expr: letese_cases_active_total >= 0
+        for: 0m
+        labels: {severity: info}
+        annotations:
+          summary: "Case count near limit"

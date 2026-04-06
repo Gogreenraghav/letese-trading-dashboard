@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-alert-channels
+  namespace: monitoring
+data:
+  alert-manager.yaml: |
+    route:
+      group_by: ['alertname', 'severity']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 12h
+      receiver: 'slack-letese'
+
+      routes:
+        - match:
+            severity: critical
+          receiver: 'pagerduty-critical'
+          continue: true
+
+    receivers:
+      - name: 'slack-letese'
+        slack_configs:
+          - channel: '#alerts-letese'
+            api_url: ${SLACK_WEBHOOK_URL}
+            title: "LETESE Alert: {{ .GroupLabels.alertname }}"
+            text: |
+              {{ range .Alerts }}
+              **{{ .Annotations.summary }}**
+              {{ .Annotations.description }}
+              Severity: {{ .Labels.severity }}
+              ---
+              {{ end }}
+            severity: "{{ .CommonLabels.severity }}"
+            send_resolved: true
+
+      - name: 'pagerduty-critical'
+        pagerduty_configs:
+          - routing_key: ${PAGERDUTY_ROUTING_KEY}
+            severity: critical
+            class: letese-prod
+            component: LETESE
+            send_resolved: true
+
+      - name: 'email-letese'
+        email_configs:
+          - to: alerts@letese.xyz
+            from: noreply@letese.xyz
+            smarthost: smtp.example.com:587
+            send_resolved: true

@@ -1,0 +1,25 @@
+# production/replicas.yaml
+# Override replica counts for production
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+patches:
+  - patch: |-
+      spec:
+        replicas: 4
+    target:
+      kind: Deployment
+      name: letese-api
+
+  - patch: |-
+      spec:
+        replicas: 3
+    target:
+      kind: Deployment
+      name: aipot-communicator
+
+  - patch: |-
+      spec:
+        replicas: 2
+    target:
+      kind: Deployment
+      name: aipot-police

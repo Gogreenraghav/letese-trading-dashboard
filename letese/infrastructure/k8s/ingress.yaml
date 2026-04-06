@@ -1,0 +1,60 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: letese-ingress
+  namespace: letese
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/websocket-services: "letese-api"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - letese.xyz
+        - www.letese.xyz
+        - app.letese.xyz
+        - api.letese.xyz
+      secretName: letese-tls
+  rules:
+    - host: api.letese.xyz
+      http:
+        paths:
+          - path: /ws/(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: letese-api
+                port:
+                  number: 8000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: letese-api
+                port:
+                  number: 8000
+    - host: app.letese.xyz
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: letese-app
+                port:
+                  number: 3000
+    - host: letese.xyz
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: letese-landing
+                port:
+                  number: 80

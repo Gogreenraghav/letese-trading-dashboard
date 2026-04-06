@@ -1,0 +1,34 @@
+# production/pdb.yaml
+# PodDisruptionBudgets for production — zero disruption tolerance for critical services
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: letese-api-pdb
+  namespace: letese
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: letese-api
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: aipot-police-pdb
+  namespace: letese
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: aipot-police
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: aipot-communicator-pdb
+  namespace: letese
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: aipot-communicator

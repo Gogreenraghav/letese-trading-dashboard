@@ -1,0 +1,16 @@
+# cert-manager Let's Encrypt Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: letese-tls
+  namespace: letese
+spec:
+  secretName: letese-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - letese.xyz
+    - www.letese.xyz
+    - app.letese.xyz
+    - api.letese.xyz
