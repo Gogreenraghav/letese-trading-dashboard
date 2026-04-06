@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#d9dde4",
+                        "on-tertiary-fixed": "#004529",
+                        "surface-tint": "#2b51c7",
+                        "tertiary-fixed-dim": "#3eea9b",
+                        "on-secondary-fixed-variant": "#00567c",
+                        "primary-dim": "#1a44ba",
+                        "primary": "#2b51c7",
+                        "inverse-primary": "#6889ff",
+                        "on-secondary": "#e9f4ff",
+                        "secondary-fixed": "#a4d8ff",
+                        "surface-container-low": "#eef1f6",
+                        "secondary-fixed-dim": "#82ccff",
+                        "primary-fixed": "#819bff",
+                        "on-secondary-fixed": "#003853",
+                        "on-primary": "#f2f1ff",
+                        "secondary-dim": "#00557b",
+                        "on-tertiary-fixed-variant": "#00653e",
+                        "outline-variant": "#aaadb2",
+                        "on-surface-variant": "#585c60",
+                        "error-container": "#f74b6d",
+                        "on-primary-fixed-variant": "#002377",
+                        "surface": "#f4f6fb",
+                        "tertiary": "#006940",
+                        "on-primary-fixed": "#000000",
+                        "on-surface": "#2c2f33",
+                        "secondary": "#00618c",
+                        "outline": "#74777b",
+                        "on-background": "#2c2f33",
+                        "background": "#f4f6fb",
+                        "surface-container-highest": "#d9dde4",
+                        "on-error-container": "#510017",
+                        "on-tertiary-container": "#005a37",
+                        "inverse-surface": "#0b0f12",
+                        "tertiary-dim": "#005c38",
+                        "tertiary-fixed": "#52f9a8",
+                        "surface-container-high": "#dfe3e9",
+                        "tertiary-container": "#52f9a8",
+                        "on-primary-container": "#001b61",
+                        "surface-dim": "#d0d5dc",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#9a9da2",
+                        "surface-container": "#e5e8ee",
+                        "primary-container": "#819bff",
+                        "on-error": "#ffefef",
+                        "primary-fixed-dim": "#6d8cff",
+                        "on-secondary-container": "#004c6f",
+                        "error-dim": "#a70138",
+                        "secondary-container": "#a4d8ff",
+                        "on-tertiary": "#caffdb",
+                        "error": "#b41340",
+                        "surface-bright": "#f4f6fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .sky-gradient {
+            background: linear-gradient(135deg, #819bff 0%, #a4d8ff 50%, #f4f6fb 100%);
+        }
+        .pulse-red {
+            box-shadow: 0 0 0 0 rgba(180, 19, 64, 0.7);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(180, 19, 64, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(180, 19, 64, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(180, 19, 64, 0); }
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-surface antialiased min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl flex justify-between items-center px-6 py-4 max-w-full">
+<div class="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-1">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="font-headline font-bold text-lg tracking-tight">LETESE</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform">notifications</span>
+</div>
+</header>
+<main class="pt-20 pb-32 px-5 sky-gradient min-h-screen relative overflow-hidden">
+<!-- Decorative Clouds Background -->
+<div class="absolute top-10 right-[-10%] w-64 h-32 bg-white/30 rounded-full blur-3xl"></div>
+<div class="absolute top-40 left-[-5%] w-48 h-24 bg-white/20 rounded-full blur-2xl"></div>
+<!-- Header Content -->
+<section class="mb-8 relative">
+<div class="flex justify-between items-start">
+<div>
+<h1 class="font-headline font-extrabold text-3xl text-white tracking-tight leading-tight">⚡ AIPOT Live Feed</h1>
+<p class="text-white/80 text-sm font-medium mt-1">Auto-scraped judgments from Indian courts</p>
+</div>
+<div class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/30">
+<span class="w-2.5 h-2.5 bg-error rounded-full pulse-red"></span>
+<span class="text-error font-bold text-[10px] tracking-widest">LIVE</span>
+</div>
+</div>
+</section>
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-6 gap-3 mb-8">
+<div class="col-span-6 bg-primary-container/40 backdrop-blur-lg rounded-3xl p-5 border border-white/20 shadow-lg">
+<div class="flex flex-col">
+<span class="text-white/70 text-[10px] uppercase font-bold tracking-widest mb-1">Judgments</span>
+<span class="text-white text-3xl font-black font-headline">1,24,680</span>
+</div>
+</div>
+<div class="col-span-3 bg-primary-container/40 backdrop-blur-lg rounded-3xl p-5 border border-white/20 shadow-lg">
+<div class="flex flex-col">
+<span class="text-white/70 text-[10px] uppercase font-bold tracking-widest mb-1">Today</span>
+<span class="text-white text-2xl font-black font-headline">847</span>
+</div>
+</div>
+<div class="col-span-3 bg-primary-container/40 backdrop-blur-lg rounded-3xl p-5 border border-white/20 shadow-lg">
+<div class="flex flex-col">
+<span class="text-white/70 text-[10px] uppercase font-bold tracking-widest mb-1">This Hour</span>
+<span class="text-white text-2xl font-black font-headline">42</span>
+</div>
+</div>
+</section>
+<!-- Filter Chips -->
+<section class="mb-6 flex gap-2 overflow-x-auto no-scrollbar pb-2">
+<div class="bg-primary text-white px-5 py-2.5 rounded-full font-bold text-xs whitespace-nowrap shadow-md">All ✓</div>
+<div class="bg-white/50 backdrop-blur-md text-primary px-5 py-2.5 rounded-full font-bold text-xs border border-white/40 whitespace-nowrap">Supreme Court</div>
+<div class="bg-white/50 backdrop-blur-md text-primary px-5 py-2.5 rounded-full font-bold text-xs border border-white/40 whitespace-nowrap">High Court</div>
+<div class="bg-white/50 backdrop-blur-md text-primary px-5 py-2.5 rounded-full font-bold text-xs border border-white/40 whitespace-nowrap">Tribunal</div>
+</section>
+<!-- Judgment Cards Stack -->
+<section class="space-y-4">
+<!-- Card 1 -->
+<div class="glass-card rounded-[2rem] p-6 border-l-[6px] border-primary shadow-sm hover:shadow-xl transition-shadow relative overflow-hidden group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">account_balance</span>
+<span class="text-[10px] font-black tracking-widest uppercase text-primary/80">SUPREME COURT</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors cursor-pointer" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</div>
+<h3 class="text-lg font-bold font-headline text-on-surface mb-1">CA 2345/2024 — M/s XYZ vs ABC</h3>
+<div class="flex flex-wrap gap-2 mt-4">
+<span class="bg-surface-container-low text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold">Constitutional validity</span>
+<span class="bg-surface-container-low text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold">IPC</span>
+<span class="ml-auto text-[10px] font-bold text-slate-400 self-center">30 Jul</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card rounded-[2rem] p-6 border-l-[6px] border-primary shadow-sm hover:shadow-xl transition-shadow relative overflow-hidden group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">gavel</span>
+<span class="text-[10px] font-black tracking-widest uppercase text-primary/80">P&amp;H HIGH COURT</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors cursor-pointer" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+</div>
+<h3 class="text-lg font-bold font-headline text-on-surface mb-1">CR 4891/2024 — Kishore vs State</h3>
+<div class="flex flex-wrap gap-2 mt-4">
+<span class="bg-surface-container-low text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold">IPC 420, 467</span>
+<span class="ml-auto text-[10px] font-bold text-slate-400 self-center">30 Jul</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card rounded-[2rem] p-6 border-l-[6px] border-primary shadow-sm hover:shadow-xl transition-shadow relative overflow-hidden group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">balance</span>
+<span class="text-[10px] font-black tracking-widest uppercase text-primary/80">DELHI HIGH COURT</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors cursor-pointer" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+</div>
+<h3 class="text-lg font-bold font-headline text-on-surface mb-1">WP 1842/2024 — Ram Singh vs Union</h3>
+<div class="flex flex-wrap gap-2 mt-4">
+<span class="bg-surface-container-low text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold">Article 226</span>
+<span class="ml-auto text-[10px] font-bold text-slate-400 self-center">29 Jul</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-card rounded-[2rem] p-6 border-l-[6px] border-primary shadow-sm hover:shadow-xl transition-shadow relative overflow-hidden group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">account_balance</span>
+<span class="text-[10px] font-black tracking-widest uppercase text-primary/80">SUPREME COURT</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors cursor-pointer" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+</div>
+<h3 class="text-lg font-bold font-headline text-on-surface mb-1">SLP 11880/2024 — State vs Federation</h3>
+<div class="flex flex-wrap gap-2 mt-4">
+<span class="bg-surface-container-low text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold">Land Acquisition</span>
+<span class="ml-auto text-[10px] font-bold text-slate-400 self-center">29 Jul</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-8 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl">
+<div class="m-6 rounded-3xl overflow-hidden flex w-full justify-around items-center bg-transparent no-border">
+<div class="flex items-center justify-center bg-blue-600/10 dark:bg-blue-400/20 text-blue-600 dark:text-blue-400 rounded-2xl p-3 active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</div>
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="briefcase">briefcase_meal</span>
+</div>
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</div>
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</div>
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</div>
+</div>
+</nav>
+</body></html>

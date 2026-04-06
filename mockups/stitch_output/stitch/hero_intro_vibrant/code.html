@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LETESE - Cinematic Advocate Suite</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#d9dde4",
+                        "on-tertiary-fixed": "#004529",
+                        "surface-tint": "#2b51c7",
+                        "tertiary-fixed-dim": "#3eea9b",
+                        "on-secondary-fixed-variant": "#00567c",
+                        "primary-dim": "#1a44ba",
+                        "primary": "#2b51c7",
+                        "inverse-primary": "#6889ff",
+                        "on-secondary": "#e9f4ff",
+                        "secondary-fixed": "#a4d8ff",
+                        "surface-container-low": "#eef1f6",
+                        "secondary-fixed-dim": "#82ccff",
+                        "primary-fixed": "#819bff",
+                        "on-secondary-fixed": "#003853",
+                        "on-primary": "#f2f1ff",
+                        "secondary-dim": "#00557b",
+                        "on-tertiary-fixed-variant": "#00653e",
+                        "outline-variant": "#aaadb2",
+                        "on-surface-variant": "#585c60",
+                        "error-container": "#f74b6d",
+                        "on-primary-fixed-variant": "#002377",
+                        "surface": "#f4f6fb",
+                        "tertiary": "#006940",
+                        "on-primary-fixed": "#000000",
+                        "on-surface": "#2c2f33",
+                        "secondary": "#00618c",
+                        "outline": "#74777b",
+                        "on-background": "#2c2f33",
+                        "background": "#f4f6fb",
+                        "surface-container-highest": "#d9dde4",
+                        "on-error-container": "#510017",
+                        "on-tertiary-container": "#005a37",
+                        "inverse-surface": "#0b0f12",
+                        "tertiary-dim": "#005c38",
+                        "tertiary-fixed": "#52f9a8",
+                        "surface-container-high": "#dfe3e9",
+                        "tertiary-container": "#52f9a8",
+                        "on-primary-container": "#001b61",
+                        "surface-dim": "#d0d5dc",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#9a9da2",
+                        "surface-container": "#e5e8ee",
+                        "primary-container": "#819bff",
+                        "on-error": "#ffefef",
+                        "primary-fixed-dim": "#6d8cff",
+                        "on-secondary-container": "#004c6f",
+                        "error-dim": "#a70138",
+                        "secondary-container": "#a4d8ff",
+                        "on-tertiary": "#caffdb",
+                        "error": "#b41340",
+                        "surface-bright": "#f4f6fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .phone-shadow {
+            box-shadow: 0 50px 100px -20px rgba(43, 81, 199, 0.25), 0 30px 60px -30px rgba(0, 0, 0, 0.3);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .particle-bg {
+            background: radial-gradient(circle at 50% 50%, #0b0f12 0%, #1a44ba 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-inverse-surface font-body overflow-hidden">
+<!-- Global Layout: Cinematic Floating Scene -->
+<main class="min-h-screen w-full flex items-center justify-center relative particle-bg p-4 md:p-0">
+<!-- Decorative Ambient Light Particles -->
+<div class="absolute inset-0 overflow-hidden pointer-events-none">
+<div class="absolute top-1/4 left-1/4 w-2 h-2 bg-primary rounded-full blur-sm opacity-60"></div>
+<div class="absolute bottom-1/3 right-1/4 w-3 h-3 bg-secondary-fixed rounded-full blur-md opacity-40"></div>
+<div class="absolute top-1/2 right-1/3 w-1.5 h-1.5 bg-tertiary-fixed rounded-full blur-sm opacity-50"></div>
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(11,15,18,0.8)_100%)]"></div>
+</div>
+<!-- Phone Container -->
+<div class="relative z-10 w-full max-w-[400px] aspect-[9/19] phone-shadow rounded-[3rem] p-3 bg-slate-900 border-[8px] border-slate-800 flex flex-col overflow-hidden transform rotate-[-2deg]">
+<!-- Phone Notch/Dynamic Island Area -->
+<div class="absolute top-6 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-50"></div>
+<!-- THE APP CANVAS -->
+<div class="relative w-full h-full bg-white rounded-[2.2rem] overflow-hidden flex flex-col">
+<!-- Background Image: Supreme Court of India -->
+<div class="absolute inset-0 z-0">
+<img alt="Supreme Court of India" class="w-full h-full object-cover" data-alt="stately white marble Supreme Court of India with a golden dome under a vibrant clear blue sky, bright cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkSywsrtuJjsNMJmYHv8LRDvIQCPVzz68B9adwxgoYDQ_MM6sn5BMlxvEQlYp1GCVyj7IROEmgS5jUlEAJwkN6hEdqeZqRofIlNw-VJ_mvgknMfYNV8r_IFEn6d65sd1hnmVwGp-eRQoADHCbdpD1GGztVWePW5NWY9_X6ms5Bc5UzcOzxz7SOI3bDNZn0HDEhisCEmh2pGsd2dDlydQAO49gcAnK0ode9E1Ws4uLL75L2ucEQrggWrwE_Wyqu_ukdec3Qg4j7lWg"/>
+<!-- Sky blue gradient overlay -->
+<div class="absolute inset-0 bg-gradient-to-b from-primary/30 via-primary/10 to-surface-bright"></div>
+</div>
+<!-- Top App Bar (Shared Component Strategy) -->
+<header class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl flex justify-between items-center px-6 py-4 max-w-full no-border shadow-none">
+<div class="flex items-center gap-1 text-2xl font-black text-slate-900">
+<span class="material-symbols-outlined text-blue-600" data-icon="gavel">gavel</span>
+<span class="font-headline tracking-tight text-lg font-bold text-blue-600">LETESE</span>
+</div>
+<span class="material-symbols-outlined text-slate-500" data-icon="notifications">notifications</span>
+</header>
+<!-- Scrollable Content -->
+<div class="relative z-10 flex-1 overflow-y-auto pt-24 pb-32 px-6">
+<!-- Branding & Identity -->
+<div class="flex flex-col items-center mb-10">
+<h1 class="font-headline text-5xl font-black text-primary tracking-tighter mb-1 relative">
+                            LETESE
+                            <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3 h-3 bg-tertiary-fixed rounded-full shadow-[0_0_15px_#52f9a8]"></div>
+</h1>
+<p class="text-on-surface-variant font-bold uppercase tracking-[0.2em] text-[10px] mt-2">Advocate Suite</p>
+</div>
+<!-- Professional Profile Section -->
+<div class="glass-card p-4 rounded-3xl mb-6 border border-white/40 shadow-sm flex items-center gap-4">
+<div class="relative">
+<img alt="Advocate Profile" class="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-md" data-alt="professional portrait of an Indian male advocate in a formal white coat and black tie, clean office background, confident expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD34xK-6KQ1tQHSugguDoRGmR_auniNJCbl_4kp7lPRXXQ0RNmyaohhm_kXCchXgcLS6i9a_K4LL-bQ5JKs23Gfe_p3PZsCx6K5a1-qv1GE4R7vv4fVHh_rv8_Fbt5ttbOG7aL0x8Q4hTCKEQHCW2zTh21BYu1spx7PV_hAZ7SI7yUN94dsx82AUyy9zbfuCda8oIe9IXJss8E1VQwF8e0-mPnusgwy52FtOpnJWDrh_gWsb0P3HWnSRdl3Kq4HIL2Kav5HSM4jtzI"/>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-tertiary-fixed rounded-full border-2 border-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px] text-on-tertiary-fixed font-bold">check</span>
+</div>
+</div>
+<div>
+<h2 class="font-headline font-bold text-on-surface text-lg">Adv. Aryan Sharma</h2>
+<p class="text-on-surface-variant text-xs font-medium">Senior Counsel • SC of India</p>
+<div class="flex gap-1.5 mt-2">
+<div class="w-2.5 h-2.5 rounded-full bg-error animate-pulse"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed"></div>
+</div>
+</div>
+</div>
+<!-- Bento Grid Content -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Case Card (Double Span) -->
+<div class="col-span-2 glass-card p-5 rounded-[2rem] border border-white/50 shadow-lg">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Next Hearing</span>
+<h3 class="font-headline font-extrabold text-on-surface text-xl mt-2 leading-tight">State vs. Mehta &amp; Ors</h3>
+</div>
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="balance">balance</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant mb-4">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="text-xs font-bold">Tomorrow, 10:30 AM</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="text-xs font-bold">Courtroom 4</span>
+</div>
+<button class="w-full py-3 rounded-2xl bg-gradient-to-r from-primary to-primary-dim text-white font-bold text-sm shadow-xl shadow-primary/20 active:scale-95 transition-transform">
+                                Brief Case Details
+                            </button>
+</div>
+<!-- AIPOT Live Feed -->
+<div class="col-span-2 bg-slate-900 rounded-[2rem] p-5 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<span class="flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary-fixed opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary-fixed"></span>
+</span>
+</div>
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-tertiary-fixed" data-icon="psychology">psychology</span>
+<p class="text-white font-headline font-bold text-sm tracking-wide">AIPOT LIVE</p>
+</div>
+<p class="text-slate-300 text-xs leading-relaxed italic">"Precedent found in AIR 2023 SC 451. Bench might query Section 144 application timeline..."</p>
+<div class="mt-4 flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-slate-900 bg-primary-fixed"></div>
+<div class="w-6 h-6 rounded-full border-2 border-slate-900 bg-secondary-fixed"></div>
+<div class="w-6 h-6 rounded-full border-2 border-slate-900 bg-tertiary-fixed"></div>
+<div class="flex items-center justify-center pl-3">
+<span class="text-[10px] text-slate-500 font-bold">Analyzing Live...</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar (Shared Component Strategy) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-8 bg-white/70 backdrop-blur-2xl no-border shadow-[0_-4px_24px_0_rgba(43,81,199,0.1)]">
+<div class="m-6 rounded-3xl overflow-hidden flex w-full justify-around bg-transparent">
+<!-- Active Item: Home (Closest semantic match for the landing/dashboard) -->
+<a class="flex items-center justify-center bg-blue-600/10 text-blue-600 rounded-2xl p-3 active:scale-90 duration-200 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+</a>
+<a class="flex items-center justify-center text-slate-400 p-3 hover:bg-blue-50 transition-colors active:scale-90 duration-200 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="briefcase">briefcase_meal</span>
+</a>
+<a class="flex items-center justify-center text-slate-400 p-3 hover:bg-blue-50 transition-colors active:scale-90 duration-200 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</a>
+<a class="flex items-center justify-center text-slate-400 p-3 hover:bg-blue-50 transition-colors active:scale-90 duration-200 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</a>
+<a class="flex items-center justify-center text-slate-400 p-3 hover:bg-blue-50 transition-colors active:scale-90 duration-200 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</a>
+</div>
+</nav>
+</div>
+</div>
+<!-- Floating Action Button (FAB Contextual) -->
+<div class="fixed bottom-32 right-8 md:right-1/4 z-50">
+<button class="bg-primary hover:bg-primary-dim text-white w-14 h-14 rounded-2xl shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-90">
+<span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
+</button>
+</div>
+</main>
+</body></html>

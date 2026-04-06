@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#819bff",
+                    "surface-container-low": "#f2f3f9",
+                    "surface-container-high": "#e6e8ed",
+                    "inverse-on-surface": "#eff1f6",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f8f9fe",
+                    "primary-container": "#2b51c7",
+                    "surface-tint": "#2f54ca",
+                    "on-tertiary-fixed": "#002111",
+                    "background": "#f8f9fe",
+                    "on-primary-fixed-variant": "#053ab2",
+                    "surface-container-highest": "#e1e2e7",
+                    "outline": "#747685",
+                    "secondary-fixed-dim": "#b7c4ff",
+                    "on-primary-fixed": "#001551",
+                    "on-primary-container": "#c9d2ff",
+                    "on-surface-variant": "#444654",
+                    "secondary": "#3c57b7",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#005231",
+                    "surface-dim": "#d8dadf",
+                    "inverse-surface": "#2e3135",
+                    "on-background": "#191c20",
+                    "primary": "#0037ad",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#052d8e",
+                    "on-tertiary-container": "#45efa0",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#203e9e",
+                    "surface-container": "#eceef3",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#c4c5d6",
+                    "secondary-fixed": "#dce1ff",
+                    "on-error-container": "#93000a",
+                    "on-surface": "#191c20",
+                    "tertiary-fixed-dim": "#30e194",
+                    "inverse-primary": "#b7c4ff",
+                    "tertiary": "#004e2f",
+                    "on-secondary-fixed": "#001551",
+                    "surface-variant": "#e1e2e7",
+                    "primary-fixed-dim": "#b7c4ff",
+                    "surface": "#f8f9fe",
+                    "primary-fixed": "#dce1ff",
+                    "tertiary-fixed": "#59feae",
+                    "tertiary-container": "#006941"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-sky-gradient {
+            background: linear-gradient(180deg, #819bff 0%, #2b51c7 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-sky-gradient min-h-screen font-body text-on-surface overflow-x-hidden">
+<!-- TopAppBar (Suppressed for focused login journey per Shell Visibility Rule, but requested by prompt specifically) -->
+<header class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-2xl flex justify-between items-center px-6 py-4 shadow-[0_8px_32px_rgba(43,81,199,0.05)]">
+<div class="flex items-center gap-3">
+<img alt="LETESE logo" class="w-8 h-8 rounded-full" data-alt="minimalist professional logo for a legal tech company with geometric shapes in corporate blue and a hint of green" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAP41uh-wqz-AeBEVo3ZMqBu5Ox5_nL17yJWyrKUObG7fZgy_XwWP3osx4uh_E33UYn3ipfGCwnwpCZljjakIRgLywYLzuknHMNJM_o7rRWQMhojFlkv7lwG-tHslAPsWTPWzUopGEE_8EQ7DgFIrDq39jBdRw_GFAf2VJ304c1XjceDvljQbXKTopiq7GIJ8AGjYWAZYxbGHby803QfviR_nvL_LQxwH6Q1KG239HKUeByO8OvVaPEO5rk7SxznC0DW_ODBKn4zQwW"/>
+<span class="font-headline font-extrabold tracking-tight text-2xl text-blue-700 tracking-tighter">LETESE</span>
+</div>
+<button class="text-blue-700 hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<main class="flex flex-col items-center justify-center min-h-screen px-8 pt-24 pb-32">
+<!-- Hero Branding -->
+<div class="flex flex-col items-center mb-12 text-center">
+<div class="mb-6 shadow-2xl rounded-full p-1 bg-white/10 backdrop-blur-md">
+<img alt="LETESE Large Logo" class="w-[200px] h-auto" data-alt="High-resolution professional branding logo for LETESE Advocate Suite, clean lines, modern legal tech aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAgQoukJX5idi55fFc8hIFd_1ux423xikzLb4cnbJ2X7WkGmaAT7NWisLLaYKKHkJjrmRfQe-Rvrbjagri4JB6iXrUFnLEDf6VigR1v-Wv0VwAxBCn7zw3lfb7bU3NmC4SqSGZtQD31IylTv2w5em_Qm0P3TAoM7GJB_Ip25-D9xRIVE8KQY56urKd2NXEOPbp9JmlUbrgcB_N2cRWrOyv4QSfTbHdxvqR1vFS5VXQcncTyWaQ_00Tk_ATdQyMNNleDJziVGwLcXk9"/>
+</div>
+<h1 class="font-headline font-bold text-3xl text-white mb-2">Advocate Suite</h1>
+<p class="text-white/80 font-medium text-lg">वकीलों के लिए AI</p>
+</div>
+<!-- Login Form Container -->
+<div class="w-full max-w-sm space-y-6">
+<div class="space-y-4">
+<!-- Email Input -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-primary-container z-10" data-icon="mail">mail</span>
+<input class="w-full bg-white border-none rounded-full py-4 pl-14 pr-6 text-on-surface placeholder:text-outline focus:ring-4 focus:ring-white/20 transition-all shadow-lg font-medium text-sm" placeholder="advocate@letese.com" type="email"/>
+</div>
+<!-- Password Input -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-primary-container z-10" data-icon="lock">lock</span>
+<input class="w-full bg-white border-none rounded-full py-4 pl-14 pr-12 text-on-surface placeholder:text-outline focus:ring-4 focus:ring-white/20 transition-all shadow-lg font-medium text-sm" placeholder="••••••••" type="password"/>
+<span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-outline cursor-pointer" data-icon="visibility">visibility</span>
+</div>
+</div>
+<!-- Login Button -->
+<button class="w-full bg-primary-container text-white font-headline font-bold text-base py-4 rounded-full shadow-xl hover:shadow-2xl transition-all active:scale-95 duration-200">
+                LOGIN
+            </button>
+<!-- Divider -->
+<div class="flex items-center gap-4 py-2">
+<div class="h-[1px] flex-1 bg-white/30"></div>
+<span class="text-white/70 text-xs font-medium uppercase tracking-wider">or continue with</span>
+<div class="h-[1px] flex-1 bg-white/30"></div>
+</div>
+<!-- Google Login -->
+<button class="w-full bg-white/20 backdrop-blur-xl border border-white/30 text-white font-medium py-4 rounded-full flex items-center justify-center gap-3 shadow-lg hover:bg-white/30 transition-all active:scale-95">
+<svg class="w-5 h-5" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="currentColor"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="currentColor"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="currentColor"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="currentColor"></path>
+</svg>
+<span class="text-sm">Continue with Google</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar (Suppressed for focused login journey per Shell Visibility Rule, but requested by prompt specifically) -->
+<!-- Determined active state: None perfectly matches login, but 'person' is closest for identity/account -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white/80 backdrop-blur-2xl rounded-t-[32px] z-50 border-t border-white/20 shadow-[0_-10px_40px_rgba(43,81,199,0.1)] md:hidden">
+<a class="text-slate-400 p-3 hover:text-blue-600 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</a>
+<a class="text-slate-400 p-3 hover:text-blue-600 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+</a>
+<a class="text-slate-400 p-3 hover:text-blue-600 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</a>
+<a class="text-slate-400 p-3 hover:text-blue-600 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</a>
+<a class="text-blue-700 scale-110 bg-blue-50 rounded-full p-3 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+</a>
+</nav>
+</body></html>
