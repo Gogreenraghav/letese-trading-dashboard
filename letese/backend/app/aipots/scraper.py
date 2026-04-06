@@ -7,6 +7,7 @@ Supports: PHAHC, DHC, SC, NCDRC, CHD_DC, CONSUMER_PH, TIS_HAZ, SAKET
 import asyncio
 import hashlib
 import random
+from datetime import datetime
 from app.aipots.base import BaseAIPOT
 
 COURT_CONFIGS = {
@@ -213,10 +214,109 @@ class AIPOTScraper(BaseAIPOT):
             return result
 
     async def _fill_case_search(self, page, case_number: str, config: dict):
-        """Fill court-specific search form. Override per court."""
-        # Generic implementation — court-specific selectors would go here
-        # For PHAHC, DHC, SC — different form fields
-        pass
+        """Fill court-specific search form. Routes to court-specific handlers."""
+        court_code = config.get("name", "")
+        if "Punjab" in court_code or "PHAHC" in str(config):
+            await self._fill_case_search_phpc(page, case_number)
+        elif "Delhi" in court_code or "DHC" in str(config):
+            await self._fill_case_search_dhc(page, case_number)
+        elif "Supreme" in court_code or "SC" in str(config):
+            await self._fill_case_search_sc(page, case_number)
+
+    async def _fill_case_search_phpc(self, page, case_number: str) -> None:
+        """
+        Full implementation for P&H HC case search.
+        URL: https://hcpunjab.gov.in/case-status
+        Process:
+        1. Go to case status page
+        2. Select case type (Civil/Criminal)
+        3. Enter case number
+        4. Enter year
+        5. Click search
+        """
+        try:
+            await page.goto("https://hcpunjab.gov.in/case-status", timeout=30000)
+            await page.wait_for_load_state("networkidle")
+            try:
+                case_type_select = page.locator(
+                    "select[id*='caseType'], select[id*='case_type']").first
+                await case_type_select.select_option("1")  # Civil
+            except Exception:
+                pass
+            case_no_input = page.locator(
+                "input[id*='caseNo'], input[id*='case_no']").first
+            await case_no_input.fill(case_number.replace("-", ""))
+            year = str(datetime.now().year)
+            year_input = page.locator("input[id*='year']").first
+            await year_input.fill(year)
+            search_btn = page.locator(
+                "input[type='submit'][value*='Search'], "
+                "button:has-text('Search')").first
+            await search_btn.click()
+            await page.wait_for_load_state("networkidle", timeout=15000)
+        except Exception as e:
+            logger.warning(f"PHAHC search form fill failed: {e}")
+
+    async def _fill_case_search_dhc(self, page, case_number: str) -> None:
+        """Delhi HC: https://delhihighcourt.nic.in/case_status_new.asp"""
+        try:
+            await page.goto(
+                "https://delhihighcourt.nic.in/case_status_new.asp",
+                timeout=30000)
+            case_type = page.locator(
+                "select[name*='ctype'], select[name*='caseType']").first
+            await case_type.select_option("1")
+            case_no = page.locator(
+                "input[name*='cno'], input[name*='caseNo']").first
+            await case_no.fill(case_number)
+            year_select = page.locator(
+                "select[name*='cyear'], select[name*='year']").first
+            await year_select.select_option(str(datetime.now().year))
+            search_btn = page.locator("input[type='submit']").first
+            await search_btn.click()
+            await page.wait_for_timeout(5000)
+        except Exception as e:
+            logger.warning(f"DHC search form fill failed: {e}")
+
+    async def _fill_case_search_sc(self, page, case_number: str) -> None:
+        """SC: https://main.sci.gov.in/case-status"""
+        try:
+            await page.goto("https://main.sci.gov.in/case-status", timeout=30000)
+            await page.wait_for_load_state("networkidle")
+            cn_input = page.locator(
+                "input[id*='caseNumber'], input[id*='case_no']").first
+            await cn_input.fill(case_number)
+            search_btn = page.locator(
+                "button:has-text('Search'), input[value*='Search']").first
+            await search_btn.click()
+            await page.wait_for_timeout(5000)
+        except Exception as e:
+            logger.warning(f"SC search failed: {e}")
+
+    async def _extract_case_status_phpc(self, page) -> dict:
+        """Extract case details from P&H HC result page."""
+        result = {}
+        try:
+            hearing_el = page.locator(
+                "td:has-text('Next Date'), td:has-text('Date of Hearing')").first
+            if hearing_el:
+                parent_row = hearing_el.locator("..")
+                date_text = await parent_row.locator("td").nth(1).inner_text()
+                result["next_hearing"] = date_text.strip()
+            status_el = page.locator("td:has-text('Status')").first
+            if status_el:
+                result["status"] = (
+                    await status_el.locator(".. td").nth(1).inner_text()
+                ).strip()
+            order_el = page.locator(
+                "td:has-text('Order'), td:has-text('Proceedings')").first
+            if order_el:
+                result["last_order"] = (
+                    await order_el.locator(".. td").nth(1).inner_text()
+                ).strip()
+        except Exception as e:
+            logger.warning(f"PHAHC extraction failed: {e}")
+        return result
 
 
 # Entry point for running as standalone service

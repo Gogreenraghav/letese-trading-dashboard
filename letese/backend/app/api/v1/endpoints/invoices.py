@@ -85,7 +85,38 @@ async def create_invoice(
     await db.commit()
     await db.refresh(invoice)
 
-    # TODO: Generate PDF with WeasyPrint, upload to S3
+    # Generate PDF and upload to S3
+    from app.services.invoice_pdf import InvoicePDFService
+
+    pdf_service = InvoicePDFService()
+    s3_key = f"letese-tenant-docs/{user['tenant_id']}/invoices/{invoice.invoice_id}.pdf"
+
+    line_items = [
+        {"description": item.description, "amount_inr": item.amount_inr}
+        for item in body.line_items
+    ]
+
+    pdf_url = await pdf_service.generate_and_upload(
+        {
+            "invoice_number": invoice.invoice_number,
+            "issue_date": str(invoice.issue_date),
+            "due_date": str(invoice.due_date),
+            "client_name": invoice.client_name,
+            "client_gstin": invoice.client_gstin or "",
+            "line_items": line_items,
+            "subtotal_inr": float(invoice.subtotal_inr),
+            "gst_pct": float(invoice.gst_pct),
+            "gst_inr": float(invoice.gst_inr),
+            "total_inr": float(invoice.total_inr),
+            "paid_inr": float(invoice.paid_inr or 0),
+            "payment_link": invoice.payment_link or "#",
+        },
+        s3_key,
+    )
+
+    invoice.s3_pdf_key = s3_key
+    await db.commit()
+
     # TODO: Create Razorpay payment link
 
     return {
@@ -97,6 +128,7 @@ async def create_invoice(
         "due_date": str(invoice.due_date),
         "status": invoice.status,
         "payment_link": invoice.payment_link,
+        "pdf_url": pdf_url,
     }
 
 
@@ -175,3 +207,33 @@ async def send_invoice(
     await db.commit()
 
     return {"message": "Invoice dispatch queued", "invoice_id": str(invoice_id)}
+
+
+@router.get("/{invoice_id}/pdf")
+async def get_invoice_pdf(
+    invoice_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    user: dict = Depends(get_user),
+):
+    """Return a presigned S3 URL (or local path) to download the invoice PDF."""
+    from app.models.models import Invoice
+    from app.services.invoice_pdf import InvoicePDFService
+
+    invoice = await db.get(Invoice, invoice_id)
+    if not invoice or str(invoice.tenant_id) != user["tenant_id"]:
+        raise HTTPException(404, "Invoice not found")
+
+    s3_key = invoice.s3_pdf_key
+    if not s3_key:
+        raise HTTPException(404, "PDF not yet generated for this invoice")
+
+    pdf_service = InvoicePDFService()
+
+    # Local dev fallback
+    if s3_key.startswith("/tmp/"):
+        return {"download_url": s3_key, "local": True}
+
+    # Return presigned S3 URL (valid 1 hour)
+    presigned_url = pdf_service.generate_presigned_url(s3_key, expires_in=3600)
+    return {"download_url": presigned_url, "local": False}
+

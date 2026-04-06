@@ -262,3 +262,51 @@ async def get_checklist(
             ]
         }
     return {"court_code": court_code, "petition_type": petition_type, "rules": checklist.rules}
+
+
+@router.post("/analyze-judgment")
+async def analyze_judgment(
+    case_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    user: dict = Depends(get_current_user),
+):
+    """
+    Post-Judgment Remedy Analysis — Enterprise plan only.
+    Analyzes closed case judgment, identifies available remedies.
+    """
+    if user.get("plan") != "enterprise":
+        raise HTTPException(
+            status_code=403,
+            detail="Post-judgment analysis requires Enterprise plan",
+        )
+
+    from app.models.models import Case, Document
+    from app.services.judgment_analysis import JudgmentAnalysisService
+
+    case = await db.get(Case, case_id)
+    if not case or str(case.tenant_id) != user["tenant_id"]:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    # Get the latest order/judgment document
+    result = await db.execute(
+        select(Document).where(
+            Document.case_id == case_id,
+            Document.doc_type.in_(["order", "judgment"]),
+        ).order_by(Document.created_at.desc())
+    )
+    doc = result.scalar_one_or_none()
+
+    if not doc:
+        raise HTTPException(
+            status_code=400,
+            detail="No judgment/order document found in case. Upload judgment PDF first.",
+        )
+
+    service = JudgmentAnalysisService()
+    analysis = await service.analyze_judgment(
+        judgment_text=doc.s3_key,  # Would fetch + extract text from S3; placeholder here
+        case_id=str(case_id),
+        tenant_id=user["tenant_id"],
+    )
+
+    return analysis
