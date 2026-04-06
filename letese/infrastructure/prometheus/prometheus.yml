@@ -1,0 +1,136 @@
+# LETESE● Prometheus Configuration
+# Scrape targets: API, AIPOT agents, Redis, PostgreSQL, Kafka
+# This file should be mounted at /etc/prometheus/prometheus.yml inside the container.
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'letese-prod'
+    env: 'production'
+
+# ── Alerting ──────────────────────────────────────────────────────
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# ── Rule files ────────────────────────────────────────────────────
+rule_files:
+  - "/etc/prometheus/rules/*.yml"
+
+# ── Scrape Configs ───────────────────────────────────────────────
+scrape_configs:
+  # ── API Server ──────────────────────────────────────────────────
+  - job_name: 'letese-api'
+    kubernetes_namespace: letese
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+            - letese
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: 'true'
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels:
+          - __meta_kubernetes_pod_ip
+          - __meta_kubernetes_pod_annotation_prometheus_io_port
+        action: replace
+        regex: (.+);(.+)
+        replacement: ${1}:${2}
+        target_label: __address__
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        action: replace
+        target_label: service
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  # ── AIPOT Agents (scraper, police, communicator, compliance) ────
+  - job_name: 'letese-aipot'
+    kubernetes_namespace: letese
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+            - letese
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_tier]
+        action: keep
+        regex: 'aipot'
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: 'true'
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels:
+          - __meta_kubernetes_pod_ip
+          - __meta_kubernetes_pod_annotation_prometheus_io_port
+        action: replace
+        regex: (.+);(.+)
+        replacement: ${1}:${2}
+        target_label: __address__
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        action: replace
+        target_label: aipot_name
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # ── Redis Exporter ──────────────────────────────────────────────
+  - job_name: 'letese-redis'
+    static_configs:
+      - targets:
+          - 'redis-exporter:9121'
+        labels:
+          service: redis
+          cluster: letese-prod
+    scrape_interval: 30s
+    scrape_timeout: 5s
+
+  # ── PostgreSQL Exporter (pg_exporter) ───────────────────────────
+  - job_name: 'letese-postgres'
+    static_configs:
+      - targets:
+          - 'postgres-exporter:9187'
+        labels:
+          service: postgres
+          cluster: letese-prod
+    scrape_interval: 30s
+    scrape_timeout: 5s
+
+  # ── Kafka Exporter ───────────────────────────────────────────────
+  - job_name: 'letese-kafka'
+    static_configs:
+      - targets:
+          - 'kafka-exporter:9308'
+        labels:
+          service: kafka
+          cluster: letese-prod
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # ── Node Exporter (host-level metrics) ──────────────────────────
+  - job_name: 'letese-nodes'
+    kubernetes_sd_configs:
+      - role: node
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: '(.*):10250'
+        replacement: '${1}:9100'
+        target_label: __address__
+    scrape_interval: 30s
+
+  # ── Prometheus self-monitoring ───────────────────────────────────
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 15s

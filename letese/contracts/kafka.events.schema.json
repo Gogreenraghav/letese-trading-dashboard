@@ -95,6 +95,29 @@
         "triggered_by": { "type": "string" },
         "audit_type": { "type": "string" }
       }
+    },
+    "PoliceError": {
+      "title": "letese.police.errors",
+      "type": "object",
+      "required": ["agent_id", "error", "payload", "timestamp"],
+      "properties": {
+        "agent_id": { "type": "string", "enum": ["AIPOT-SCRAPER", "AIPOT-COMPLIANCE", "AIPOT-COMMUNICATOR", "AIPOT-POLICE"] },
+        "error": { "type": "string" },
+        "payload": { "type": "object" },
+        "timestamp": { "type": "number" }
+      }
+    },
+    "PoliceMetric": {
+      "title": "letese.police.metrics",
+      "type": "object",
+      "required": ["agent_id", "outcome", "duration_ms", "timestamp"],
+      "properties": {
+        "agent_id": { "type": "string", "enum": ["AIPOT-SCRAPER", "AIPOT-COMPLIANCE", "AIPOT-COMMUNICATOR", "AIPOT-POLICE"] },
+        "outcome": { "type": "string", "enum": ["SUCCESS", "FAILED", "DLQ"] },
+        "duration_ms": { "type": "integer", "minimum": 0 },
+        "tenant_id": { "type": ["string", "null"] },
+        "timestamp": { "type": "number" }
+      }
     }
   }
 }

@@ -5,6 +5,8 @@ import json
 import logging
 from typing import Optional
 
+import httpx
+
 logger = logging.getLogger(__name__)
 
 _kafka_producer = None
@@ -74,3 +76,69 @@ async def publish_build_status(payload: dict) -> bool:
     except Exception as e:
         logger.warning(f"Failed to publish build status: {e}")
     return False
+
+
+async def publish_to_topic(topic: str, payload: dict) -> bool:
+    """
+    Generic publish — sends a dict payload to any Kafka topic.
+
+    Args:
+        topic:   Full topic name (e.g. "letese.diary.updates")
+        payload: JSON-serialisable dict
+
+    Returns:
+        True if published, False on failure / no producer.
+    """
+    try:
+        producer = await get_kafka_producer()
+        if producer is None:
+            logger.warning(f"[publish_to_topic] No producer for {topic}")
+            return False
+        await producer.send(topic, payload)
+        logger.debug(f"[publish_to_topic] -> {topic}: {payload.get('event_type', '?')}")
+        return True
+    except Exception as e:
+        logger.warning(f"[publish_to_topic] Failed to publish to {topic}: {e}")
+        return False
+
+
+async def check_kafka_health() -> bool:
+    """
+    Lightweight Kafka health check — attempts to fetch cluster metadata.
+
+    Returns:
+        True  → broker reachable and responsive
+        False → broker unreachable or error
+    """
+    try:
+        from app.core.config import settings
+        async with httpx.AsyncClient(timeout=5) as client:
+            # Kafka's REST proxy or kraft mode may expose /v1/metadata
+            # Fallback: try a raw socket ping via kafka-python AdminClient
+            from kafka.admin import KafkaAdminClient
+            admin = KafkaAdminClient(
+                bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
+                request_timeout_ms=3000,
+            )
+            admin.close()
+            return True
+    except ImportError:
+        pass
+    except Exception as e:
+        logger.debug(f"[kafka_health] Check failed: {e}")
+        return False
+
+    # Fallback: attempt to connect with aiokafka admin client
+    try:
+        from aiokafka import AIOKafkaAdminClient
+        from app.core.config import settings
+        admin = AIOKafkaAdminClient(
+            bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
+            request_timeout_ms=3000,
+        )
+        await admin.start()
+        await admin.close()
+        return True
+    except Exception as e:
+        logger.debug(f"[kafka_health] aiokafka check failed: {e}")
+        return False

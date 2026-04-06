@@ -1,0 +1,1241 @@
+openapi: 3.1.0
+info:
+  title: LETESE● Legal SaaS API
+  description: |
+    Legal Practice Management SaaS for Indian law firms.
+    Target courts: Punjab & Haryana High Court, Delhi HC, Supreme Court, NCDRC, district courts.
+    **Authentication**: All endpoints (except `/auth/*`) require `Authorization: Bearer <access_token>`.
+    **RBAC roles**: super_admin, admin, advocate, clerk, paralegal, intern
+  version: 1.0.0
+  contact:
+    name: LETESE Legal Technologies Pvt. Ltd.
+    email: api@letese.xyz
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://api.letese.xyz/api/v1
+    description: Production
+  - url: https://staging-api.letese.xyz/api/v1
+    description: Staging
+
+tags:
+  - name: Authentication
+    description: Login, signup, OTP, Google OAuth, token refresh
+  - name: Cases
+    description: Case CRUD, scraping, diary
+  - name: Documents
+    description: Upload, download, translate, compliance check
+  - name: Tasks
+    description: Task management
+  - name: Invoices
+    description: Invoice creation, listing, sending
+  - name: Admin
+    description: Tenant management, analytics, audit
+  - name: WebSocket
+    description: Real-time event streams
+
+paths:
+
+  # ══════════════════════════════════════════════════════════
+  # AUTH
+  # ══════════════════════════════════════════════════════════
+
+  /auth/signup:
+    post:
+      tags: [Authentication]
+      summary: Create tenant + admin user
+      description: |
+        Creates a new tenant (law firm) and its first admin user in a single call.
+        Sends OTP to the admin email for verification.
+        **Rate limit**: 3 signups per IP per hour.
+      operationId: auth_signup
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+            example:
+              tenant_name: "Sharma & Associates"
+              tenant_email: "contact@sharma-law.in"
+              tenant_phone: "+919876543210"
+              plan: "professional"
+              bar_enrolment_no: "BAR/2012/45678"
+              gstin: "09AALFS1234M1ZB"
+              admin_email: "rajesh@sharma-law.in"
+              admin_full_name: "Rajesh Sharma"
+              admin_phone: "+919876543210"
+      responses:
+        '201':
+          description: Tenant and admin user created, OTP sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignupResponse'
+        '409':
+          description: Tenant or user already exists.
+        '429':
+          description: Rate limit exceeded.
+
+  /auth/send-otp:
+    post:
+      tags: [Authentication]
+      summary: Send OTP
+      description: |
+        Sends a 6-digit OTP to the registered email address.
+        OTP valid for 10 minutes (600 seconds).
+        **Rate limit**: 5 requests per IP per minute.
+      operationId: auth_send_otp
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendOtpRequest'
+      responses:
+        '200':
+          description: OTP sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "OTP sent" }
+                  expires_in: { type: integer, example: 600 }
+        '404':
+          description: User not found.
+        '429':
+          description: Rate limit exceeded.
+
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: Login with email + OTP
+      description: |
+        Verifies OTP, returns JWT access + refresh tokens.
+        **Rate limit**: 5 attempts per IP per minute.
+      operationId: auth_login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: JWT tokens issued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid or expired OTP.
+        '429':
+          description: Rate limit exceeded.
+
+  /auth/logout:
+    post:
+      tags: [Authentication]
+      summary: Logout
+      description: Revokes the refresh token. Client should discard the access token.
+      operationId: auth_logout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Logged out successfully.
+        '401':
+          description: Invalid or already-revoked refresh token.
+
+  /auth/google:
+    post:
+      tags: [Authentication]
+      summary: Google OAuth login
+      description: Login/register via Google OAuth ID token.
+      operationId: auth_google
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id_token]
+              properties:
+                id_token:
+                  type: string
+                  description: Google OAuth ID token from the frontend Google Sign-In flow.
+      responses:
+        '200':
+          description: JWT tokens issued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Sign up first before linking Google account.
+        '401':
+          description: Invalid Google token.
+
+  /auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh access token
+      description: Exchange a valid refresh token for a new access token.
+      operationId: auth_refresh
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: New access token issued.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token: { type: string }
+                  token_type: { type: string, const: "Bearer" }
+        '401':
+          description: Invalid or expired refresh token.
+
+  /auth/me:
+    get:
+      tags: [Authentication]
+      summary: Get current user profile
+      description: Returns the authenticated user's profile and tenant info.
+      operationId: auth_me
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/UserProfile'
+                  tenant:
+                    $ref: '#/components/schemas/TenantProfile'
+        '401':
+          description: Invalid or missing token.
+
+  # ══════════════════════════════════════════════════════════
+  # CASES
+  # ══════════════════════════════════════════════════════════
+
+  /cases:
+    get:
+      tags: [Cases]
+      summary: List cases
+      description: |
+        Lists cases for the authenticated tenant.
+        Non-admin roles see only their own assigned cases.
+      operationId: list_cases
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [active, archived, closed] }
+        - name: court_code
+          in: query
+          schema: { type: string, example: "PHAHC" }
+        - name: search
+          in: query
+          schema: { type: string, minLength: 2 }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+        - name: offset
+          in: query
+          schema: { type: integer, minimum: 0, default: 0 }
+      responses:
+        '200':
+          description: Paginated list of cases.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseListResponse'
+        '401':
+          description: Unauthorized.
+
+    post:
+      tags: [Cases]
+      summary: Create case
+      description: |
+        Creates a new case. Enforces plan case limits.
+        Triggers scraper if `case_number` is provided and scraper is enabled.
+        **Roles**: admin, advocate, clerk, paralegal. Interns cannot create cases.
+      operationId: create_case
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseCreate'
+      responses:
+        '201':
+          description: Case created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseCreateResponse'
+        '401':
+          description: Unauthorized.
+        '402':
+          description: Case limit reached. Upgrade plan.
+        '403':
+          description: Role not permitted to create cases.
+
+  /cases/{case_id}:
+    get:
+      tags: [Cases]
+      summary: Get case detail
+      description: Returns full case details including hearings, documents, and tasks.
+      operationId: get_case
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Case detail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDetail'
+        '404':
+          description: Case not found.
+    put:
+      tags: [Cases]
+      summary: Update case
+      description: Update case fields (title, status, next hearing, etc.)
+      operationId: update_case
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseUpdate'
+      responses:
+        '200':
+          description: Case updated.
+        '403':
+          description: Role not permitted to edit case.
+        '404':
+          description: Case not found.
+    delete:
+      tags: [Cases]
+      summary: Archive case (soft delete)
+      description: Sets deleted_at timestamp, changes status to archived.
+      operationId: delete_case
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Case archived.
+        '404':
+          description: Case not found.
+
+  /cases/{case_id}/scrape:
+    post:
+      tags: [Cases]
+      summary: Trigger court scraper
+      description: Manually trigger AIPOT-SCRAPER for a case.
+      operationId: trigger_scrape
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Scrape job queued.
+        '403':
+          description: Role not permitted.
+        '404':
+          description: Case not found.
+
+  # ══════════════════════════════════════════════════════════
+  # DOCUMENTS
+  # ══════════════════════════════════════════════════════════
+
+  /documents/upload:
+    post:
+      tags: [Documents]
+      summary: Upload document
+      description: |
+        Upload a file to S3, store metadata in PostgreSQL.
+        Supported types: pdf, docx, jpg, png, mp3.
+        Enforces storage limits per plan.
+      operationId: upload_document
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DocumentUpload'
+      responses:
+        '200':
+          description: Document uploaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '402':
+          description: Storage limit reached.
+        '403':
+          description: Role not permitted.
+
+  /documents/{doc_id}:
+    get:
+      tags: [Documents]
+      summary: Get document metadata
+      operationId: get_document
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: doc_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Document metadata.
+        '404':
+          description: Document not found.
+
+  /documents/{doc_id}/download-url:
+    get:
+      tags: [Documents]
+      summary: Get presigned S3 download URL
+      description: Generates a presigned S3 URL valid for 1 hour.
+      operationId: get_download_url
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: doc_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Presigned URL.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  presigned_url: { type: string }
+                  expires_in: { type: integer, example: 3600 }
+
+  /documents/{doc_id}/translate:
+    post:
+      tags: [Documents]
+      summary: Translate document
+      description: Translate document to target language. Elite/Enterprise plan required.
+      operationId: translate_document
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: doc_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [target_language]
+              properties:
+                target_language:
+                  type: string
+                  enum: [en, hi, pa, ta]
+                  example: "hi"
+      responses:
+        '200':
+          description: Translation queued.
+        '403':
+          description: Plan requirement not met.
+
+  /documents/compliance/check:
+    post:
+      tags: [Documents]
+      summary: Compliance check
+      description: Validate document against court checklist rules. Elite/Enterprise only.
+      operationId: compliance_check
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComplianceCheckRequest'
+      responses:
+        '200':
+          description: Compliance result.
+        '403':
+          description: Plan requirement not met.
+
+  /documents/compliance/checklists/{court_code}:
+    get:
+      tags: [Documents]
+      summary: Get court checklist
+      operationId: get_checklist
+      security: []
+      parameters:
+        - name: court_code
+          in: path
+          required: true
+          schema: { type: string }
+        - name: petition_type
+          in: query
+          schema: { type: string, default: "CWP" }
+      responses:
+        '200':
+          description: Court checklist.
+
+  # ══════════════════════════════════════════════════════════
+  # TASKS
+  # ══════════════════════════════════════════════════════════
+
+  /tasks:
+    get:
+      tags: [Tasks]
+      summary: List tasks
+      operationId: list_tasks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [pending, in_progress, completed, cancelled] }
+        - name: due
+          in: query
+          schema: { type: string, enum: [today, upcoming, overdue] }
+        - name: assigned_to
+          in: query
+          schema: { type: string, format: uuid }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+      responses:
+        '200':
+          description: List of tasks.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+    post:
+      tags: [Tasks]
+      summary: Create task
+      operationId: create_task
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Task created.
+
+  /tasks/{task_id}:
+    patch:
+      tags: [Tasks]
+      summary: Update task
+      operationId: update_task
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Task updated.
+
+  # ══════════════════════════════════════════════════════════
+  # INVOICES
+  # ══════════════════════════════════════════════════════════
+
+  /invoices:
+    get:
+      tags: [Invoices]
+      summary: List invoices
+      operationId: list_invoices
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [pending, sent, paid, overdue, cancelled] }
+        - name: case_id
+          in: query
+          schema: { type: string, format: uuid }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 50 }
+      responses:
+        '200':
+          description: List of invoices.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceListResponse'
+    post:
+      tags: [Invoices]
+      summary: Create invoice
+      description: Creates invoice, computes GST @ 18%, generates Razorpay payment link.
+      operationId: create_invoice
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceCreate'
+      responses:
+        '201':
+          description: Invoice created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceResponse'
+
+  /invoices/{invoice_id}:
+    get:
+      tags: [Invoices]
+      summary: Get invoice detail
+      operationId: get_invoice
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: invoice_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Invoice detail.
+        '404':
+          description: Not found.
+
+  /invoices/{invoice_id}/send:
+    post:
+      tags: [Invoices]
+      summary: Send invoice to client
+      description: Dispatch invoice via WhatsApp + Email.
+      operationId: send_invoice
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: invoice_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Dispatch queued.
+        '403':
+          description: Role not permitted.
+
+  # ══════════════════════════════════════════════════════════
+  # ADMIN
+  # ══════════════════════════════════════════════════════════
+
+  /admin/system-health:
+    get:
+      tags: [Admin]
+      summary: System health (Super Admin)
+      description: Returns real-time infrastructure status. Super admin only.
+      operationId: system_health
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: System health metrics.
+        '403':
+          description: Super admin access required.
+
+  /admin/tenants:
+    get:
+      tags: [Admin]
+      summary: List tenants
+      operationId: list_tenants
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string }
+        - name: plan
+          in: query
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 50 }
+      responses:
+        '200':
+          description: List of tenants.
+    post:
+      tags: [Admin]
+      summary: Create tenant (Super Admin)
+      operationId: create_tenant
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+      responses:
+        '201':
+          description: Tenant created.
+
+  /admin/tenants/{tenant_id}:
+    patch:
+      tags: [Admin]
+      summary: Update tenant
+      operationId: update_tenant
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: tenant_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantUpdate'
+      responses:
+        '200':
+          description: Tenant updated.
+
+  /admin/analytics:
+    get:
+      tags: [Admin]
+      summary: Usage analytics
+      description: AI calls, WhatsApp stats, storage. Admin only.
+      operationId: usage_analytics
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          schema: { type: string, default: "30d" }
+      responses:
+        '200':
+          description: Usage analytics data.
+
+  /admin/audit/trigger:
+    post:
+      tags: [Admin]
+      summary: Trigger POLICE audit
+      description: Trigger AIPOT-POLICE audit manually. Super admin only.
+      operationId: trigger_audit
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [audit_type]
+              properties:
+                audit_type:
+                  type: string
+                  enum: [small, major]
+      responses:
+        '200':
+          description: Audit triggered.
+
+  /admin/audit-logs:
+    get:
+      tags: [Admin]
+      summary: View audit logs
+      operationId: get_audit_logs
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Audit log entries.
+
+  /admin/super-admin/vendors/{vendor_name}:
+    patch:
+      tags: [Admin]
+      summary: Update vendor config (Super Admin)
+      operationId: update_vendor_config
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: vendor_name
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorConfigUpdate'
+      responses:
+        '200':
+          description: Vendor config updated.
+
+  # ══════════════════════════════════════════════════════════
+  # WEBSOCKET
+  # ══════════════════════════════════════════════════════════
+
+  /ws/diary/{tenant_id}:
+    get:
+      tags: [WebSocket]
+      summary: Case diary real-time updates
+      description: |
+        WebSocket connection for live case diary updates.
+        Client sends `ping` → server responds `pong`.
+        Server broadcasts: new orders, hearing changes, next hearing updates.
+      operationId: diary_websocket
+      parameters:
+        - name: tenant_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '101':
+          description: Switching Protocols — WebSocket established.
+
+  /ws/inbox/{tenant_id}:
+    get:
+      tags: [WebSocket]
+      summary: Inbox real-time updates
+      description: Real-time inbox — new messages, delivery status updates.
+      operationId: inbox_websocket
+      parameters:
+        - name: tenant_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '101':
+          description: Switching Protocols.
+
+  /ws/health:
+    get:
+      tags: [WebSocket]
+      summary: System health stream (Super Admin)
+      description: Live metrics broadcast every 10 seconds.
+      operationId: health_websocket
+      responses:
+        '101':
+          description: Switching Protocols.
+
+# ══════════════════════════════════════════════════════════
+# COMPONENTS
+# ══════════════════════════════════════════════════════════
+
+components:
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token obtained from `/auth/login` or `/auth/google`.
+
+  schemas:
+
+    # ── Auth ──────────────────────────────────────────────
+
+    SignupRequest:
+      type: object
+      required: [tenant_name, tenant_email, tenant_phone, admin_email, admin_full_name]
+      properties:
+        tenant_name:
+          type: string
+          minLength: 2
+          maxLength: 255
+          example: "Sharma & Associates"
+        tenant_email:
+          type: string
+          format: email
+          example: "contact@sharma-law.in"
+        tenant_phone:
+          type: string
+          minLength: 10
+          maxLength: 20
+          example: "+919876543210"
+        plan:
+          type: string
+          enum: [basic, professional, elite, enterprise]
+          default: basic
+        bar_enrolment_no:
+          type: string
+          maxLength: 100
+          example: "BAR/2012/45678"
+        gstin:
+          type: string
+          maxLength: 20
+          example: "09AALFS1234M1ZB"
+        firm_address:
+          type: string
+        admin_email:
+          type: string
+          format: email
+          example: "rajesh@sharma-law.in"
+        admin_full_name:
+          type: string
+          minLength: 2
+          maxLength: 255
+          example: "Rajesh Sharma"
+        admin_phone:
+          type: string
+          maxLength: 20
+
+    SignupResponse:
+      type: object
+      properties:
+        message: { type: string }
+        tenant_id: { type: string, format: uuid }
+        user_id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        expires_in: { type: integer, example: 600 }
+
+    SendOtpRequest:
+      type: object
+      required: [email]
+      properties:
+        email: { type: string, format: email }
+
+    LoginRequest:
+      type: object
+      required: [email, otp]
+      properties:
+        email: { type: string, format: email }
+        otp: { type: string, minLength: 6, maxLength: 6, example: "A3F2B9" }
+
+    LoginResponse:
+      type: object
+      properties:
+        access_token: { type: string }
+        refresh_token: { type: string }
+        token_type: { type: string, const: "Bearer" }
+        user:
+          $ref: '#/components/schemas/UserObject'
+        tenant:
+          $ref: '#/components/schemas/TenantObject'
+
+    RefreshRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token: { type: string }
+
+    UserObject:
+      type: object
+      properties:
+        user_id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        full_name: { type: string }
+        role:
+          type: string
+          enum: [super_admin, admin, advocate, clerk, paralegal, intern]
+        tenant_id: { type: string, format: uuid }
+
+    TenantObject:
+      type: object
+      properties:
+        tenant_id: { type: string, format: uuid }
+        name: { type: string }
+        plan:
+          type: string
+          enum: [basic, professional, elite, enterprise]
+        status: { type: string }
+
+    UserProfile:
+      type: object
+      properties:
+        user_id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        full_name: { type: string }
+        role:
+          type: string
+          enum: [super_admin, admin, advocate, clerk, paralegal, intern]
+        phone: { type: string }
+        is_active: { type: boolean }
+        last_login_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    TenantProfile:
+      type: object
+      properties:
+        tenant_id: { type: string, format: uuid }
+        name: { type: string }
+        plan:
+          type: string
+          enum: [basic, professional, elite, enterprise]
+        status: { type: string }
+        storage_gb: { type: number }
+
+    # ── Cases ──────────────────────────────────────────────
+
+    CaseCreate:
+      type: object
+      required: [case_title, court_code, client_name, client_phone]
+      properties:
+        case_title: { type: string, example: "Sharma v. Union of India" }
+        court_code: { type: string, example: "PHAHC" }
+        petition_type: { type: string, example: "CWP" }
+        case_number: { type: string, example: "CWP-2019-1234" }
+        client_name: { type: string, example: "Rajinder Sharma" }
+        client_phone: { type: string, example: "+919876543210" }
+        client_email: { type: string, format: email }
+        client_whatsapp: { type: string }
+        next_hearing_at: { type: string, format: date-time }
+        notes: { type: string }
+
+    CaseCreateResponse:
+      type: object
+      properties:
+        case_id: { type: string, format: uuid }
+        case_title: { type: string }
+        court_display_name: { type: string }
+        created_at: { type: string, format: date-time }
+
+    CaseUpdate:
+      type: object
+      properties:
+        case_title: { type: string }
+        petition_type: { type: string }
+        case_number: { type: string }
+        status: { type: string, enum: [active, archived, closed] }
+        urgency_level: { type: string, enum: [low, medium, high, critical] }
+        next_hearing_at: { type: string, format: date-time }
+        notes: { type: string }
+
+    CaseDetail:
+      type: object
+      properties:
+        case_id: { type: string, format: uuid }
+        case_title: { type: string }
+        case_number: { type: string }
+        court_code: { type: string }
+        court_display_name: { type: string }
+        status: { type: string }
+        urgency_level: { type: string }
+        client_name: { type: string }
+        client_phone: { type: string }
+        client_email: { type: string }
+        next_hearing_at: { type: string, format: date-time }
+        last_order_text: { type: string }
+        last_order_date: { type: string }
+        last_order_summary: { type: string }
+        notes: { type: string }
+        created_at: { type: string, format: date-time }
+        hearings: { type: array, items: { type: object } }
+        documents: { type: array, items: { type: object } }
+        tasks: { type: array, items: { type: object } }
+
+    CaseListResponse:
+      type: object
+      properties:
+        cases: { type: array, items: { type: object } }
+        total: { type: integer }
+        limit: { type: integer }
+        offset: { type: integer }
+
+    # ── Documents ──────────────────────────────────────────
+
+    DocumentUpload:
+      type: object
+      required: [file, doc_type]
+      properties:
+        file:
+          type: string
+          format: binary
+          description: File to upload (pdf, docx, jpg, png, mp3)
+        case_id:
+          type: string
+          format: uuid
+        doc_type:
+          type: string
+          description: "Document category: pleading, order, evidence, correspondence, judgment, other"
+        language:
+          type: string
+          default: en
+
+    DocumentResponse:
+      type: object
+      properties:
+        doc_id: { type: string, format: uuid }
+        name: { type: string }
+        file_format: { type: string }
+        file_size_bytes: { type: integer }
+        s3_url: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    ComplianceCheckRequest:
+      type: object
+      required: [document_text, court_code, petition_type]
+      properties:
+        document_text: { type: string }
+        court_code: { type: string }
+        petition_type: { type: string }
+
+    # ── Tasks ──────────────────────────────────────────────
+
+    TaskCreate:
+      type: object
+      required: [title, due_date]
+      properties:
+        case_id: { type: string, format: uuid }
+        title: { type: string, example: "File reply by 15th" }
+        description: { type: string }
+        due_date: { type: string, format: date-time }
+        priority: { type: string, enum: [low, medium, high, critical], default: medium }
+        assigned_to: { type: string, format: uuid }
+
+    TaskUpdate:
+      type: object
+      properties:
+        status: { type: string, enum: [pending, in_progress, completed, cancelled] }
+        due_date: { type: string, format: date-time }
+        assigned_to: { type: string, format: uuid }
+
+    TaskListResponse:
+      type: object
+      properties:
+        tasks: { type: array, items: { type: object } }
+        total: { type: integer }
+
+    # ── Invoices ───────────────────────────────────────────
+
+    InvoiceCreate:
+      type: object
+      required: [client_name, line_items, due_date]
+      properties:
+        case_id: { type: string, format: uuid }
+        client_name: { type: string }
+        client_gstin: { type: string }
+        client_email: { type: string, format: email }
+        line_items:
+          type: array
+          items:
+            type: object
+            required: [description, amount_inr]
+            properties:
+              description: { type: string }
+              amount_inr: { type: number }
+        due_date: { type: string, format: date }
+        notes: { type: string }
+
+    InvoiceResponse:
+      type: object
+      properties:
+        invoice_id: { type: string, format: uuid }
+        invoice_number: { type: string, example: "INV-2026-0001" }
+        total_inr: { type: number }
+        gst_inr: { type: number }
+        subtotal_inr: { type: number }
+        due_date: { type: string }
+        status: { type: string }
+        payment_link: { type: string, nullable: true }
+
+    InvoiceListResponse:
+      type: object
+      properties:
+        invoices:
+          type: array
+          items:
+            type: object
+            properties:
+              invoice_id: { type: string, format: uuid }
+              invoice_number: { type: string }
+              client_name: { type: string }
+              total_inr: { type: number }
+              paid_inr: { type: number }
+              status: { type: string }
+              due_date: { type: string }
+              created_at: { type: string, format: date-time }
+
+    # ── Admin ──────────────────────────────────────────────
+
+    TenantCreate:
+      type: object
+      required: [name, email, phone]
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        plan: { type: string, enum: [basic, professional, elite, enterprise], default: basic }
+        bar_enrolment_no: { type: string }
+        gstin: { type: string }
+
+    TenantUpdate:
+      type: object
+      properties:
+        plan: { type: string, enum: [basic, professional, elite, enterprise] }
+        status: { type: string, enum: [trial, active, suspended, cancelled] }
+        name: { type: string }
+
+    VendorConfigUpdate:
+      type: object
+      required: [config_data]
+      properties:
+        config_data:
+          type: object
+          description: Key-value vendor configuration (stored encrypted).

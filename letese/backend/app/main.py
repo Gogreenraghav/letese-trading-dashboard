@@ -2,11 +2,43 @@
 LETESE● FastAPI Main Application
 MODULE C: API Gateway (FastAPI REST + WebSocket)
 """
+import time
 from fastapi import FastAPI, Depends, HTTPException, WebSocket, WebSocketDisconnect, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
+
+# ── Metrics Middleware ──────────────────────────────────────────────
+class MetricsMiddleware(BaseHTTPMiddleware):
+    """Records every API request in the metrics store for Prometheus scraping."""
+
+    async def dispatch(self, request: Request, call_next):
+        # Skip metrics endpoint itself to avoid recursion
+        if request.url.path == "/metrics":
+            return await call_next(request)
+
+        from app.services.metrics_store import metrics_store
+
+        start = time.monotonic()
+        response = await call_next(request)
+        duration = time.monotonic() - start
+
+        # Normalize path: replace UUID/digit segments with placeholders to reduce cardinality
+        path = request.url.path
+        import re
+        path = re.sub(r'/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', '/{id}', path)
+        path = re.sub(r'/\d+', '/{id}', path)
+
+        metrics_store.record_request(
+            method=request.method,
+            endpoint=path,
+            status=response.status_code,
+            duration_s=duration,
+        )
+        return response
+
 
 app = FastAPI(
     title="LETESE● Legal SaaS API",
@@ -25,10 +57,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Metrics collection middleware (must be added before routes)
+app.add_middleware(MetricsMiddleware)
+
 # ── Health ─────────────────────────────────────────────────────────
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "version": settings.APP_VERSION, "service": "letese-api"}
+    from app.services.health_check import health_check_service
+    report = await health_check_service.check_all()
+    return report
 
 
 @app.get("/ready")
@@ -36,18 +73,12 @@ async def readiness_check():
     return {"status": "ready"}
 
 
-# ── Prometheus Metrics ─────────────────────────────────────────────
-@app.get("/metrics")
-async def metrics():
-    """Prometheus-compatible metrics endpoint."""
-    from app.services.metrics_service import get_metrics
-    return await get_metrics()
-
-
 # ── Include Routers ────────────────────────────────────────────────
 from app.api.v1.endpoints import auth, cases, documents, communications, tasks, invoices, admin
+from app.api.v1.endpoints import metrics as metrics_endpoint
 
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
+app.include_router(metrics_endpoint.router, tags=["Metrics"])
 app.include_router(cases.router, prefix="/api/v1/cases", tags=["Cases"])
 app.include_router(documents.router, prefix="/api/v1/documents", tags=["Documents"])
 app.include_router(communications.router, prefix="/api/v1/communications", tags=["Communications"])
