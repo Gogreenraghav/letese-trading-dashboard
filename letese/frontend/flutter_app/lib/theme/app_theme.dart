@@ -7,17 +7,17 @@ import 'package:google_fonts/google_fonts.dart';
 
 class LatticeColors {
   // Brand
-  static const primary    = Color(0xFF2B51C7);
-  static const primaryLo = Color(0xFF3B6FDF);
-  static const skyTop    = Color(0xFF819BFF);
-  static const skyBot    = Color(0xFF2B51C7);
-  static const green     = Color(0xFF52F9A9);  // Advocate Pulse dot
-  static const greenDark = Color(0xFF1DB86E);
+  static const primary    = Color(0xFF5070E0);
+  static const primaryLo = Color(0xFF4060D0);
+  static const skyTop    = Color(0xFFB0C0F0);
+  static const skyBot    = Color(0xFF3050B0);
+  static const green     = Color(0xFF59FEAE);  // Advocate Pulse dot
+  static const greenDark = Color(0xFF40C882);
 
   // Surface — elevated layers
   static const bgBase    = Color(0xFFF0F3FA);  // Scaffold background
-  static const glass     = Color(0xE6FFFFFF);  // 90% white glass
-  static const glassHi   = Color(0xF2FFFFFF);  // 95% white — floating elements
+  static const glass     = Color(0xCCFFFFFF);  // 80% white glass (from screenshots)
+  static const glassHi   = Color(0xE6FFFFFF);  // 90% white — floating elements
   static const glassDim  = Color(0xD9FFFFFF);  // 85% white — subtle
 
   // Text
@@ -40,10 +40,10 @@ class LatticeColors {
   static const chipDone    = Color(0xFF1DB86E);  // green
 
   // Shadows — tinted with primary blue
-  static const shadow = Color(0x142B51C7);  // 8% primary tint
-  static const shadowMd= Color(0x1E2B51C7);  // 12% primary tint
-  static const shadowLg= Color(0x282B51C7);  // 16% primary tint
-  static const shadowXl= Color(0x322B51C7);  // 20% primary tint
+  static const shadow = Color(0x0D5070E0);  // 5% primary blue tint
+  static const shadowMd= Color(0x145070E0);  // 12% primary tint
+  static const shadowLg= Color(0x1E5070E0);  // 16% primary tint
+  static const shadowXl= Color(0x285070E0);  // 20% primary tint
 
   // Quick action accent colors
   static const qaNew  = Color(0xFF2B51C7);
