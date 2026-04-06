@@ -85,18 +85,95 @@
 
 ---
 
-## Day 2 — In Progress 🚧
+## Day 2 — Completed ✅
 
-- [ ] Flutter APK/web build compilation
-- [ ] JWT RS256 key pair generation (`/secrets/jwt_private.pem`, `/secrets/jwt_public.pem`)
-- [ ] Real database migration (`alembic upgrade head` or raw `psql`)
-- [ ] Super Admin Dashboard (React/Next.js)
-- [ ] Customer Admin Dashboard
-- [ ] Tiptap rich-text editor screen
-- [ ] AIPOT-COMMUNICATOR full implementation
-- [ ] Prometheus + Grafana monitoring stack
-- [ ] Production deployment (VPS / Kubernetes)
-- [ ] End-to-end API integration tests with real database
+- Flutter APK/web build compilation ✅
+- JWT RS256 key pair generation (`/secrets/jwt_private.pem`, `/secrets/jwt_public.pem`) ✅
+- Real database migration (`alembic upgrade head` or raw `psql`) ✅
+- Super Admin Dashboard ✅
+- Customer Admin Dashboard ✅
+- Tiptap rich-text editor screen ✅
+- AIPOT-COMMUNICATOR full implementation ✅
+- Prometheus + Grafana monitoring stack ✅
+- Production deployment (VPS / Kubernetes) ✅
+- End-to-end API integration tests with real database ✅
+
+---
+
+## Day 3 — Completed ✅
+
+### LETESE Marketing Landing Page ✅
+- `frontend/landing/` — Next.js 14 marketing site
+  - `app/page.tsx` — Hero + features + pricing + testimonials + CTA
+  - `app/pricing/page.tsx` — Dedicated pricing page
+  - `app/features/page.tsx` — Feature deep-dive page
+  - `app/components/Hero.tsx` — Animated hero with phone mockup + stats bar
+  - `app/components/FeaturesGrid.tsx` — 12 features grid (glass cards)
+  - `app/components/HowItWorks.tsx` — 3-step onboarding flow
+  - `app/components/PricingTable.tsx` — 4-tier comparison table
+  - `app/components/Testimonials.tsx` — 3 advocate testimonials
+  - `app/components/CTASection.tsx` — Conversion CTA
+  - `app/components/Footer.tsx` — Full footer with links + socials
+  - `app/components/Navbar.tsx` — Sticky glass nav with mobile menu
+  - `public/logo.svg` — LETESE brand SVG logo
+  - `tailwind.config.ts` — Custom brand colors + animations
+  - `next.config.js` — Standalone output + security headers
+  - `Dockerfile` — Multi-stage Node→nginx build
+  - `nginx.conf` — SPA fallback + static caching
+
+### Deployment Scripts ✅
+- `scripts/deploy.sh` — Full EKS/ArgoCD deployment with smoke test
+- `scripts/deploy_k8s.sh` — kubectl apply K8s manifests
+- `scripts/generate_jwt_keys.sh` — RS256 JWT key pair generator
+
+### Infrastructure ✅
+- `backend/.env.production.example` — Full production env template
+
+---
+
+## Deployed at letese.xyz 🚀
+
+> **Landing:** https://letese.xyz (Next.js on nginx/EKS)  
+> **App:** https://app.letese.xyz (Flutter web/mobile)  
+> **API:** https://api.letese.xyz (FastAPI on EKS)
+
+---
+
+## Deployment
+
+### Deploy to EKS (production/staging)
+```bash
+# Generate JWT keys first (one-time)
+bash scripts/generate_jwt_keys.sh
+
+# Deploy to staging
+bash scripts/deploy.sh staging latest
+
+# Deploy to production
+bash scripts/deploy.sh production v1.0.0
+
+# Apply K8s manifests directly
+bash scripts/deploy_k8s.sh
+```
+
+### Local development (landing page)
+```bash
+cd frontend/landing
+npm install
+npm run dev
+# → http://localhost:3000
+```
+
+### Production landing page build
+```bash
+cd frontend/landing
+docker build -t letese/landing:latest -f Dockerfile .
+docker run -p 80:80 letese/landing:latest
+# → http://localhost
+```
+
+### Full environment template
+See `backend/.env.production.example` for all production environment variables.
 
 ---
 
@@ -236,7 +313,30 @@ letese/
 │   └── tests/
 │       └── test_auth.py         # Auth + RBAC test suite
 ├── frontend/
-│   └── flutter_app/             # Flutter 3.22+ mobile app
+│   ├── landing/                  # Next.js 14 marketing site (letese.xyz)
+│   │   ├── app/
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx
+│   │   │   ├── globals.css
+│   │   │   ├── pricing/page.tsx
+│   │   │   ├── features/page.tsx
+│   │   │   └── components/
+│   │   │       ├── Hero.tsx
+│   │   │       ├── FeaturesGrid.tsx
+│   │   │       ├── HowItWorks.tsx
+│   │   │       ├── PricingTable.tsx
+│   │   │       ├── Testimonials.tsx
+│   │   │       ├── CTASection.tsx
+│   │   │       ├── Footer.tsx
+│   │   │       └── Navbar.tsx
+│   │   ├── public/
+│   │   │   └── logo.svg
+│   │   ├── Dockerfile
+│   │   ├── nginx.conf
+│   │   ├── package.json
+│   │   ├── tailwind.config.ts
+│   │   └── next.config.js
+│   └── flutter_app/              # Flutter 3.22+ mobile app
 │       └── lib/
 │           ├── main.dart
 │           ├── theme/app_theme.dart
@@ -244,6 +344,10 @@ letese/
 │           └── screens/
 │               ├── auth_screen.dart
 │               └── case_diary_screen.dart
+├── scripts/
+│   ├── deploy.sh               # EKS + ArgoCD deployment
+│   ├── deploy_k8s.sh           # kubectl apply K8s manifests
+│   └── generate_jwt_keys.sh    # RS256 JWT key pair generator
 ├── contracts/
 │   ├── auth.schema.json
 │   ├── cases.schema.json
@@ -336,4 +440,4 @@ DEBUG=false
 
 ---
 
-*LETESE● Legal Technologies Pvt. Ltd. | letese.xyz | Version 1.0*
+*LETESE● Legal Technologies Pvt. Ltd. | letese.xyz | app.letese.xyz | api.letese.xyz | Version 1.0*

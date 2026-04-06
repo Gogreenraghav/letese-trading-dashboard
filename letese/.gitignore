@@ -1,0 +1,50 @@
+# Environment files — NEVER commit
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Secrets — NEVER commit key files
+backend/secrets/
+*.pem
+*.key
+
+# Node modules
+frontend/landing/node_modules/
+frontend/landing/.next/
+
+# Flutter build artifacts
+frontend/flutter_app/build/
+frontend/flutter_app/.dart_tool/
+frontend/flutter_app/.flutter-plugins*
+frontend/flutter_app/pubspec.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+backend/.venv/
+venv/
+.venv/
+
+# Docker
+.docker/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Terraform state (remote only)
+*.tfstate
+*.tfstate.*

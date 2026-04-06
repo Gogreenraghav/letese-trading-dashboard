@@ -74,7 +74,7 @@ async def readiness_check():
 
 
 # ── Include Routers ────────────────────────────────────────────────
-from app.api.v1.endpoints import auth, cases, documents, communications, tasks, invoices, admin
+from app.api.v1.endpoints import auth, cases, documents, communications, tasks, invoices, admin, team, webhooks
 from app.api.v1.endpoints import metrics as metrics_endpoint
 
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
@@ -85,6 +85,8 @@ app.include_router(communications.router, prefix="/api/v1/communications", tags=
 app.include_router(tasks.router, prefix="/api/v1/tasks", tags=["Tasks"])
 app.include_router(invoices.router, prefix="/api/v1/invoices", tags=["Invoices"])
 app.include_router(admin.router, prefix="/api/v1/admin", tags=["Admin"])
+app.include_router(team.router, prefix="/api/v1/admin", tags=["Team"])
+app.include_router(webhooks.router, tags=["Webhooks"])
 
 
 # ── WebSocket Endpoints ────────────────────────────────────────────
