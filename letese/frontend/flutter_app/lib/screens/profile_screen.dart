@@ -1,7 +1,8 @@
-/// LETESE● Profile & Settings Screen
+/// LETESE● Profile & Settings Screen — Lattice Design System (Light Theme)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../services/api_service.dart';
 
@@ -59,122 +60,209 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final sessionAsync = ref.watch(sessionProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgObsidian,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            const LeteseLogo(fontSize: 22),
-            const SizedBox(width: 16),
-            const Text('Profile', style: TextStyle(fontSize: 17)),
-          ],
-        ),
-      ),
-      body: sessionAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.neonCyan)),
-        error: (_, __) => const Center(child: Text('Failed to load profile', style: TextStyle(color: AppColors.textSecondary))),
-        data: (session) => _buildContent(session),
+      backgroundColor: LatticeColors.background,
+      body: Stack(
+        children: [
+          // Sky gradient header
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 240,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [LatticeColors.skyTop, LatticeColors.skyBottom],
+                ),
+              ),
+            ),
+          ),
+          CustomScrollView(
+            slivers: [
+              // App Bar
+              SliverAppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                pinned: false,
+                expandedHeight: 80,
+                toolbarHeight: 80,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 48, 20, 0),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Profile',
+                          style: GoogleFonts.manrope(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withAlpha(26),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.settings_outlined, color: Colors.white, size: 22),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // User info card
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: sessionAsync.when(
+                    loading: () => const Center(child: CircularProgressIndicator(color: LatticeColors.primary)),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (session) => _buildProfileCard(session),
+                  ),
+                ),
+              ),
+
+              // Content list
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                  child: _buildContent(sessionAsync),
+                ),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 90)),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildContent(SessionData session) {
-    return ListView(
-      padding: const EdgeInsets.all(12),
-      children: [
-        // User info card
-        GlassCard(
-          child: Column(
-            children: [
-              Row(
+  Widget _buildProfileCard(SessionData session) {
+    return Container(
+      decoration: BoxDecoration(
+        color: LatticeColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(color: LatticeColors.shadow, blurRadius: 20, offset: Offset(0, 5)),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            Container(
+              width: 60, height: 60,
+              decoration: BoxDecoration(
+                color: LatticeColors.primary.withAlpha(20),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Center(
+                child: Text(
+                  session.userName.isNotEmpty ? session.userName[0].toUpperCase() : 'U',
+                  style: GoogleFonts.manrope(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: LatticeColors.primary,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 56, height: 56,
-                    decoration: BoxDecoration(
-                      color: AppColors.neonCyanDim,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.neonCyan.withAlpha(77)),
-                    ),
-                    child: Center(
-                      child: Text(
-                        session.userName.isNotEmpty ? session.userName[0].toUpperCase() : 'U',
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.neonCyan),
-                      ),
+                  Text(
+                    session.userName.isNotEmpty ? session.userName : 'User',
+                    style: GoogleFonts.manrope(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: LatticeColors.textPrimary,
                     ),
                   ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          session.userName.isNotEmpty ? session.userName : 'User',
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(session.userEmail, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
-                        const SizedBox(height: 6),
-                        _RoleBadge(role: session.userRole),
-                      ],
-                    ),
+                  const SizedBox(height: 4),
+                  Text(
+                    session.userEmail,
+                    style: GoogleFonts.inter(fontSize: 13, color: LatticeColors.textSecondary),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined, color: AppColors.neonCyan, size: 20),
-                    onPressed: () {},
-                  ),
+                  const SizedBox(height: 8),
+                  _RoleBadge(role: session.userRole),
                 ],
               ),
-            ],
-          ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.edit_outlined, color: LatticeColors.primary, size: 20),
+              onPressed: () {},
+            ),
+          ],
         ),
-        const SizedBox(height: 12),
+      ),
+    );
+  }
 
+  Widget _buildContent(AsyncValue<SessionData> sessionAsync) {
+    final session = sessionAsync.valueOrNull;
+
+    return Column(
+      children: [
         // Tenant / Firm info
-        GlassCard(
+        _CardWrapper(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  const Icon(Icons.business, color: AppColors.electricPurple, size: 20),
+                  const Icon(Icons.business, color: LatticeColors.primary, size: 20),
                   const SizedBox(width: 10),
-                  const Text('Firm', style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                  Text('Firm', style: GoogleFonts.inter(fontSize: 11, color: LatticeColors.textSecondary, letterSpacing: 1)),
                   const Spacer(),
-                  _PlanBadge(plan: session.plan),
+                  _PlanBadge(plan: session?.plan ?? 'basic'),
                 ],
               ),
               const SizedBox(height: 10),
               Text(
-                session.tenantName.isNotEmpty ? session.tenantName : 'Your Law Firm',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                session?.tenantName.isNotEmpty == true ? session!.tenantName : 'Your Law Firm',
+                style: GoogleFonts.manrope(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: LatticeColors.textPrimary,
+                ),
               ),
-              if (session.plan == 'basic') ...[
+              if (session?.plan == 'basic') ...[
                 const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.warning.withAlpha(18),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.warning.withAlpha(51)),
+                    color: LatticeColors.warningBg,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: LatticeColors.warning.withAlpha(51)),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.upgrade, color: AppColors.warning, size: 20),
+                      const Icon(Icons.upgrade, color: LatticeColors.warning, size: 20),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Upgrade to Elite',
-                                style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.warning, fontSize: 13)),
+                            Text('Upgrade to Elite',
+                                style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: LatticeColors.textPrimary, fontSize: 13)),
                             const SizedBox(height: 2),
                             Text('Unlock AI drafting, court scraping & more',
-                                style: TextStyle(color: AppColors.warning.withAlpha(179), fontSize: 11)),
+                                style: GoogleFonts.inter(fontSize: 11, color: LatticeColors.textSecondary)),
                           ],
                         ),
                       ),
                       TextButton(
                         onPressed: () {},
-                        style: TextButton.styleFrom(foregroundColor: AppColors.warning),
+                        style: TextButton.styleFrom(foregroundColor: LatticeColors.primary),
                         child: const Text('Upgrade'),
                       ),
                     ],
@@ -189,28 +277,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         // Quick stats
         _SectionHeader(title: '📊 QUICK STATS'),
         const SizedBox(height: 8),
-        GlassCard(
-          padding: const EdgeInsets.all(14),
+        _CardWrapper(
           child: Row(
             children: [
-              _StatTile(
-                icon: Icons.folder_copy,
-                value: '${session.activeCases}',
-                label: 'Active Cases',
-                color: AppColors.neonCyan,
-              ),
-              _StatTile(
-                icon: Icons.cloud,
-                value: '${session.storageUsedMb.toStringAsFixed(1)} MB',
-                label: 'Storage Used',
-                color: AppColors.electricPurple,
-              ),
-              _StatTile(
-                icon: Icons.group,
-                value: '${session.teamMembers}',
-                label: 'Team Members',
-                color: AppColors.brandGreen,
-              ),
+              _StatTile(icon: Icons.folder_copy, value: '${session?.activeCases ?? 0}', label: 'Active Cases', color: LatticeColors.primary),
+              _divider,
+              _StatTile(icon: Icons.cloud, value: '${session?.storageUsedMb.toStringAsFixed(1) ?? '0.0'} MB', label: 'Storage Used', color: const Color(0xFF8B5CF6)),
+              _divider,
+              _StatTile(icon: Icons.group, value: '${session?.teamMembers ?? 1}', label: 'Team Members', color: LatticeColors.successDark),
             ],
           ),
         ),
@@ -219,7 +293,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         // Notification settings
         _SectionHeader(title: '🔔 NOTIFICATIONS'),
         const SizedBox(height: 8),
-        GlassCard(
+        _CardWrapper(
           child: Column(
             children: [
               _NotificationToggle(
@@ -230,28 +304,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 value: _waEnabled,
                 onChanged: (v) => setState(() => _waEnabled = v),
               ),
-              const Divider(color: AppColors.bgBorder, height: 1),
+              _divider2,
               _NotificationToggle(
                 icon: Icons.sms,
-                iconColor: AppColors.neonCyan,
+                iconColor: LatticeColors.primary,
                 title: 'SMS Alerts',
                 subtitle: 'Urgent court updates via SMS',
                 value: _smsEnabled,
                 onChanged: (v) => setState(() => _smsEnabled = v),
               ),
-              const Divider(color: AppColors.bgBorder, height: 1),
+              _divider2,
               _NotificationToggle(
                 icon: Icons.email_outlined,
-                iconColor: AppColors.electricPurple,
+                iconColor: const Color(0xFF8B5CF6),
                 title: 'Email Notifications',
                 subtitle: 'Daily case diary digest',
                 value: _emailEnabled,
                 onChanged: (v) => setState(() => _emailEnabled = v),
               ),
-              const Divider(color: AppColors.bgBorder, height: 1),
+              _divider2,
               _NotificationToggle(
                 icon: Icons.notifications_outlined,
-                iconColor: AppColors.warning,
+                iconColor: LatticeColors.warning,
                 title: 'In-App Notifications',
                 subtitle: 'Real-time alerts and updates',
                 value: _inAppEnabled,
@@ -265,48 +339,44 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         // App settings
         _SectionHeader(title: '⚙️ APP'),
         const SizedBox(height: 8),
-        GlassCard(
+        _CardWrapper(
           child: Column(
             children: [
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.language, color: AppColors.textSecondary, size: 20),
-                title: const Text('Language', style: TextStyle(fontSize: 14, color: AppColors.textPrimary)),
+              _SettingsTile(
+                icon: Icons.language,
+                title: 'Language',
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('English', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                    Text('English', style: GoogleFonts.inter(fontSize: 13, color: LatticeColors.textSecondary)),
                     const SizedBox(width: 8),
-                    const Icon(Icons.chevron_right, color: AppColors.textTertiary, size: 18),
+                    const Icon(Icons.chevron_right, color: LatticeColors.textTertiary, size: 18),
                   ],
                 ),
                 onTap: () {},
               ),
-              const Divider(color: AppColors.bgBorder, height: 1),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.dark_mode, color: AppColors.textSecondary, size: 20),
-                title: const Text('Dark Mode', style: TextStyle(fontSize: 14, color: AppColors.textPrimary)),
+              _divider2,
+              _SettingsTile(
+                icon: Icons.dark_mode_outlined,
+                title: 'Dark Mode',
                 trailing: Switch(
-                  value: true,
+                  value: false,
                   onChanged: (_) {},
-                  activeColor: AppColors.neonCyan,
+                  activeColor: LatticeColors.primary,
                 ),
               ),
-              const Divider(color: AppColors.bgBorder, height: 1),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.help_outline, color: AppColors.textSecondary, size: 20),
-                title: const Text('Help & Support', style: TextStyle(fontSize: 14, color: AppColors.textPrimary)),
-                trailing: const Icon(Icons.chevron_right, color: AppColors.textTertiary, size: 18),
+              _divider2,
+              _SettingsTile(
+                icon: Icons.help_outline,
+                title: 'Help & Support',
+                trailing: const Icon(Icons.chevron_right, color: LatticeColors.textTertiary, size: 18),
                 onTap: () {},
               ),
-              const Divider(color: AppColors.bgBorder, height: 1),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.privacy_tip_outlined, color: AppColors.textSecondary, size: 20),
-                title: const Text('Privacy Policy', style: TextStyle(fontSize: 14, color: AppColors.textPrimary)),
-                trailing: const Icon(Icons.chevron_right, color: AppColors.textTertiary, size: 18),
+              _divider2,
+              _SettingsTile(
+                icon: Icons.privacy_tip_outlined,
+                title: 'Privacy Policy',
+                trailing: const Icon(Icons.chevron_right, color: LatticeColors.textTertiary, size: 18),
                 onTap: () {},
               ),
             ],
@@ -315,7 +385,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         const SizedBox(height: 12),
 
         // Logout
-        GlassCard(
+        _CardWrapper(
           child: InkWell(
             onTap: _logout,
             borderRadius: BorderRadius.circular(16),
@@ -325,13 +395,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 contentPadding: EdgeInsets.zero,
                 leading: Container(
                   width: 36, height: 36,
-                  decoration: BoxDecoration(color: AppColors.error.withAlpha(26), borderRadius: BorderRadius.circular(8)),
-                  child: const Icon(Icons.logout, color: AppColors.error, size: 18),
+                  decoration: BoxDecoration(color: LatticeColors.errorBg, borderRadius: BorderRadius.circular(8)),
+                  child: const Icon(Icons.logout, color: LatticeColors.error, size: 18),
                 ),
                 title: _loadingLogout
-                    ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.error))
-                    : const Text('Logout', style: TextStyle(fontSize: 15, color: AppColors.error, fontWeight: FontWeight.w600)),
-                trailing: const Icon(Icons.chevron_right, color: AppColors.textTertiary, size: 18),
+                    ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: LatticeColors.error))
+                    : Text('Logout', style: GoogleFonts.inter(fontSize: 15, color: LatticeColors.error, fontWeight: FontWeight.w600)),
+                trailing: const Icon(Icons.chevron_right, color: LatticeColors.textTertiary, size: 18),
               ),
             ),
           ),
@@ -343,10 +413,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: Column(
             children: [
               Text('LETESE● Legal v1.0.0',
-                  style: TextStyle(fontSize: 11, color: AppColors.textTertiary)),
+                  style: GoogleFonts.inter(fontSize: 11, color: LatticeColors.textTertiary)),
               const SizedBox(height: 4),
               Text('LETESE Legal Technologies Pvt. Ltd.',
-                  style: TextStyle(fontSize: 10, color: AppColors.textTertiary.withAlpha(128))),
+                  style: GoogleFonts.inter(fontSize: 10, color: LatticeColors.textTertiary.withAlpha(128))),
             ],
           ),
         ),
@@ -355,19 +425,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
+  Widget get _divider => Container(width: 1, height: 40, color: LatticeColors.cardBorder);
+  Widget get _divider2 => const Divider(color: LatticeColors.cardBorder, height: 1);
+
   Future<void> _logout() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: AppColors.bgSurface,
+        backgroundColor: LatticeColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Logout?', style: TextStyle(color: AppColors.textPrimary)),
-        content: const Text('Are you sure you want to logout of LETESE?', style: TextStyle(color: AppColors.textSecondary)),
+        title: Text('Logout?', style: GoogleFonts.manrope(color: LatticeColors.textPrimary, fontWeight: FontWeight.w700)),
+        content: Text('Are you sure you want to logout of LETESE?', style: GoogleFonts.inter(color: LatticeColors.textSecondary)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text('Cancel', style: GoogleFonts.inter(color: LatticeColors.textSecondary))),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            style: ElevatedButton.styleFrom(backgroundColor: LatticeColors.error),
             child: const Text('Logout'),
           ),
         ],
@@ -397,25 +470,59 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
 // ── Sub-widgets ──────────────────────────────────────────────────────────────
 
+class _CardWrapper extends StatelessWidget {
+  final Widget child;
+  const _CardWrapper({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: LatticeColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: const [
+          BoxShadow(color: LatticeColors.shadow, blurRadius: 16, offset: Offset(0, 4)),
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: child,
+    );
+  }
+}
+
 class _SectionHeader extends StatelessWidget {
   final String title;
   const _SectionHeader({required this.title});
+
   @override
-  Widget build(BuildContext context) => Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.textSecondary, letterSpacing: 1.2));
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(left: 4),
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: Text(title, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700, color: LatticeColors.textSecondary, letterSpacing: 1.2)),
+    ),
+  );
 }
 
 class _RoleBadge extends StatelessWidget {
   final String role;
   const _RoleBadge({required this.role});
+
   @override
   Widget build(BuildContext context) {
-    final color = role == 'admin' ? AppColors.neonCyan
-        : role == 'partner' ? AppColors.electricPurple
-        : AppColors.brandGreen;
+    final color = role == 'admin' ? LatticeColors.primary
+        : role == 'partner' ? const Color(0xFF8B5CF6)
+        : LatticeColors.successDark;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(color: color.withAlpha(26), borderRadius: BorderRadius.circular(20), border: Border.all(color: color.withAlpha(77))),
-      child: Text(role.toUpperCase(), style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.w700)),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withAlpha(20),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withAlpha(77)),
+      ),
+      child: Text(role.toUpperCase(),
+          style: GoogleFonts.inter(fontSize: 10, color: color, fontWeight: FontWeight.w700)),
     );
   }
 }
@@ -423,18 +530,23 @@ class _RoleBadge extends StatelessWidget {
 class _PlanBadge extends StatelessWidget {
   final String plan;
   const _PlanBadge({required this.plan});
+
   @override
   Widget build(BuildContext context) {
-    final color = plan == 'enterprise' ? AppColors.electricPurple
-        : plan == 'elite' ? AppColors.neonCyan
-        : AppColors.textTertiary;
+    final color = plan == 'enterprise' ? const Color(0xFF8B5CF6)
+        : plan == 'elite' ? LatticeColors.primary
+        : LatticeColors.textTertiary;
     final label = plan == 'enterprise' ? 'ENTERPRISE'
         : plan == 'elite' ? 'ELITE'
         : 'BASIC';
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(color: color.withAlpha(26), borderRadius: BorderRadius.circular(20), border: Border.all(color: color.withAlpha(77))),
-      child: Text(label, style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.w700)),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withAlpha(20),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withAlpha(77)),
+      ),
+      child: Text(label, style: GoogleFonts.inter(fontSize: 10, color: color, fontWeight: FontWeight.w700)),
     );
   }
 }
@@ -453,9 +565,9 @@ class _StatTile extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 22),
           const SizedBox(height: 6),
-          Text(value, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: color)),
+          Text(value, style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: color)),
           const SizedBox(height: 2),
-          Text(label, style: const TextStyle(fontSize: 10, color: AppColors.textTertiary), textAlign: TextAlign.center),
+          Text(label, style: GoogleFonts.inter(fontSize: 10, color: LatticeColors.textTertiary), textAlign: TextAlign.center),
         ],
       ),
     );
@@ -474,12 +586,12 @@ class _NotificationToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           Container(
             width: 36, height: 36,
-            decoration: BoxDecoration(color: iconColor.withAlpha(26), borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: iconColor.withAlpha(20), borderRadius: BorderRadius.circular(8)),
             child: Icon(icon, color: iconColor, size: 18),
           ),
           const SizedBox(width: 12),
@@ -487,17 +599,47 @@ class _NotificationToggle extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
-                Text(subtitle, style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                Text(title, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500, color: LatticeColors.textPrimary)),
+                Text(subtitle, style: GoogleFonts.inter(fontSize: 11, color: LatticeColors.textSecondary)),
               ],
             ),
           ),
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppColors.neonCyan,
+            activeColor: LatticeColors.primary,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SettingsTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final Widget trailing;
+  final VoidCallback? onTap;
+
+  const _SettingsTile({required this.icon, required this.title, required this.trailing, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Icon(icon, color: LatticeColors.textSecondary, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(title, style: GoogleFonts.inter(fontSize: 14, color: LatticeColors.textPrimary)),
+            ),
+            trailing,
+          ],
+        ),
       ),
     );
   }

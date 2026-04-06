@@ -1,138 +1,161 @@
-/// LETESE● App Theme — Glassmorphism 2.0 Dark Theme
-/// Matches: SYSTEM_MASTER_BLUEPRINT Section 4
+/// LETESE● App Theme — Lattice Design System (Light Theme)
+/// Matches: Stitch design system — sky blue, glass cards, premium feel
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AppColors {
-  // Backgrounds
-  static const bgObsidian = Color(0xFF0A0E1A);
-  static const bgSurface = Color(0xFF0F1629);
-  static const bgElevated = Color(0xFF151E38);
-  static const bgBorder = Color(0xFF1E2D4A);
+// ── Lattice Colors ───────────────────────────────────────────────────────────
 
+class LatticeColors {
   // Brand
-  static const brandBlue = Color(0xFF1A4FBF);
-  static const brandBlueLight = Color(0xFF3B6FDF);
-  static const brandGreen = Color(0xFF22C55E);
-  static const brandGreenGlow = Color(0x3322C55E);
+  static const primary = Color(0xFF2B51C7);
+  static const primaryLight = Color(0xFF3B6FDF);
+  static const skyTop = Color(0xFF819BFF);
+  static const skyBottom = Color(0xFF2B51C7);
 
-  // Neon Accents
-  static const neonCyan = Color(0xFF00D4FF);
-  static const neonCyanDim = Color(0x2600D4FF);
-  static const electricPurple = Color(0xFF8B5CF6);
-  static const purpleDim = Color(0x268B5CF6);
-
-  // Semantic
-  static const success = brandGreen;
-  static const successBg = Color(0x1A22C55E);
-  static const warning = Color(0xFFF59E0B);
-  static const warningBg = Color(0x1AF59E0B);
-  static const error = Color(0xFFEF4444);
-  static const errorBg = Color(0x1AEF4444);
-  static const info = neonCyan;
+  // Surface
+  static const background = Color(0xFFF4F6FB);
+  static const surface = Color(0xFFFFFFFF);
+  static const surfaceElevated = Color(0xFFF8FAFF);
+  static const cardBorder = Color(0xFFE8EBF5);
 
   // Text
-  static const textPrimary = Color(0xFFF0F4FF);
-  static const textSecondary = Color(0xFF8899BB);
-  static const textTertiary = Color(0xFF4A5A7A);
+  static const textPrimary = Color(0xFF2C2F33);
+  static const textSecondary = Color(0xFF585C60);
+  static const textTertiary = Color(0xFF8A8F99);
 
-  // Urgency
-  static const urgent = Color(0xFFFF4545);
-  static const medium = warning;
-  static const low = brandGreen;
+  // Semantic
+  static const success = Color(0xFF52F9A9);
+  static const successDark = Color(0xFF1DB86E);
+  static const successBg = Color(0x1A52F9A9);
+  static const error = Color(0xFFB41340);
+  static const errorBg = Color(0x1AB41340);
+  static const warning = Color(0xFFFFB547);
+  static const warningBg = Color(0x1AFFB547);
+  static const info = Color(0xFF2B51C7);
+
+  // Status chips
+  static const liveRed = Color(0xFFB41340);
+  static const pendingBlue = Color(0xFF2B51C7);
+  static const doneGreen = Color(0xFF1DB86E);
+
+  // Quick action colors
+  static const actionNewCase = Color(0xFF2B51C7);
+  static const actionAiDraft = Color(0xFF1DB86E);
+  static const actionSearch = Color(0xFF0E9AA7);
+  static const actionTasks = Color(0xFF8B5CF6);
+
+  // Shadow
+  static const shadow = Color(0x0D000000);
+  static const shadowMedium = Color(0x14000000);
 }
 
+// ── App Theme (Light) ────────────────────────────────────────────────────────
+
 class AppTheme {
-  static ThemeData get darkTheme {
+  static ThemeData get lightTheme {
     return ThemeData(
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: AppColors.bgObsidian,
-      primaryColor: AppColors.brandBlue,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.brandBlue,
-        secondary: AppColors.neonCyan,
-        tertiary: AppColors.electricPurple,
-        surface: AppColors.bgSurface,
-        onSurface: AppColors.textPrimary,
-        error: AppColors.error,
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: LatticeColors.background,
+      primaryColor: LatticeColors.primary,
+      colorScheme: const ColorScheme.light(
+        primary: LatticeColors.primary,
+        secondary: LatticeColors.skyTop,
+        tertiary: Color(0xFF8B5CF6),
+        surface: LatticeColors.surface,
+        onSurface: LatticeColors.textPrimary,
+        error: LatticeColors.error,
       ),
       cardTheme: CardTheme(
-        color: AppColors.bgSurface,
+        color: LatticeColors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.bgBorder, width: 1),
+          side: const BorderSide(color: LatticeColors.cardBorder, width: 1),
         ),
         elevation: 0,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.brandGreen,
+          backgroundColor: LatticeColors.primary,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+          textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 14),
+          elevation: 0,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.brandBlueLight,
-          side: const BorderSide(color: AppColors.brandBlue, width: 1),
+          foregroundColor: LatticeColors.primary,
+          side: const BorderSide(color: LatticeColors.primary, width: 1.5),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: LatticeColors.primary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: const Color(0x0DFFFFFF),
-        hintStyle: const TextStyle(color: AppColors.textTertiary),
+        fillColor: LatticeColors.surface,
+        hintStyle: GoogleFonts.inter(color: LatticeColors.textTertiary, fontSize: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.bgBorder),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: LatticeColors.cardBorder),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: AppColors.bgBorder.withAlpha(128)),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: LatticeColors.cardBorder),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.neonCyan, width: 1.5),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: LatticeColors.primary, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
       textTheme: TextTheme(
-        displayLarge: GoogleFonts.inter(fontSize: 56, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
-        headlineMedium: GoogleFonts.inter(fontSize: 30, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
-        titleLarge: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-        titleMedium: GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        bodyLarge: GoogleFonts.inter(fontSize: 15, color: AppColors.textPrimary, height: 1.7),
-        bodyMedium: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary, height: 1.6),
-        labelSmall: GoogleFonts.inter(fontSize: 11, color: AppColors.textTertiary),
+        displayLarge: GoogleFonts.manrope(fontSize: 56, fontWeight: FontWeight.w700, color: LatticeColors.textPrimary),
+        headlineLarge: GoogleFonts.manrope(fontSize: 36, fontWeight: FontWeight.w700, color: LatticeColors.textPrimary),
+        headlineMedium: GoogleFonts.manrope(fontSize: 28, fontWeight: FontWeight.w700, color: LatticeColors.textPrimary),
+        titleLarge: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.w600, color: LatticeColors.textPrimary),
+        titleMedium: GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w500, color: LatticeColors.textPrimary),
+        bodyLarge: GoogleFonts.inter(fontSize: 15, color: LatticeColors.textPrimary, height: 1.7),
+        bodyMedium: GoogleFonts.inter(fontSize: 13, color: LatticeColors.textSecondary, height: 1.6),
+        labelLarge: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: LatticeColors.textPrimary),
+        labelSmall: GoogleFonts.inter(fontSize: 11, color: LatticeColors.textTertiary),
       ),
-      dividerTheme: const DividerThemeData(color: AppColors.bgBorder, thickness: 1),
+      dividerTheme: const DividerThemeData(color: LatticeColors.cardBorder, thickness: 1),
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.bgObsidian,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        titleTextStyle: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.w700, color: LatticeColors.textPrimary),
+        iconTheme: const IconThemeData(color: LatticeColors.textPrimary),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.bgSurface,
-        selectedItemColor: AppColors.neonCyan,
-        unselectedItemColor: AppColors.textTertiary,
+        backgroundColor: LatticeColors.surface,
+        selectedItemColor: LatticeColors.primary,
+        unselectedItemColor: LatticeColors.textTertiary,
         type: BottomNavigationBarType.fixed,
+        elevation: 0,
       ),
     );
   }
 }
 
-/// Glass Card — glassmorphism component
+// ── Glass Card (Light) ────────────────────────────────────────────────────────
+
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsets? padding;
   final double? width;
   final double? height;
   final VoidCallback? onTap;
+  final Color? borderColor;
+  final double borderRadius;
 
   const GlassCard({
     super.key,
@@ -141,6 +164,8 @@ class GlassCard extends StatelessWidget {
     this.width,
     this.height,
     this.onTap,
+    this.borderColor,
+    this.borderRadius = 16,
   });
 
   @override
@@ -152,12 +177,15 @@ class GlassCard extends StatelessWidget {
         height: height,
         padding: padding ?? const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white.withAlpha(13),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withAlpha(31), width: 1),
+          color: LatticeColors.surface,
+          borderRadius: BorderRadius.circular(borderRadius),
+          border: Border.all(
+            color: borderColor ?? LatticeColors.cardBorder,
+            width: 1,
+          ),
           boxShadow: const [
-            BoxShadow(color: Color(0x66000000), blurRadius: 32, offset: Offset(0, 8)),
-            BoxShadow(color: Color(0x14FFFFFF), blurRadius: 1, offset: Offset(0, 1)),
+            BoxShadow(color: LatticeColors.shadow, blurRadius: 16, offset: Offset(0, 4)),
+            BoxShadow(color: LatticeColors.shadowMedium, blurRadius: 4, offset: Offset(0, 1)),
           ],
         ),
         child: child,
@@ -166,67 +194,101 @@ class GlassCard extends StatelessWidget {
   }
 }
 
-/// LETESE Brand Logo Widget
+// ── LETESE Brand Logo Widget (no green dot — uses image) ──────────────────────
+
 class LeteseLogo extends StatelessWidget {
   final double fontSize;
-  const LeteseLogo({super.key, this.fontSize = 28});
+  final bool useImage;
+  const LeteseLogo({super.key, this.fontSize = 28, this.useImage = false});
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
+    if (useImage) {
+      return Image.asset(
+        'assets/letese_logo.png',
+        height: fontSize * 1.2,
+        errorBuilder: (_, __, ___) => _textLogo,
+      );
+    }
+    return _textLogo;
+  }
+
+  Widget get _textLogo => Text(
+    'LETESE',
+    style: GoogleFonts.manrope(
+      fontSize: fontSize,
+      fontWeight: FontWeight.w800,
+      color: LatticeColors.primary,
+      letterSpacing: 1,
+    ),
+  );
+}
+
+// ── Sky Gradient Scaffold ────────────────────────────────────────────────────
+
+class SkyGradientScaffold extends StatelessWidget {
+  final Widget body;
+  final PreferredSizeWidget? appBar;
+  final Widget? bottomNav;
+
+  const SkyGradientScaffold({
+    super.key,
+    required this.body,
+    this.appBar,
+    this.bottomNav,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: LatticeColors.background,
+      appBar: appBar,
+      body: Stack(
         children: [
-          TextSpan(
-            text: 'LETESE',
-            style: GoogleFonts.inter(
-              fontSize: fontSize,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
-          ),
-          WidgetSpan(
-            alignment: PlaceholderAlignment.belowBaseline,
-            baseline: TextBaseline.alphabetic,
-            child: Transform.translate(
-              offset: Offset(0, fontSize * 0.15),
-              child: Text(
-                '●',
-                style: TextStyle(
-                  fontSize: fontSize * 0.44,
-                  color: AppColors.brandGreen,
-                  fontWeight: FontWeight.w700,
+          // Sky gradient at top
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 200,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [LatticeColors.skyTop, LatticeColors.skyBottom],
                 ),
               ),
             ),
           ),
+          // Content
+          body,
         ],
       ),
+      bottomNavigationBar: bottomNav,
     );
   }
 }
 
-/// Urgency Badge
+// ── Urgency Badge (legacy) ───────────────────────────────────────────────────
+
 class UrgencyBadge extends StatelessWidget {
-  final String level; // critical | high | medium | low
+  final String level;
   const UrgencyBadge({super.key, required this.level});
 
-  Color get _color {
-    return switch (level) {
-      'critical' => AppColors.urgent,
-      'high' => AppColors.warning,
-      'medium' => AppColors.medium,
-      _ => AppColors.low,
-    };
-  }
+  Color get _color => switch (level) {
+    'critical' => LatticeColors.error,
+    'high' => LatticeColors.warning,
+    'medium' => LatticeColors.warning,
+    _ => LatticeColors.successDark,
+  };
 
-  String get _label {
-    return switch (level) {
-      'critical' => '🔴 CRITICAL',
-      'high' => '🟡 HIGH',
-      'medium' => '🟡 MEDIUM',
-      _ => '🟢 LOW',
-    };
-  }
+  String get _label => switch (level) {
+    'critical' => '🔴 CRITICAL',
+    'high' => '🟡 HIGH',
+    'medium' => '🟡 MEDIUM',
+    _ => '🟢 LOW',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -240,4 +302,29 @@ class UrgencyBadge extends StatelessWidget {
       child: Text(_label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _color)),
     );
   }
+}
+
+// ── AppColors (legacy alias for existing screens) ─────────────────────────────
+
+class AppColors {
+  static const bgObsidian = Color(0xFF0A0E1A);
+  static const bgSurface = Color(0xFF0F1629);
+  static const bgElevated = Color(0xFF151E38);
+  static const bgBorder = Color(0xFF1E2D4A);
+  static const brandBlue = Color(0xFF1A4FBF);
+  static const brandBlueLight = Color(0xFF3B6FDF);
+  static const brandGreen = Color(0xFF22C55E);
+  static const neonCyan = Color(0xFF00D4FF);
+  static const electricPurple = Color(0xFF8B5CF6);
+  static const textPrimary = Color(0xFFF0F4FF);
+  static const textSecondary = Color(0xFF8899BB);
+  static const textTertiary = Color(0xFF4A5A7A);
+  static const urgent = Color(0xFFFF4545);
+  static const error = Color(0xFFEF4444);
+  static const warning = Color(0xFFF59E0B);
+  static const success = Color(0xFF22C55E);
+  static const successBg = Color(0x1A22C55E);
+  static const errorBg = Color(0x1AEF4444);
+  static const warningBg = Color(0x1AF59E0B);
+  static const warningBgVal = Color(0x1AF59E0B);
 }

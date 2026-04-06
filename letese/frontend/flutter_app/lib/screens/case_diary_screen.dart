@@ -1,7 +1,7 @@
-/// LETESE● Case Diary Workstation — TIER 3 User Terminal
-/// Route: /app/cases
+/// LETESE● Case Diary Screen — Lattice Design System (Light Theme)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../services/api_service.dart';
 import 'package:intl/intl.dart';
@@ -31,121 +31,232 @@ class _CaseDiaryScreenState extends ConsumerState<CaseDiaryScreen> {
     final casesAsync = ref.watch(casesProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgObsidian,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            const LeteseLogo(fontSize: 22),
-            const SizedBox(width: 16),
-            const Text('Case Diary', style: TextStyle(fontSize: 17)),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: AppColors.neonCyan),
-            onPressed: () => ref.invalidate(casesProvider),
-          ),
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline, color: AppColors.brandGreen),
-            onPressed: () => Navigator.of(context).pushNamed('/cases/new'),
-          ),
-        ],
-      ),
-      body: Column(
+      backgroundColor: LatticeColors.background,
+      body: Stack(
         children: [
-          // Search + Filters
-          Container(
-            padding: const EdgeInsets.all(12),
-            color: AppColors.bgSurface,
-            child: Column(
-              children: [
-                TextField(
-                  onChanged: (v) => setState(() => _searchQuery = v),
-                  style: const TextStyle(color: AppColors.textPrimary),
-                  decoration: InputDecoration(
-                    hintText: 'Search cases, clients...',
-                    prefixIcon: const Icon(Icons.search, color: AppColors.textTertiary),
-                    filled: true,
-                    fillColor: AppColors.bgElevated,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+          // Sky gradient header
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 180,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [LatticeColors.skyTop, LatticeColors.skyBottom],
+                ),
+              ),
+            ),
+          ),
+          CustomScrollView(
+            slivers: [
+              // App Bar
+              SliverAppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                pinned: false,
+                expandedHeight: 80,
+                toolbarHeight: 80,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 48, 20, 0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Case Diary',
+                                style: GoogleFonts.manrope(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                '${DateFormat('d MMM yyyy').format(DateTime.now())} • ${casesAsync.valueOrNull?.length ?? 0} cases',
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  color: Colors.white.withAlpha(179),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.of(context).pushNamed('/cases/new'),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withAlpha(26),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(Icons.add, color: Colors.white, size: 22),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
+              ),
+
+              // Search + Filters
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Column(
                     children: [
-                      _FilterChip(label: 'All', selected: _filterStatus == null,
-                          onTap: () => setState(() => _filterStatus = null)),
-                      _FilterChip(label: '🔴 Urgent', selected: _filterStatus == 'critical',
-                          onTap: () => setState(() => _filterStatus = 'critical')),
-                      _FilterChip(label: 'Active', selected: _filterStatus == 'active',
-                          onTap: () => setState(() => _filterStatus = 'active')),
-                      const SizedBox(width: 8),
-                      _FilterChip(label: 'PHAHC', selected: _filterCourt == 'PHAHC',
-                          onTap: () => setState(() => _filterCourt = _filterCourt == 'PHAHC' ? null : 'PHAHC')),
-                      _FilterChip(label: 'DHC', selected: _filterCourt == 'DHC',
-                          onTap: () => setState(() => _filterCourt = _filterCourt == 'DHC' ? null : 'DHC')),
-                      _FilterChip(label: 'SC', selected: _filterCourt == 'SC',
-                          onTap: () => setState(() => _filterCourt = _filterCourt == 'SC' ? null : 'SC')),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: LatticeColors.surface,
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: const [
+                            BoxShadow(color: LatticeColors.shadow, blurRadius: 12, offset: Offset(0, 3)),
+                          ],
+                        ),
+                        child: TextField(
+                          onChanged: (v) => setState(() => _searchQuery = v),
+                          style: GoogleFonts.inter(color: LatticeColors.textPrimary, fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: 'Search cases, clients...',
+                            hintStyle: GoogleFonts.inter(color: LatticeColors.textTertiary),
+                            prefixIcon: const Icon(Icons.search, color: LatticeColors.textTertiary),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: LatticeColors.surface,
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _FilterChip(
+                              label: 'All',
+                              selected: _filterStatus == null && _filterCourt == null,
+                              onTap: () => setState(() {
+                                _filterStatus = null;
+                                _filterCourt = null;
+                              }),
+                            ),
+                            const SizedBox(width: 8),
+                            _FilterChip(
+                              label: 'Urgent',
+                              selected: _filterStatus == 'critical',
+                              onTap: () => setState(() => _filterStatus = _filterStatus == 'critical' ? null : 'critical'),
+                            ),
+                            _FilterChip(
+                              label: 'Active',
+                              selected: _filterStatus == 'active',
+                              onTap: () => setState(() => _filterStatus = _filterStatus == 'active' ? null : 'active'),
+                            ),
+                            const SizedBox(width: 8),
+                            _FilterChip(
+                              label: 'PHAHC',
+                              selected: _filterCourt == 'PHAHC',
+                              onTap: () => setState(() => _filterCourt = _filterCourt == 'PHAHC' ? null : 'PHAHC'),
+                            ),
+                            _FilterChip(
+                              label: 'DHC',
+                              selected: _filterCourt == 'DHC',
+                              onTap: () => setState(() => _filterCourt = _filterCourt == 'DHC' ? null : 'DHC'),
+                            ),
+                            _FilterChip(
+                              label: 'SC',
+                              selected: _filterCourt == 'SC',
+                              onTap: () => setState(() => _filterCourt = _filterCourt == 'SC' ? null : 'SC'),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-
-          // Case List
-          Expanded(
-            child: casesAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator(color: AppColors.neonCyan)),
-              error: (e, _) => Center(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.error_outline, size: 48, color: AppColors.error),
-                  const SizedBox(height: 12),
-                  Text('Failed to load cases', style: TextStyle(color: AppColors.textSecondary)),
-                  TextButton(onPressed: () => ref.invalidate(casesProvider), child: const Text('Retry')),
-                ]),
               ),
-              data: (cases) {
-                var filtered = cases.where((c) {
-                  if (_filterStatus != null && c.status != _filterStatus) return false;
-                  if (_filterCourt != null && c.courtCode != _filterCourt) return false;
-                  if (_searchQuery.isNotEmpty) {
-                    final q = _searchQuery.toLowerCase();
-                    return c.caseTitle.toLowerCase().contains(q) ||
-                        c.clientName.toLowerCase().contains(q);
-                  }
-                  return true;
-                }).toList();
 
-                if (filtered.isEmpty) {
-                  return Center(
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.folder_open, size: 64, color: AppColors.textTertiary),
-                      const SizedBox(height: 16),
-                      Text('No cases found', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
-                      const SizedBox(height: 8),
-                      ElevatedButton.icon(
-                        onPressed: () => Navigator.of(context).pushNamed('/cases/new'),
-                        icon: const Icon(Icons.add),
-                        label: const Text('Add First Case'),
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+              // Case List
+              casesAsync.when(
+                loading: () => const SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator(color: LatticeColors.primary)),
+                ),
+                error: (e, _) => SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.error_outline, size: 48, color: LatticeColors.error),
+                        const SizedBox(height: 12),
+                        Text('Failed to load cases', style: GoogleFonts.inter(color: LatticeColors.textSecondary)),
+                        TextButton(
+                          onPressed: () => ref.invalidate(casesProvider),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                data: (cases) {
+                  var filtered = cases.where((c) {
+                    if (_filterStatus != null && c.status != _filterStatus) return false;
+                    if (_filterCourt != null && c.courtCode != _filterCourt) return false;
+                    if (_searchQuery.isNotEmpty) {
+                      final q = _searchQuery.toLowerCase();
+                      return c.caseTitle.toLowerCase().contains(q) ||
+                          c.clientName.toLowerCase().contains(q);
+                    }
+                    return true;
+                  }).toList();
+
+                  if (filtered.isEmpty) {
+                    return SliverFillRemaining(
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.folder_open, size: 64, color: LatticeColors.textTertiary),
+                            const SizedBox(height: 16),
+                            Text(
+                              'No cases found',
+                              style: GoogleFonts.manrope(
+                                fontSize: 18,
+                                color: LatticeColors.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: () => Navigator.of(context).pushNamed('/cases/new'),
+                              icon: const Icon(Icons.add),
+                              label: const Text('Add First Case'),
+                            ),
+                          ],
+                        ),
                       ),
-                    ]),
-                  );
-                }
+                    );
+                  }
 
-                return ListView.builder(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: filtered.length,
-                  itemBuilder: (context, index) {
-                    final c = filtered[index];
-                    return _CaseCard(case_: c);
-                  },
-                );
-              },
-            ),
+                  return SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 90),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => _CaseCard(case_: filtered[index]),
+                        childCount: filtered.length,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -166,14 +277,23 @@ class _FilterChip extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: selected ? AppColors.neonCyanDim : AppColors.bgElevated,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: selected ? AppColors.neonCyan : AppColors.bgBorder),
+            color: selected ? LatticeColors.primary : LatticeColors.surface,
+            borderRadius: BorderRadius.circular(100),
+            border: Border.all(color: selected ? LatticeColors.primary : LatticeColors.cardBorder),
+            boxShadow: selected ? null : const [
+              BoxShadow(color: LatticeColors.shadow, blurRadius: 8, offset: Offset(0, 2)),
+            ],
           ),
-          child: Text(label,
-              style: TextStyle(fontSize: 12, color: selected ? AppColors.neonCyan : AppColors.textSecondary)),
+          child: Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: selected ? Colors.white : LatticeColors.textSecondary,
+            ),
+          ),
         ),
       ),
     );
@@ -184,14 +304,12 @@ class _CaseCard extends ConsumerWidget {
   final Case case_;
   const _CaseCard({required this.case_});
 
-  Color get _urgencyColor {
-    return switch (case_.urgencyLevel) {
-      'critical' => AppColors.urgent,
-      'high' => AppColors.warning,
-      'medium' => AppColors.medium,
-      _ => AppColors.low,
-    };
-  }
+  Color get _urgencyColor => switch (case_.urgencyLevel) {
+    'critical' => LatticeColors.error,
+    'high' => LatticeColors.warning,
+    'medium' => LatticeColors.warning,
+    _ => LatticeColors.successDark,
+  };
 
   String get _daysUntilHearing {
     if (case_.nextHearingAt == null) return 'No date';
@@ -210,49 +328,103 @@ class _CaseCard extends ConsumerWidget {
         Navigator.of(context).pushNamed('/cases/${case_.caseId}');
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.all(14),
+        margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: AppColors.bgSurface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.bgBorder),
-          boxShadow: [BoxShadow(color: _urgencyColor.withAlpha(13), blurRadius: 8, offset: const Offset(0, 2))],
+          color: LatticeColors.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border(
+            left: BorderSide(color: _urgencyColor, width: 4),
+          ),
+          boxShadow: const [
+            BoxShadow(color: LatticeColors.shadow, blurRadius: 16, offset: Offset(0, 4)),
+          ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 4, height: 36,
-                  decoration: BoxDecoration(color: _urgencyColor, borderRadius: BorderRadius.circular(2)),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(case_.caseTitle,
-                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: AppColors.textPrimary),
-                          maxLines: 1, overflow: TextOverflow.ellipsis),
-                      const SizedBox(height: 2),
-                      Text('${case_.courtCode} • ${case_.clientName}',
-                          style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                    ],
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    UrgencyBadge(level: case_.urgencyLevel),
+                    Text(
+                      case_.caseTitle,
+                      style: GoogleFonts.manrope(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: LatticeColors.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     const SizedBox(height: 4),
-                    Text(_daysUntilHearing,
-                        style: TextStyle(fontSize: 11, color: _urgencyColor, fontWeight: FontWeight.w600)),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: LatticeColors.primary.withAlpha(15),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            case_.courtCode,
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: LatticeColors.primary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          case_.clientName,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: LatticeColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: _urgencyColor.withAlpha(20),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      case_.urgencyLevel.toUpperCase(),
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: _urgencyColor,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.calendar_today, size: 12, color: LatticeColors.textTertiary),
+                      const SizedBox(width: 4),
+                      Text(
+                        _daysUntilHearing,
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          color: _urgencyColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

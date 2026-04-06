@@ -43,6 +43,8 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/letese_logo.png
+    - assets/letese_logo.jpg
   fonts:
     - family: Inter
       fonts:
