@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LETESE Trading — Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>tailwind.config={theme:{extend:{colors:{accent:{'green':'#22c55e','red':'#ef4444','blue':'#3b82f6','amber':'#f59e0b','purple':'#8b5cf6'}}}}}</script>
+  <style>
+    *{box-sizing:border-box}body{font-family:'Inter',sans-serif;background:#0a0e1a;color:#e2e8f0;min-height:100vh;margin:0}
+    .text-mono{font-family:'JetBrains Mono',monospace}
+    @keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .spin-slow{animation:spin-slow 2s linear infinite}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .fade-in{animation:fadeIn 0.5s ease-out forwards}
+    .glass-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px}
+    .input-field{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#e2e8f0;font-size:14px;padding:12px 16px;width:100%;transition:border 0.2s,box-shadow 0.2s}
+    .input-field:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.15)}
+    .input-field::placeholder{color:#475569}
+    .btn-primary{background:#3b82f6;color:white;border:none;border-radius:10px;padding:13px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;width:100%}
+    .btn-primary:hover{background:#2563eb;transform:translateY(-1px);box-shadow:0 4px 16px rgba(59,130,246,0.3)}
+    .btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+  </style>
+</head>
+<body>
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <!-- Background pattern -->
+    <div class="fixed inset-0 pointer-events-none" style="background:radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(34,197,94,0.06) 0%, transparent 50%);"></div>
+
+    <div class="fade-in w-full max-w-md relative">
+      <!-- Logo -->
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center gap-0.5 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center font-bold text-white text-lg">L</div>
+          <div class="w-10 h-10 rounded-xl bg-yellow-500 flex items-center justify-center font-bold text-black text-lg">E</div>
+        </div>
+        <h1 class="text-2xl font-bold text-white">LETESE Trading</h1>
+        <p class="text-slate-400 text-sm mt-1">Legal & Trading Automation Platform</p>
+      </div>
+
+      <!-- Login Card -->
+      <div class="glass-card p-8">
+        <h2 class="text-white font-bold text-xl mb-1">Welcome back</h2>
+        <p class="text-slate-400 text-sm mb-6">Sign in to your account</p>
+
+        <div id="errorMsg" class="hidden bg-red-500/15 border border-red-500/30 text-red-400 text-sm rounded-lg p-3 mb-4"></div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="mb-4">
+            <label class="block text-slate-300 text-sm font-medium mb-1.5">Email</label>
+            <input type="email" id="email" class="input-field" placeholder="you@example.com" required />
+          </div>
+          <div class="mb-2">
+            <label class="block text-slate-300 text-sm font-medium mb-1.5">Password</label>
+            <input type="password" id="password" class="input-field" placeholder="••••••••" required />
+          </div>
+          <div class="flex items-center justify-between mb-6">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="accent-blue-500" style="width:14px;height:14px;" />
+              <span class="text-slate-400 text-xs">Remember me</span>
+            </label>
+            <a href="#" class="text-blue-400 text-xs hover:underline">Forgot password?</a>
+          </div>
+          <button type="submit" id="loginBtn" class="btn-primary flex items-center justify-center gap-2">
+            <span>Sign In</span>
+          </button>
+        </form>
+
+        <div class="mt-6 text-center">
+          <p class="text-slate-500 text-sm">Don't have an account? <a href="/register" class="text-blue-400 hover:underline font-medium">Register now</a></p>
+        </div>
+      </div>
+
+      <!-- Demo credentials -->
+      <div class="mt-4 glass-card p-4 text-center border-blue-500/20">
+        <p class="text-slate-400 text-xs mb-1">Admin Demo Credentials</p>
+        <p class="text-blue-400 text-xs font-mono">admin@letese.com / admin123</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let loading = false;
+    async function handleLogin(e) {
+      e.preventDefault();
+      if (loading) return;
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const btn = document.getElementById('loginBtn');
+      
+      errorMsg.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin-slow"></div><span>Signing in...</span>';
+      loading = true;
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        
+        if (!res.ok) {
+          errorMsg.textContent = data.error || 'Login failed';
+          errorMsg.classList.remove('hidden');
+          btn.disabled = false;
+          btn.innerHTML = '<span>Sign In</span>';
+          return;
+        }
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        if (data.user.role === 'admin') {
+          window.location.href = '/admin';
+        } else {
+          window.location.href = '/customer';
+        }
+      } catch (err) {
+        errorMsg.textContent = 'Server error. Please try again.';
+        errorMsg.classList.remove('hidden');
+        btn.disabled = false;
+        btn.innerHTML = '<span>Sign In</span>';
+      }
+      loading = false;
+    }
+  </script>
+</body>
+</html>

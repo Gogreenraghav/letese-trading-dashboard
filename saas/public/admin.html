@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LETESE — Super Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>tailwind.config={theme:{extend:{colors:{accent:{'green':'#22c55e','red':'#ef4444','blue':'#3b82f6','amber':'#f59e0b','purple':'#8b5cf6'}}}}}</script>
+  <style>
+    *{box-sizing:border-box}body{font-family:'Inter',sans-serif;background:#0a0e1a;color:#e2e8f0;min-height:100vh;margin:0}
+    .text-mono{font-family:'JetBrains Mono',monospace}
+    @keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.spin-slow{animation:spin-slow 2s linear infinite}
+    .glass-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px}
+    .glass-card:hover{border-color:rgba(255,255,255,0.13)}
+    .glass-header{background:rgba(10,14,26,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
+    @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.3}}.pulse-dot{animation:pulse-dot 2s ease-in-out infinite}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse-dot 2s infinite;display:inline-block}
+    .tab-active{background:rgba(59,130,246,0.15);border-bottom:2px solid #3b82f6;color:#60a5fa}
+    .input-field{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#e2e8f0;font-size:13px;padding:8px 12px;width:100%;transition:border 0.2s}
+    .input-field:focus{outline:none;border-color:#3b82f6}
+    .input-field::placeholder{color:#475569}
+    .btn-primary{background:#3b82f6;color:white;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s}
+    .btn-primary:hover{background:#2563eb}
+    .btn-success{background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer}
+    .btn-danger{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer}
+    .badge-approved{background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.3);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+    .badge-pending{background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+    .badge-rejected{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+    body::-webkit-scrollbar{width:5px}body::-webkit-scrollbar-track{background:#0f1424}body::-webkit-scrollbar-thumb{background:#1e293b;border-radius:3px}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:1000;display:none;align-items:center;justify-content:center}
+    .modal-overlay.active{display:flex}
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="glass-header sticky top-0 z-50 px-4 py-3 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-0.5">
+        <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center font-bold text-white text-sm">L</div>
+        <div class="w-8 h-8 rounded-lg bg-yellow-500 flex items-center justify-center font-bold text-black text-sm">E</div>
+      </div>
+      <div>
+        <h1 class="text-white font-bold text-sm leading-none">LETESE <span class="text-red-400">Admin</span></h1>
+        <p class="text-slate-500 text-[10px] mt-0.5">Super Administrator Panel</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 text-xs text-slate-400">
+        <span class="live-dot"></span>
+        <span>Admin Mode</span>
+      </div>
+      <div id="adminBadge" class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/30">SUPER ADMIN</div>
+      <button onclick="handleLogout()" class="text-slate-400 hover:text-white text-xs border border-white/10 rounded-lg px-3 py-1.5 transition">Logout</button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="p-4 space-y-4 max-w-[1600px] mx-auto">
+    <!-- TABS -->
+    <div class="flex gap-1 border-b border-white/5">
+      <button class="tab-btn px-4 py-2.5 text-[12px] font-medium tab-active" onclick="switchTab('overview')" id="tab-overview">📊 Overview</button>
+      <button class="tab-btn px-4 py-2.5 text-[12px] font-medium text-slate-400 hover:text-white" onclick="switchTab('customers')" id="tab-customers">👥 Customers</button>
+      <button class="tab-btn px-4 py-2.5 text-[12px] font-medium text-slate-400 hover:text-white" onclick="switchTab('kyc')" id="tab-kyc">📋 KYC Queue</button>
+      <button class="tab-btn px-4 py-2.5 text-[12px] font-medium text-slate-400 hover:text-white" onclick="switchTab('analytics')" id="tab-analytics">📈 Analytics</button>
+    </div>
+
+    <!-- OVERVIEW TAB -->
+    <div id="tab-content-overview">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Total Customers</div>
+          <div id="statTotal" class="text-mono text-2xl font-bold text-white">—</div>
+        </div>
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Active</div>
+          <div id="statActive" class="text-mono text-2xl font-bold text-green-400">—</div>
+        </div>
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">KYC Pending</div>
+          <div id="statKyc" class="text-mono text-2xl font-bold text-amber-400">—</div>
+        </div>
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Total Trades</div>
+          <div id="statTrades" class="text-mono text-2xl font-bold text-blue-400">—</div>
+        </div>
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Total P&L</div>
+          <div id="statPnL" class="text-mono text-2xl font-bold">—</div>
+        </div>
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Monthly Revenue</div>
+          <div id="statRevenue" class="text-mono text-2xl font-bold text-yellow-400">—</div>
+        </div>
+      </div>
+
+      <!-- Plan Distribution + Recent -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- Plan Distribution -->
+        <div class="lg:col-span-4 glass-card p-4">
+          <h3 class="text-white font-semibold text-sm mb-3">Plan Distribution</h3>
+          <div id="planDistGrid" class="space-y-2 mb-3"></div>
+          <div class="relative" style="height:140px;"><canvas id="planChart" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div>
+        </div>
+
+        <!-- Recent Registrations -->
+        <div class="lg:col-span-8 glass-card p-4">
+          <h3 class="text-white font-semibold text-sm mb-3">Recent Registrations</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-[11px]">
+              <thead>
+                <tr class="border-b border-white/5 text-slate-500">
+                  <th class="text-left py-2 px-2 font-medium">Name</th>
+                  <th class="text-left py-2 px-2 font-medium">Email</th>
+                  <th class="text-center py-2 px-2 font-medium">Plan</th>
+                  <th class="text-center py-2 px-2 font-medium">KYC</th>
+                  <th class="text-right py-2 px-2 font-medium">Trades</th>
+                  <th class="text-right py-2 px-2 font-medium">P&L</th>
+                  <th class="text-right py-2 px-2 font-medium">Joined</th>
+                </tr>
+              </thead>
+              <tbody id="recentTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS TAB -->
+    <div id="tab-content-customers" class="hidden">
+      <div class="glass-card p-4">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-white font-semibold text-sm">All Customers</h3>
+          <div class="flex gap-2">
+            <input type="text" id="searchCustomer" class="input-field w-64 text-[11px]" placeholder="Search by name or email..." oninput="filterCustomers()" />
+            <select id="filterPlan" class="input-field w-36 text-[11px]" onchange="filterCustomers()">
+              <option value="">All Plans</option>
+              <option value="basic">Basic</option>
+              <option value="professional">Professional</option>
+              <option value="elite">Elite</option>
+            </select>
+            <select id="filterKyc" class="input-field w-36 text-[11px]" onchange="filterCustomers()">
+              <option value="">All KYC</option>
+              <option value="approved">Approved</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-[11px]">
+            <thead>
+              <tr class="border-b border-white/5 text-slate-500">
+                <th class="text-left py-2 px-2 font-medium">Name</th>
+                <th class="text-left py-2 px-2 font-medium">Contact</th>
+                <th class="text-center py-2 px-2 font-medium">Plan</th>
+                <th class="text-center py-2 px-2 font-medium">KYC</th>
+                <th class="text-right py-2 px-2 font-medium">Trades</th>
+                <th class="text-right py-2 px-2 font-medium">Win Rate</th>
+                <th class="text-right py-2 px-2 font-medium">P&L</th>
+                <th class="text-center py-2 px-2 font-medium">Last Login</th>
+                <th class="text-center py-2 px-2 font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="customersTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- KYC TAB -->
+    <div id="tab-content-kyc" class="hidden">
+      <div class="glass-card p-4">
+        <h3 class="text-white font-semibold text-sm mb-4">KYC Approval Queue</h3>
+        <div id="kycQueue" class="space-y-3"></div>
+        <div id="kycEmpty" class="hidden text-center py-12 text-slate-500 text-sm">No pending KYC requests</div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS TAB -->
+    <div id="tab-content-analytics" class="hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="glass-card p-4">
+          <h3 class="text-white font-semibold text-sm mb-3">Win Rate Distribution</h3>
+          <div class="relative" style="height:200px;"><canvas id="winRateChart" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div>
+        </div>
+        <div class="glass-card p-4">
+          <h3 class="text-white font-semibold text-sm mb-3">P&L by Plan</h3>
+          <div class="relative" style="height:200px;"><canvas id="pnlChart" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div>
+        </div>
+        <div class="lg:col-span-2 glass-card p-4">
+          <h3 class="text-white font-semibold text-sm mb-3">All Customers — Equity Curves</h3>
+          <div class="relative" style="height:200px;"><canvas id="equityChart" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Customer Detail Modal -->
+  <div id="customerModal" class="modal-overlay">
+    <div class="bg-[#0f1424] border border-white/10 rounded-xl w-full max-w-3xl overflow-hidden" style="max-height:90vh;">
+      <div class="flex items-center justify-between p-4 border-b border-white/5">
+        <div>
+          <h2 class="text-white font-bold text-lg">👤 Customer Details</h2>
+          <p id="modalSubtitle" class="text-slate-500 text-xs mt-0.5"></p>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div id="modalContent" class="p-4 overflow-y-auto" style="max-height:calc(90vh - 140px);"></div>
+    </div>
+  </div>
+
+  <script>
+    // ── State ────────────────────────────────────────────────────
+    let token = localStorage.getItem('token');
+    let user = JSON.parse(localStorage.getItem('user') || 'null');
+    let allCustomers = [];
+    let planChart = null;
+    let equityChart = null;
+
+    // ── Auth Check ──────────────────────────────────────────────
+    if (!token || !user || user.role !== 'admin') {
+      window.location.href = '/login';
+    }
+
+    document.getElementById('adminBadge').innerHTML = `SUPER ADMIN: ${user.name}`;
+
+    // ── API Helper ───────────────────────────────────────────────
+    async function api(path, options = {}) {
+      const res = await fetch(path, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+          ...(options.headers || {}),
+        },
+      });
+      if (res.status === 401) { window.location.href = '/login'; return null; }
+      return res.json();
+    }
+
+    // ── Logout ───────────────────────────────────────────────────
+    function handleLogout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
+
+    // ── Tabs ─────────────────────────────────────────────────────
+    function switchTab(tab) {
+      document.querySelectorAll('[id^="tab-content-"]').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('[id^="tab-"]').forEach(el => { if (el.id.startsWith('tab-')) el.classList.remove('tab-active'); });
+      document.getElementById('tab-content-' + tab)?.classList.remove('hidden');
+      document.getElementById('tab-' + tab)?.classList.add('tab-active');
+      if (tab === 'overview') loadOverview();
+      else if (tab === 'customers') loadCustomers();
+      else if (tab === 'kyc') loadKYC();
+      else if (tab === 'analytics') loadAnalytics();
+    }
+
+    // ── Overview ─────────────────────────────────────────────────
+    async function loadOverview() {
+      const data = await api('/api/admin/overview');
+      if (!data) return;
+
+      document.getElementById('statTotal').textContent = data.totalCustomers || 0;
+      document.getElementById('statActive').textContent = data.activeCustomers || 0;
+      document.getElementById('statKyc').textContent = data.kycPending || 0;
+      document.getElementById('statTrades').textContent = data.totalTrades || 0;
+      const pnl = parseFloat(data.totalPnL || 0);
+      document.getElementById('statPnL').textContent = '₹' + pnl.toFixed(0);
+      document.getElementById('statPnL').style.color = pnl >= 0 ? '#22c55e' : '#ef4444';
+      document.getElementById('statRevenue').textContent = '₹' + (data.monthlyRevenue || 0).toLocaleString();
+
+      // Plan distribution
+      const planDist = data.planDistribution || {};
+      const planDistGrid = document.getElementById('planDistGrid');
+      planDistGrid.innerHTML = Object.entries(planDist).map(([plan, count]) => `
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="text-slate-400 capitalize">${plan}</span>
+          <span class="font-mono text-white">${count} users</span>
+        </div>
+      `).join('');
+
+      // Plan pie chart
+      if (planChart) planChart.destroy();
+      const ctx = document.getElementById('planChart');
+      if (ctx) {
+        planChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: Object.keys(planDist),
+            datasets: [{ data: Object.values(planDist), backgroundColor: ['rgba(59,130,246,0.7)', 'rgba(34,197,94,0.7)', 'rgba(245,158,11,0.7)'], borderWidth: 0 }],
+          },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } } },
+        });
+      }
+
+      // Recent table
+      const recent = data.recentRegistrations || [];
+      document.getElementById('recentTable').innerHTML = recent.length === 0
+        ? '<tr><td colspan="7" class="text-center py-6 text-slate-600">No customers yet</td></tr>'
+        : recent.map(c => {
+          const pnl = parseFloat(c.stats?.totalPnL || 0);
+          return `<tr class="border-b border-white/5 hover:bg-white/3 cursor-pointer" onclick="openCustomerModal('${c.id}')">
+            <td class="py-2 px-2 text-white font-medium">${c.name}</td>
+            <td class="py-2 px-2 text-slate-400">${c.email}</td>
+            <td class="py-2 px-2 text-center"><span class="capitalize text-blue-400 text-[10px]">${c.plan || 'basic'}</span></td>
+            <td class="py-2 px-2 text-center"><span class="badge-${c.kycStatus || 'pending'}">${(c.kycStatus || 'pending').toUpperCase()}</span></td>
+            <td class="py-2 px-2 text-right font-mono text-white">${c.stats?.totalTrades || 0}</td>
+            <td class="py-2 px-2 text-right font-mono ${pnl >= 0 ? 'text-green-400' : 'text-red-400'}">${pnl >= 0 ? '+' : ''}₹${pnl.toFixed(0)}</td>
+            <td class="py-2 px-2 text-right text-slate-500">${new Date(c.createdAt).toLocaleDateString()}</td>
+          </tr>`;
+        }).join('');
+    }
+
+    // ── Customers ─────────────────────────────────────────────────
+    async function loadCustomers() {
+      const data = await api('/api/admin/customers');
+      if (!data) return;
+      allCustomers = data.customers || [];
+      renderCustomers(allCustomers);
+    }
+
+    function filterCustomers() {
+      const q = document.getElementById('searchCustomer').value.toLowerCase();
+      const plan = document.getElementById('filterPlan').value;
+      const kyc = document.getElementById('filterKyc').value;
+      const filtered = allCustomers.filter(c => {
+        const matchQ = !q || c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q);
+        const matchPlan = !plan || c.plan === plan;
+        const matchKyc = !kyc || c.kycStatus === kyc;
+        return matchQ && matchPlan && matchKyc;
+      });
+      renderCustomers(filtered);
+    }
+
+    function renderCustomers(customers) {
+      const tbody = document.getElementById('customersTable');
+      if (!customers.length) {
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center py-10 text-slate-600">No customers found</td></tr>';
+        return;
+      }
+      tbody.innerHTML = customers.map(c => {
+        const pnl = parseFloat(c.stats?.totalPnL || 0);
+        const lastLogin = c.lastLogin ? new Date(c.lastLogin).toLocaleString() : 'Never';
+        return `<tr class="border-b border-white/5 hover:bg-white/3">
+          <td class="py-2 px-2">
+            <div class="text-white font-medium text-[11px]">${c.name}</div>
+            <div class="text-slate-500 text-[10px]">${c.phone || ''}</div>
+          </td>
+          <td class="py-2 px-2 text-slate-400 text-[11px]">${c.email}</td>
+          <td class="py-2 px-2 text-center"><span class="capitalize text-blue-400 text-[10px] font-semibold">${c.plan || 'basic'}</span></td>
+          <td class="py-2 px-2 text-center"><span class="badge-${c.kycStatus || 'pending'}">${(c.kycStatus || 'pending').toUpperCase()}</span></td>
+          <td class="py-2 px-2 text-right font-mono text-white text-[11px]">${c.stats?.totalTrades || 0}</td>
+          <td class="py-2 px-2 text-right font-mono text-[11px]">${c.stats?.winRate || '0'}%</td>
+          <td class="py-2 px-2 text-right font-mono text-[11px] ${pnl >= 0 ? 'text-green-400' : 'text-red-400'}">${pnl >= 0 ? '+' : ''}₹${pnl.toFixed(0)}</td>
+          <td class="py-2 px-2 text-right text-slate-500 text-[10px]">${lastLogin}</td>
+          <td class="py-2 px-2 text-center">
+            <button onclick="openCustomerModal('${c.id}')" class="text-blue-400 hover:text-blue-300 text-[10px] border border-blue-500/30 rounded px-2 py-1">View</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    // ── KYC ──────────────────────────────────────────────────────
+    async function loadKYC() {
+      const data = await api('/api/admin/customers');
+      if (!data) return;
+      const pending = (data.customers || []).filter(c => c.kycStatus === 'pending');
+      const queue = document.getElementById('kycQueue');
+      const empty = document.getElementById('kycEmpty');
+      if (!pending.length) { queue.classList.add('hidden'); empty.classList.remove('hidden'); return; }
+      queue.classList.remove('hidden'); empty.classList.add('hidden');
+      queue.innerHTML = pending.map(c => `
+        <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5">
+          <div>
+            <div class="text-white font-semibold text-sm">${c.name}</div>
+            <div class="text-slate-400 text-xs">${c.email} · ${c.phone || ''}</div>
+            <div class="text-slate-600 text-[10px] mt-0.5">Plan: ${c.plan} · Joined: ${new Date(c.createdAt).toLocaleDateString()}</div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="updateKYC('${c.id}', 'approved')" class="btn-success">✅ Approve</button>
+            <button onclick="updateKYC('${c.id}', 'rejected')" class="btn-danger">❌ Reject</button>
+            <button onclick="openCustomerModal('${c.id}')" class="btn-primary">👁 View</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function updateKYC(id, status) {
+      if (!confirm(`Are you sure you want to ${status} this customer?`)) return;
+      const data = await api('/api/admin/kyc/' + id, { method: 'POST', body: JSON.stringify({ status }) });
+      if (data) { alert(`KYC ${status}!`); loadKYC(); }
+    }
+
+    // ── Analytics ─────────────────────────────────────────────────
+    async function loadAnalytics() {
+      const data = await api('/api/admin/overview');
+      if (!data) return;
+
+      // Win rate chart
+      const wrCtx = document.getElementById('winRateChart');
+      if (wrCtx && winRateChart) winRateChart.destroy();
+      const wrChart = new Chart(wrCtx, {
+        type: 'bar',
+        data: {
+          labels: ['0-20%', '20-40%', '40-60%', '60-80%', '80-100%'],
+          datasets: [{
+            label: 'Customers',
+            data: [1, 2, 5, 3, 1],
+            backgroundColor: ['#ef4444','#f59e0b','#64748b','#22c55e','#10b981'],
+          }],
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } } } },
+      };
+
+      // P&L by plan
+      const pnlCtx = document.getElementById('pnlChart');
+      if (pnlCtx && window.pnlChartInstance) window.pnlChartInstance.destroy();
+      window.pnlChartInstance = new Chart(pnlCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Basic', 'Professional', 'Elite'],
+          datasets: [{ label: 'P&L', data: [12000, 35000, 28000], backgroundColor: ['rgba(59,130,246,0.7)', 'rgba(34,197,94,0.7)', 'rgba(245,158,11,0.7)'] }],
+        },
+        options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } } } },
+      });
+
+      // Equity curves
+      const eqCtx = document.getElementById('equityChart');
+      if (eqCtx && equityChart) equityChart.destroy();
+      equityChart = new Chart(eqCtx, {
+        type: 'line',
+        data: {
+          labels: Array.from({ length: 30 }, (_, i) => i),
+          datasets: [{
+            label: 'Portfolio',
+            data: Array.from({ length: 30 }, (_, i) => 50000 + (Math.random() - 0.3) * (i + 1) * 300),
+            borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.4, borderWidth: 1.5,
+          }],
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => '₹' + ctx.raw.toFixed(0) } } }, scales: { x: { display: false }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', callback: v => '₹' + (v/1000).toFixed(0) + 'k' } } } },
+      });
+    }
+
+    // ── Customer Modal ────────────────────────────────────────────
+    async function openCustomerModal(id) {
+      const modal = document.getElementById('customerModal');
+      modal.classList.add('active');
+      document.getElementById('modalContent').innerHTML = '<div class="flex items-center justify-center py-12"><div class="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full spin-slow"></div></div>';
+
+      const data = await api('/api/admin/customers/' + id);
+      if (!data) return;
+
+      const c = data.user;
+      const pnl = parseFloat(data.stats?.totalPnL || 0);
+      const plan = data.plans?.find(p => p.id === c.plan) || {};
+
+      document.getElementById('modalSubtitle').textContent = c.email + ' · ' + c.plan;
+
+      const html = `
+        <!-- Profile Card -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+          <div class="bg-white/5 rounded-lg p-3 text-center">
+            <div class="text-[10px] text-slate-500">Name</div>
+            <div class="text-white font-semibold text-sm">${c.name}</div>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3 text-center">
+            <div class="text-[10px] text-slate-500">Email</div>
+            <div class="text-white font-semibold text-sm truncate">${c.email}</div>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3 text-center">
+            <div class="text-[10px] text-slate-500">Phone</div>
+            <div class="text-white font-semibold text-sm">${c.phone || '—'}</div>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3 text-center">
+            <div class="text-[10px] text-slate-500">Plan</div>
+            <div class="text-blue-400 font-semibold text-sm capitalize">${c.plan}</div>
+          </div>
+        </div>
+
+        <!-- KYC Status -->
+        <div class="flex items-center gap-3 mb-4 p-3 rounded-lg border border-white/5">
+          <span class="text-slate-400 text-xs">KYC Status:</span>
+          <span class="badge-${c.kycStatus || 'pending'}">${(c.kycStatus || 'pending').toUpperCase()}</span>
+          <div class="flex gap-2 ml-auto">
+            <button onclick="updateKYCFromModal('${c.id}', 'approved')" class="btn-success text-[11px] py-1">Approve</button>
+            <button onclick="updateKYCFromModal('${c.id}', 'rejected')" class="btn-danger text-[11px] py-1">Reject</button>
+          </div>
+          <select id="modalPlan" class="input-field w-36 text-[11px]" onchange="changePlan('${c.id}', this.value)">
+            <option value="basic" ${c.plan === 'basic' ? 'selected' : ''}>Basic</option>
+            <option value="professional" ${c.plan === 'professional' ? 'selected' : ''}>Professional</option>
+            <option value="elite" ${c.plan === 'elite' ? 'selected' : ''}>Elite</option>
+          </select>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
+          <div class="bg-white/5 rounded-lg p-2 text-center">
+            <div            <div class="text-[9px] text-slate-500">Trades</div>
+            <div class="text-white font-bold text-sm">${data.stats?.totalTrades || 0}</div>
+          </div>
+          <div class="bg-white/5 rounded-lg p-2 text-center">
+            <div class="text-[9px] text-slate-500">Win Rate</div>
+            <div class="text-green-400 font-bold text-sm">${data.stats?.winRate || 0}%</div>
+          </div>
+          <div class="bg-white/5 rounded-lg p-2 text-center">
+            <div class="text-[9px] text-slate-500">P&L</div>
+            <div class="font-bold text-sm ${pnl >= 0 ? 'text-green-400' : 'text-red-400'}">${pnl >= 0 ? '+' : ''}₹${pnl.toFixed(0)}</div>
+          </div>
+          <div class="bg-white/5 rounded-lg p-2 text-center">
+            <div class="text-[9px] text-slate-500">Avg Win</div>
+            <div class="text-green-400 font-bold text-sm">₹${parseFloat(data.stats?.avgWin || 0).toFixed(0)}</div>
+          </div>
+          <div class="bg-white/5 rounded-lg p-2 text-center">
+            <div class="text-[9px] text-slate-500">Avg Loss</div>
+            <div class="text-red-400 font-bold text-sm">₹${parseFloat(data.stats?.avgLoss || 0).toFixed(0)}</div>
+          </div>
+          <div class="bg-white/5 rounded-lg p-2 text-center">
+            <div class="text-[9px] text-slate-500">Best Trade</div>
+            <div class="text-blue-400 font-bold text-sm">₹${parseFloat(data.stats?.bestTrade || 0).toFixed(0)}</div>
+          </div>
+        </div>
+
+        <!-- Equity Curve -->
+        <div class="mb-4">
+          <div class="text-slate-300 text-xs font-medium mb-2">Equity Curve</div>
+          <div class="relative bg-white/3 rounded-lg p-2" style="height:120px;">
+            <canvas id="modalEquityChart" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Trades -->
+        <div class="text-slate-300 text-xs font-medium mb-2">Recent Trades (${data.trades?.length || 0})</div>
+        <div class="overflow-x-auto" style="max-height:200px;overflow-y:auto;">
+          <table class="w-full text-[10px]">
+            <thead class="sticky top-0 bg-[#0f1424]">
+              <tr class="border-b border-white/5 text-slate-500">
+                <th class="py-1 px-1.5 text-left">Symbol</th>
+                <th class="py-1 px-1.5 text-center">Side</th>
+                <th class="py-1 px-1.5 text-right">Entry</th>
+                <th class="py-1 px-1.5 text-right">Exit</th>
+                <th class="py-1 px-1.5 text-right">P&L</th>
+                <th class="py-1 px-1.5 text-left">Strategy</th>
+                <th class="py-1 px-1.5 text-right">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${(data.trades || []).slice(0, 20).map(t => {
+                const tp = parseFloat(t.pnl || 0);
+                return `<tr class="border-b border-white/5">
+                  <td class="py-1 px-1.5 text-white font-mono">${t.symbol}</td>
+                  <td class="py-1 px-1.5 text-center"><span class="${(t.action || 'BUY') === 'BUY' ? 'text-green-400' : 'text-red-400'}">${t.action || 'BUY'}</span></td>
+                  <td class="py-1 px-1.5 text-right font-mono text-slate-400">₹${(t.entryPrice || 0).toFixed(1)}</td>
+                  <td class="py-1 px-1.5 text-right font-mono text-slate-400">₹${(t.exitPrice || 0).toFixed(1)}</td>
+                  <td class="py-1 px-1.5 text-right font-mono ${tp >= 0 ? 'text-green-400' : 'text-red-400'}">${tp >= 0 ? '+' : ''}₹${tp.toFixed(0)}</td>
+                  <td class="py-1 px-1.5 text-slate-500">${t.strategy || 'Signal'}</td>
+                  <td class="py-1 px-1.5 text-right text-slate-500">${new Date(t.exitTime || t.timestamp).toLocaleDateString()}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+      window._modalEquityData = data.performance?.equityCurve || [{ day: 0, value: 50000 }];
+      setTimeout(() => {
+        const ctx = document.getElementById('modalEquityChart');
+        if (ctx && window._modalEquityData) {
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: window._modalEquityData.map(e => e.day),
+              datasets: [{ data: window._modalEquityData.map(e => e.value), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.4, borderWidth: 1.5, pointRadius: 0 }],
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => '₹' + ctx.raw.toLocaleString() } } }, scales: { x: { display: false }, y: { display: false } } },
+          });
+        }
+      }, 100);
+    }
+
+    async function updateKYCFromModal(id, status) {
+      await updateKYC(id, status);
+      const data = await api('/api/admin/customers/' + id);
+      if (data) openCustomerModal(id);
+    }
+
+    async function changePlan(id, plan) {
+      await api('/api/admin/plan/' + id, { method: 'POST', body: JSON.stringify({ plan }) });
+      alert('Plan updated to ' + plan);
+    }
+
+    function closeModal() {
+      document.getElementById('customerModal').classList.remove('active');
+    }
+
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    // ── Init ─────────────────────────────────────────────────────
+    loadOverview();
+  </script>
+</body>
+</html>
