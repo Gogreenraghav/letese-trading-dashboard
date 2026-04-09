@@ -2,7 +2,7 @@
   "name": "LETESE Trading",
   "short_name": "LETESE",
   "description": "Automated Trading Platform for Indian Markets",
-  "start_url": "/mobile",
+  "start_url": "/mobile/",
   "display": "standalone",
   "background_color": "#0a0e1a",
   "theme_color": "#0a0e1a",

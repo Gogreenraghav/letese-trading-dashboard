@@ -1,8 +1,10 @@
-const CACHE_NAME = 'letese-v1';
+const CACHE_NAME = 'letese-v2';
 const ASSETS = [
-  '/mobile',
+  '/mobile/',
+  '/mobile/index.html',
   '/mobile/styles.css',
   '/mobile/app.js',
+  '/mobile/install-handler.js',
   '/manifest.json',
 ];
 
@@ -31,6 +33,18 @@ self.addEventListener('activate', (e) => {
 // Fetch
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+
+  // Handle /mobile → /mobile/ redirect for PWA criteria
+  const url = new URL(e.request.url);
+  if (url.pathname === '/mobile') {
+    e.respondWith(
+      caches.match('/mobile/').then(cached => {
+        return cached || fetch('/mobile/');
+      })
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then(cached => {
       return cached || fetch(e.request).then(res => {
@@ -41,7 +55,7 @@ self.addEventListener('fetch', (e) => {
         return res;
       }).catch(() => {
         if (e.request.mode === 'navigate') {
-          return caches.match('/mobile');
+          return caches.match('/mobile/');
         }
       });
     })
