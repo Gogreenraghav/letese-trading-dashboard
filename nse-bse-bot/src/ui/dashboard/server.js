@@ -54,6 +54,7 @@ class DashboardServer {
     this.app.get('/api/keys', (req, res) => {
       const keys = {
         groq: masked(process.env.GROQ_API_KEY),
+        deepseek: masked(process.env.DEEPSEEK_API_KEY),
         openrouter: masked(process.env.OPENROUTER_API_KEY),
         gemini: masked(process.env.GEMINI_API_KEY),
         huggingface: masked(process.env.HF_TOKEN),
@@ -75,7 +76,7 @@ class DashboardServer {
           envContent = '';
         }
 
-        const keyMap = { GROQ_API_KEY: groq, OPENROUTER_API_KEY: openrouter, GEMINI_API_KEY: gemini, HF_TOKEN: huggingface };
+        const keyMap = { GROQ_API_KEY: groq, DEEPSEEK_API_KEY: deepseek, OPENROUTER_API_KEY: openrouter, GEMINI_API_KEY: gemini, HF_TOKEN: huggingface };
         for (const key of Object.keys(keyMap)) {
           const val = keyMap[key];
           if (!val) continue;
@@ -548,6 +549,32 @@ class DashboardServer {
       res.json({ success: true, mode: actual, label: mode === 'REAL' ? 'LIVE TRADING' : 'PAPER (TEST)' });
     });
 
+    // ── Balance Management ────────────────────────────────────────────
+    this.app.get('/api/balance', (req, res) => {
+      const engine = this.engine;
+      if (!engine?.portfolio) return res.json({ cash: 50000, initial: 50000, deposits: [] });
+      const deposits = engine.portfolio.deposits || [];
+      res.json({
+        cash: engine.portfolio.cash || 50000,
+        initial: parseFloat(process.env.INITIAL_CAPITAL) || 50000,
+        deposits,
+        minLiveBalance: 1000,
+      });
+    });
+
+    this.app.post('/api/balance/add', (req, res) => {
+      const { amount } = req.body;
+      const parsed = parseFloat(amount);
+      if (!parsed || parsed < 0) return res.status(400).json({ error: 'Invalid amount' });
+      const engine = this.engine;
+      if (!engine?.portfolio) return res.status(500).json({ error: 'Portfolio not available' });
+      engine.portfolio.cash = (engine.portfolio.cash || 0) + parsed;
+      if (!engine.portfolio.deposits) engine.portfolio.deposits = [];
+      engine.portfolio.deposits.push({ amount: parsed, date: new Date().toISOString(), type: 'deposit' });
+      fs.appendFileSync(path.join(__dirname, '../../../.env'), `\n# Balance deposit\n`);
+      res.json({ success: true, cash: engine.portfolio.cash, added: parsed });
+    });
+
     // ── Volume Spike Alerts ──────────────────────────────────────────
     this.app.get('/api/alerts', (req, res) => {
       const adapter = this.adapter;
@@ -577,6 +604,9 @@ class DashboardServer {
         const axios = require('axios');
         if (provider === 'groq') {
           const r = await axios.get('https://api.groq.com/openai/v1/models', { headers: { Authorization: `Bearer ${key}` }, timeout: 5000 });
+          res.json({ success: true, provider, models: r.data.data?.length || 0 });
+        } else if (provider === 'deepseek') {
+          const r = await axios.get('https://api.deepseek.com/v1/models', { headers: { Authorization: `Bearer ${key}` }, timeout: 5000 });
           res.json({ success: true, provider, models: r.data.data?.length || 0 });
         } else if (provider === 'gemini') {
           const r = await axios.get(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`, { timeout: 5000 });

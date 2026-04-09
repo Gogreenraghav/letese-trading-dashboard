@@ -1,6 +1,6 @@
 /**
  * Multi-Provider AI Client with Automatic Failover
- * Supports: Groq, OpenRouter, Gemini, HuggingFace
+ * Supports: Groq, DeepSeek, OpenRouter, Gemini, HuggingFace
  */
 
 const axios = require('axios');
@@ -12,6 +12,14 @@ const PROVIDERS = [
     baseURL: 'https://api.groq.com/openai/v1',
     model: 'llama-3.3-70b-versatile',
     timeout: 5000,
+    priority: 1,
+  },
+  {
+    name: 'deepseek',
+    apiKey: process.env.DEEPSEEK_API_KEY,
+    baseURL: 'https://api.deepseek.com/v1',
+    model: 'deepseek-chat',
+    timeout: 8000,
     priority: 1,
   },
   {
@@ -70,6 +78,19 @@ class AIClient {
     let url, data, transform;
 
     if (provider.name === 'groq') {
+      url = `${provider.baseURL}/chat/completions`;
+      headers['Authorization'] = `Bearer ${provider.apiKey}`;
+      data = {
+        model: provider.model,
+        messages: [
+          ...(systemPrompt ? [{ role: 'system', content: systemPrompt }] : []),
+          ...messages,
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+      };
+      transform = (r) => r.choices?.[0]?.message?.content || '';
+    } else if (provider.name === 'deepseek') {
       url = `${provider.baseURL}/chat/completions`;
       headers['Authorization'] = `Bearer ${provider.apiKey}`;
       data = {

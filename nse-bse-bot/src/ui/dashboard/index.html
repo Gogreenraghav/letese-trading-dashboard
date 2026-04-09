@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NSE/BSE Trading Bot v2.0</title>
+  <title>AI24X7 Trading Bot</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,6 +63,7 @@
     .badge-sev-high { background:rgba(239,68,68,0.15);color:#ef4444 }
     .badge-sev-med { background:rgba(245,158,11,0.15);color:#f59e0b }
     .badge-sev-low { background:rgba(59,130,246,0.15);color:#60a5fa }
+    .badge-paper { background:rgba(245,158,11,0.15);color:#f59e0b }
     .badge-test { background:rgba(245,158,11,0.15);color:#f59e0b }
     .badge-real { background:rgba(239,68,68,0.2);color:#ef4444 }
     .tag-chip { font-size:10px;padding:2px 8px;border-radius:6px;font-weight:500 }
@@ -92,8 +93,8 @@
       <div class="w-7 h-7 rounded-lg bg-yellow-500 flex items-center justify-center font-bold text-black text-xs">B</div>
     </div>
     <div>
-      <h1 class="text-sm font-bold text-white leading-none">Trading Bot <span class="text-blue-400">v2.0</span></h1>
-      <p class="text-[10px] text-slate-500 mt-0.5">NSE / BSE Automated</p>
+      <h1 class="text-sm font-bold text-white leading-none">AI24X7 <span class="text-blue-400">Trading Bot</span></h1>
+      <p class="text-[10px] text-slate-500 mt-0.5">NSE / BSE • AI Powered</p>
     </div>
   </div>
   <div class="flex items-center gap-3 flex-shrink-0">
@@ -127,7 +128,7 @@
       <div id="headerCapital" class="text-mono text-sm font-bold text-green-400">₹50,000</div>
     </div>
     <div class="w-px h-6 bg-white/10"></div>
-    <div id="modeBadge" class="px-2.5 py-1 rounded-full text-[10px] font-bold badge-test"><span id="modeBadgeText">TEST</span></div>
+    <div id="modeBadge" class="px-2.5 py-1 rounded-full text-[10px] font-bold badge-paper"><span id="modeBadgeText">PAPER</span></div>
     <button onclick="toggleSettings()" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition text-slate-400 hover:text-white" title="Settings">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
     </button>
@@ -717,7 +718,7 @@
     <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
       <div>
         <h2 class="text-lg font-bold text-white">⚙️ Settings &amp; Configuration</h2>
-        <p class="text-[11px] text-slate-500 mt-0.5">Trading Bot v2.0 control panel</p>
+        <p class="text-[11px] text-slate-500 mt-0.5">AI24X7 Trading Bot control panel</p>
       </div>
       <button onclick="toggleSettings()" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition text-slate-400 hover:text-white" title="Close">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -746,6 +747,15 @@
             <button onclick="saveApiKey('groq')" class="btn-primary text-[10px] px-2 py-1 flex-1">Save</button>
           </div>
           <div class="col-span-12"><div class="text-[10px] text-slate-600" id="status-groq">Not configured</div></div>
+        </div>
+        <div class="grid grid-cols-12 gap-2 items-center p-3 bg-white/[0.02] rounded-lg border border-white/5">
+          <div class="col-span-3"><span class="text-[11px] font-semibold text-[#00BFFF]">DeepSeek</span></div>
+          <div class="col-span-6"><input type="password" class="input-key" placeholder="sk-..." data-provider="deepseek" id="key-deepseek" value="sk-514d692cd04a44b1aa152351b787ae37"></div>
+          <div class="col-span-3 flex gap-1">
+            <button onclick="testApiKey('deepseek')" class="btn-secondary text-[10px] px-2 py-1 flex-1">Test</button>
+            <button onclick="saveApiKey('deepseek')" class="btn-primary text-[10px] px-2 py-1 flex-1">Save</button>
+          </div>
+          <div class="col-span-12"><div class="text-[10px] text-slate-600" id="status-deepseek">Configured ✅</div></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center p-3 bg-white/[0.02] rounded-lg border border-white/5">
           <div class="col-span-3"><span class="text-[11px] font-semibold text-white">Gemini</span></div>
@@ -842,21 +852,46 @@
       <div class="mb-6">
         <div class="text-[12px] font-semibold text-white mb-2">🎯 Trading Mode</div>
         <div class="grid grid-cols-2 gap-2">
-          <label class="cursor-pointer">
+          <label class="cursor-pointer" onclick="return confirmPAPER()">
             <input type="radio" name="tradingMode" value="TEST" class="hidden peer" checked>
             <div class="p-3 rounded-lg border border-white/10 bg-white/[0.02] peer-checked:border-amber-500 peer-checked:bg-amber-500/10 transition">
-              <div class="text-[12px] font-bold text-amber-400">TEST MODE</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Paper trading, no real orders</div>
+              <div class="text-[12px] font-bold text-amber-400">📝 PAPER</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Practice only — no real money</div>
             </div>
           </label>
-          <label class="cursor-pointer">
+          <label class="cursor-pointer" onclick="return confirmLIVE()">
             <input type="radio" name="tradingMode" value="REAL" class="hidden peer">
-            <div class="p-3 rounded-lg border border-white/10 bg-white/[0.02] peer-checked:border-red-500 peer-checked:bg-red-500/10 transition">
-              <div class="text-[12px] font-bold text-red-400">REAL MODE ⚠️</div>
-              <div class="text-[10px] text-red-300/70 mt-0.5">Live orders will be placed!</div>
+            <div class="p-3 rounded-lg border border-white/10 bg-white/[0.02] peer-checked:border-green-500 peer-checked:bg-green-500/10 transition">
+              <div class="text-[12px] font-bold text-green-400">💰 LIVE</div>
+              <div class="text-[10px] text-green-300/70 mt-0.5">Real money — trade stocks!</div>
             </div>
           </label>
         </div>
+      </div>
+
+      <!-- Balance Management -->
+      <div class="mb-6">
+        <div class="text-[12px] font-semibold text-white mb-3">💵 Account Balance</div>
+        <div class="bg-white/[0.03] rounded-xl border border-white/10 p-4 mb-3">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] text-slate-400">Available Cash</span>
+            <span id="balanceCash" class="text-[18px] font-bold text-green-400">₹50,000</span>
+          </div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] text-slate-400">Initial Capital</span>
+            <span id="balanceInitial" class="text-[12px] font-mono text-slate-300">₹50,000</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] text-slate-400">Total P&amp;L</span>
+            <span id="balancePnL" class="text-[12px] font-mono text-slate-300">₹0</span>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="openAddFundsModal()" class="flex-1 py-2.5 rounded-lg bg-green-500/20 border border-green-500/30 text-green-400 text-[12px] font-bold hover:bg-green-500/30 transition">+ Add Funds</button>
+          <button onclick="switchModeSave()" class="flex-1 py-2.5 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[12px] font-bold hover:bg-blue-500/30 transition">💾 Save Mode</button>
+        </div>
+        <div id="modeSaveStatus" class="text-[11px] text-center mt-2 text-slate-500"></div>
+        <div class="text-[10px] text-center mt-1 text-slate-600">Min ₹1,000 required for LIVE mode</div>
       </div>
 
       <!-- Risk Limits -->
@@ -1172,6 +1207,7 @@ async function loadAll() {
     ]);
     updateDashboard({ metrics: m, signals: s, positions: p, trades: j, alerts: a, news: n, sentiment: st, risk: r });
     updateModeDisplay();
+    loadBalance(); // load balance
     if (document.getElementById('settingsModal').classList.contains('active')) loadSettings();
   } catch(e) { console.warn('REST fallback failed:', e); }
 }
@@ -1363,6 +1399,106 @@ function toggleSettings() {
   }
 }
 
+function confirmLIVE() {
+  return true;
+}
+function confirmPAPER() {
+  return true;
+}
+
+async function switchModeSave() {
+  const modeRadio = document.querySelector('[name="tradingMode"]:checked');
+  const isLive = modeRadio && modeRadio.value === 'REAL';
+  const statusEl = document.getElementById('modeSaveStatus');
+  if (!modeRadio) return;
+
+  if (isLive) {
+    const balance = parseFloat(document.getElementById('balanceCash').textContent.replace(/[₹,]/g,'')) || 0;
+    if (balance < 1000) {
+      statusEl.innerHTML = '<span class="text-red-400">❌ Minimum ₹1,000 balance required for LIVE</span>';
+      setTimeout(() => statusEl.innerHTML = '', 3000);
+      return;
+    }
+    const confirmed = confirm('⚠️ LIVE TRADING MODE\n\nYou are about to enable LIVE trading with real money.\nOrders will be placed in the stock market.\n\nAre you absolutely sure?');
+    if (!confirmed) return;
+  }
+
+  statusEl.innerHTML = '<span class="text-blue-400">⏳ Saving...</span>';
+  try {
+    const res = await fetch('/api/mode', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ mode: modeRadio.value })
+    });
+    const data = await res.json();
+    if (data.success) {
+      statusEl.innerHTML = isLive
+        ? '<span class="text-green-400">✅ LIVE mode enabled!</span>'
+        : '<span class="text-amber-400">✅ PAPER mode enabled!</span>';
+      const badge = document.getElementById('modeBadge');
+      const text = document.getElementById('modeBadgeText');
+      if (badge) badge.style.background = isLive ? 'rgba(34,197,94,0.2)' : 'rgba(245,158,11,0.15)';
+      if (badge) badge.style.color = isLive ? '#22c55e' : '#f59e0b';
+      if (text) text.textContent = isLive ? 'LIVE' : 'PAPER';
+    } else {
+      statusEl.innerHTML = '<span class="text-red-400">❌ Failed</span>';
+    }
+  } catch(e) {
+    statusEl.innerHTML = '<span class="text-red-400">❌ Error saving mode</span>';
+  }
+  setTimeout(() => statusEl.innerHTML = '', 4000);
+}
+
+async function loadBalance() {
+  try {
+    const res = await fetch('/api/balance');
+    const data = await res.json();
+    const cash = parseFloat(data.cash) || 50000;
+    const initial = parseFloat(data.initial) || 50000;
+    const pnl = cash - initial;
+    document.getElementById('balanceCash').textContent = '₹' + Math.round(cash).toLocaleString('en-IN');
+    document.getElementById('balanceInitial').textContent = '₹' + Math.round(initial).toLocaleString('en-IN');
+    const pnlEl = document.getElementById('balancePnL');
+    pnlEl.textContent = (pnl >= 0 ? '+' : '') + '₹' + Math.round(pnl).toLocaleString('en-IN');
+    pnlEl.style.color = pnl >= 0 ? '#22c55e' : '#ef4444';
+    // Update header capital display too
+    const hc = document.getElementById('headerCapital');
+    if (hc) hc.textContent = '₹' + Math.round(cash).toLocaleString('en-IN');
+    // Update portfolio value
+    const pv = document.getElementById('metricPortfolio');
+    if (pv) pv.textContent = '₹' + Math.round(cash).toLocaleString('en-IN');
+  } catch(e) { /* ignore */ }
+}
+
+function openAddFundsModal() {
+  const amt = prompt('💰 Add Funds\n\nEnter amount to add (₹):\n\nQuick amounts:\n  • ₹5,000\n  • ₹10,000\n  • ₹25,000\n  • ₹50,000\n\nOr enter any custom amount.', '10000');
+  if (!amt) return;
+  const amount = parseFloat(amt);
+  if (!amount || amount < 0) {
+    alert('Please enter a valid amount');
+    return;
+  }
+  addFunds(amount);
+}
+
+async function addFunds(amount) {
+  try {
+    const res = await fetch('/api/balance/add', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ amount })
+    });
+    const data = await res.json();
+    if (data.success) {
+      await loadBalance();
+      alert(`✅ ₹${Math.round(amount).toLocaleString('en-IN')} added!\nNew Balance: ₹${Math.round(data.cash).toLocaleString('en-IN')}`);
+    }
+  } catch(e) {
+    alert('❌ Failed to add funds');
+  }
+}
+
+
 function switchSettingsTab(tabId) {
   document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'));
   document.querySelectorAll('[id^="tab-btn-"]').forEach(b => b.classList.remove('tab-active'));
@@ -1403,7 +1539,7 @@ function updateModeDisplay() {
   const isLive = mode === 'live';
   if (badge) badge.style.background = isLive ? 'rgba(239,68,68,0.2)' : 'rgba(245,158,11,0.2)';
   if (badge) badge.style.color = isLive ? '#ef4444' : '#f59e0b';
-  if (text) text.textContent = isLive ? 'REAL' : 'TEST';
+  if (text) text.textContent = isLive ? 'REAL' : 'PAPER';
 }
 
 async function saveAllSettings() {
