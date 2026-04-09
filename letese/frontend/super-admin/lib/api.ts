@@ -96,7 +96,7 @@ export async function triggerAudit(auditType: "small" | "major") {
 export async function fetchVendorConfig(vendorName: string) {
   return request<VendorConfig>(
     "GET",
-    `/api/v1/super-admin/vendors/${vendorName}`
+    `/api/v1/admin/super-admin/vendors/${vendorName}`
   );
 }
 
@@ -106,7 +106,7 @@ export async function updateVendorConfig(
 ) {
   return request<VendorUpdateResponse>(
     "PATCH",
-    `/api/v1/super-admin/vendors/${vendorName}`,
+    `/api/v1/admin/super-admin/vendors/${vendorName}`,
     { config_data: configData }
   );
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
+import '../services/api_service.dart';
 import 'package:intl/intl.dart';
 
 // ── Dashboard Stats Provider (mock) ─────────────────────────────────────────
@@ -116,6 +117,15 @@ class DashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: LatticeColors.background,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showAddCaseDialog(context, ref),
+        backgroundColor: LatticeColors.primary,
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: Text(
+          'Add Case',
+          style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
+        ),
+      ),
       body: Stack(
         children: [
           // Sky gradient header area
@@ -739,6 +749,270 @@ class _ActionButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ── Add Case FAB Handler ─────────────────────────────────────────────────────
+
+void _showAddCaseDialog(BuildContext context, WidgetRef ref) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => _AddCaseSheet(
+      onSubmit: (data) async {
+        final api = ApiService();
+        try {
+          await api.createCase(
+            caseTitle: data['case_title']!,
+            courtCode: data['court_code']!,
+            clientName: data['client_name']!,
+            clientPhone: data['client_phone']!,
+            petitionType: data['petition_type'],
+            caseNumber: data['case_number'],
+            clientEmail: data['client_email'],
+            clientWhatsapp: data['client_whatsapp'],
+          );
+          if (context.mounted) {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('✅ Case added successfully!'),
+                backgroundColor: Color(0xFF22C55E),
+              ),
+            );
+          }
+        } catch (e) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('❌ Error: $e'),
+                backgroundColor: const Color(0xFFEF4444),
+              ),
+            );
+          }
+        }
+      },
+    ),
+  );
+}
+
+// ── Add Case Bottom Sheet ─────────────────────────────────────────────────────
+
+class _AddCaseSheet extends StatefulWidget {
+  final Future<void> Function(Map<String, String?>) onSubmit;
+
+  const _AddCaseSheet({required this.onSubmit});
+
+  @override
+  State<_AddCaseSheet> createState() => _AddCaseSheetState();
+}
+
+class _AddCaseSheetState extends State<_AddCaseSheet> {
+  final _form = <String, String>{
+    'case_title': '',
+    'court_code': 'PHAHC',
+    'client_name': '',
+    'client_phone': '',
+    'case_number': '',
+    'client_email': '',
+    'petition_type': '',
+    'client_whatsapp': '',
+  };
+  bool _saving = false;
+  String? _errors;
+
+  final _courts = {
+    'PHAHC': 'Punjab & Haryana High Court',
+    'DHC': 'Delhi High Court',
+    'SC': 'Supreme Court of India',
+    'NCDRC': 'NCDRC',
+    'BHC': 'Bombay High Court',
+    'MHC': 'Madras High Court',
+    'CHD_DC': 'Chandigarh District Courts',
+    'TIS_HAZ': 'Tis Hazari District Court',
+    'SAKET': 'Saket District Court',
+    'NCLT_P': 'NCLT Principal Bench',
+  };
+
+  bool get _valid =>
+      _form['case_title']!.trim().isNotEmpty &&
+      _form['client_name']!.trim().isNotEmpty &&
+      _form['client_phone']!.trim().isNotEmpty &&
+      RegExp(r'^\+?[0-9]{10,13}$').hasMatch(_form['client_phone']!.trim());
+
+  Future<void> _submit() async {
+    if (!_valid) {
+      setState(() => _errors = 'Case title, client name & valid phone required');
+      return;
+    }
+    setState(() { _saving = true; _errors = null; });
+    await widget.onSubmit(_form);
+    if (mounted) setState(() => _saving = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      decoration: const BoxDecoration(
+        color: LatticeColors.glassHi,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Container(
+                width: 40, height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white.withAlpha(30),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '📁 Add New Case',
+              style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800, color: Colors.white),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Fill in the details below to register a new case',
+              style: GoogleFonts.inter(fontSize: 13, color: LatticeColors.textSec),
+            ),
+            const SizedBox(height: 20),
+            _field('Case Title *', 'e.g. Smith vs. State of Punjab', _form['case_title']!,
+                (v) => setState(() => _form['case_title'] = v)),
+            const SizedBox(height: 14),
+            Text('Court *', style: _labelStyle),
+            const SizedBox(height: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              decoration: BoxDecoration(
+                color: LatticeColors.glassHi,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withAlpha(25)),
+              ),
+              child: DropdownButton<String>(
+                value: _form['court_code'],
+                isExpanded: true,
+                dropdownColor: LatticeColors.surface,
+                underline: const SizedBox(),
+                style: GoogleFonts.inter(fontSize: 14, color: Colors.white),
+                items: _courts.entries.map((e) => DropdownMenuItem(
+                  value: e.key,
+                  child: Text('${e.key} — ${e.value}', style: GoogleFonts.inter(fontSize: 13)),
+                )).toList(),
+                onChanged: (v) => setState(() => _form['court_code'] = v!),
+              ),
+            ),
+            const SizedBox(height: 14),
+            _field('Case Number (optional)', 'e.g. CRM-M-12345/2024', _form['case_number']!,
+                (v) => setState(() => _form['case_number'] = v)),
+            const SizedBox(height: 14),
+            _field('Client Name *', 'e.g. Rajesh Kumar', _form['client_name']!,
+                (v) => setState(() => _form['client_name'] = v)),
+            const SizedBox(height: 14),
+            _field('Client Phone *', '+919876543210', _form['client_phone']!,
+                (v) => setState(() => _form['client_phone'] = v),
+                keyboardType: TextInputType.phone),
+            const SizedBox(height: 14),
+            _field('Client Email (optional)', 'rajesh@email.com', _form['client_email']!,
+                (v) => setState(() => _form['client_email'] = v),
+                keyboardType: TextInputType.emailAddress),
+            const SizedBox(height: 14),
+            _field('Petition Type (optional)', 'e.g. Civil, Criminal, writ', _form['petition_type']!,
+                (v) => setState(() => _form['petition_type'] = v)),
+            if (_errors != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEF4444).withAlpha(20),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFFEF4444).withAlpha(50)),
+                ),
+                child: Text(_errors!, style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFFEF4444))),
+              ),
+            ],
+            const SizedBox(height: 24),
+            Row([
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    side: BorderSide(color: Colors.white.withAlpha(40)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text('Cancel', style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 2,
+                child: ElevatedButton(
+                  onPressed: _saving ? null : _submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: LatticeColors.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: _saving
+                      ? const SizedBox(width: 20, height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : Text('Add Case', style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
+                ),
+              ),
+            ]),
+            const SizedBox(height: 10),
+          ],
+        ),
+      ),
+    );
+  }
+
+  TextStyle get _labelStyle => GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: LatticeColors.textSec);
+
+  Widget _field(String label, String hint, String value, ValueChanged<String> onChanged, {TextInputType? keyboardType}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: _labelStyle),
+        const SizedBox(height: 6),
+        TextFormField(
+          initialValue: value,
+          keyboardType: keyboardType,
+          style: GoogleFonts.inter(fontSize: 14, color: Colors.white),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: GoogleFonts.inter(fontSize: 14, color: LatticeColors.textDim),
+            filled: true,
+            fillColor: LatticeColors.glassHi,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.white.withAlpha(25)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.white.withAlpha(25)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: LatticeColors.primary, width: 2),
+            ),
+          ),
+          onChanged: onChanged,
+        ),
+      ],
     );
   }
 }
