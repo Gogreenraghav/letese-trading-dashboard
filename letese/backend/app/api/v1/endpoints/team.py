@@ -71,7 +71,7 @@ async def invite_user(
     # Store invite in Redis (TTL 24h)
     import redis.asyncio as redis
     from app.core.config import settings
-    redis_client = redis.from_url(settings.REDIS_URL)
+    redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
     invite_key = f"invite:{token}"
     invite_data = {
         "email": body.email,

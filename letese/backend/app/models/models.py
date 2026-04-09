@@ -93,7 +93,7 @@ class Case(Base):
     scrape_error_count: Mapped[int] = Column(Integer, default=0)
     court_url: Mapped[str | None] = Column(Text)
     notes: Mapped[str | None] = Column(Text)
-    metadata: Mapped[dict] = Column(JSONB, default=dict)
+    case_metadata: Mapped[dict] = Column(JSONB, default=dict)
     created_at: Mapped[datetime] = Column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     deleted_at: Mapped[datetime | None] = Column(DateTime(timezone=True))
@@ -288,6 +288,27 @@ class LLMUsageLog(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     __table_args__ = (
-        Index("idx_llm_usage_tenant", "tenant_id", "created_at",
-              postgresql_where=text("created_at > NOW() - INTERVAL '31 days'")),
+        Index("idx_llm_usage_tenant", "tenant_id", "created_at"),
+    )
+
+
+class CommunicationSchedule(Base):
+    __tablename__ = "communication_schedules"
+
+    schedule_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    case_id = Column(UUID(as_uuid=True), ForeignKey("cases.case_id"), nullable=False)
+    tenant_id = Column(UUID(as_uuid=True), ForeignKey("tenants.tenant_id"), nullable=False)
+    message_type = Column(String(50), nullable=False)
+    scheduled_at = Column(DateTime(timezone=True), nullable=False)
+    channel = Column(String(20), nullable=False, default="whatsapp")
+    template_params = Column(JSONB, default=dict)
+    sent = Column(Boolean, default=False)
+    sent_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        Index("idx_comm_schedule_tenant", "tenant_id"),
+        Index("idx_comm_schedule_case", "case_id"),
+        Index("idx_comm_schedule_pending", "scheduled_at", postgresql_where=text("sent = FALSE AND deleted_at IS NULL")),
     )

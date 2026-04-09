@@ -196,7 +196,7 @@ async def signup(
     await db.commit()
 
     # Generate OTP for email verification
-    redis_client = redis.from_url(settings.REDIS_URL)
+    redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
     otp = await auth_service.generate_otp(body.admin_email, redis_client)
 
     # Send OTP email (best-effort)
@@ -252,7 +252,7 @@ async def send_otp(
         raise HTTPException(403, "Account is suspended.")
 
     # Generate OTP
-    redis_client = redis.from_url(settings.REDIS_URL)
+    redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
     otp = await auth_service.generate_otp(body.email, redis_client)
 
     # Send email (SMTP configured in environment)
@@ -282,7 +282,7 @@ async def login(
     ip = request.client.host if request.client else "unknown"
     await _check_rate_limit(f"login:{ip}", max_requests=5)
 
-    redis_client = redis.from_url(settings.REDIS_URL)
+    redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
 
     if not await auth_service.verify_otp(body.email, body.otp, redis_client):
         raise HTTPException(401, "Invalid or expired OTP")
@@ -337,7 +337,7 @@ async def logout(
     ip = request.client.host if request.client else "unknown"
     await _check_rate_limit(f"logout:{ip}", max_requests=10)
 
-    redis_client = redis.from_url(settings.REDIS_URL)
+    redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
     key = f"refresh:{body.refresh_token}"
     count = await redis_client.delete(key)
 
@@ -399,7 +399,7 @@ async def google_auth(
     tenant = tenant_result.scalar_one()
 
     access_token = auth_service.create_access_token(user, tenant)
-    refresh_token = auth_service.create_refresh_token(str(user.user_id), redis.from_url(settings.REDIS_URL))
+    refresh_token = auth_service.create_refresh_token(str(user.user_id), redis.from_url(settings.REDIS_URL, decode_responses=True))
 
     await db.commit()
 
@@ -427,7 +427,7 @@ async def refresh_token(
     body: RefreshRequest,
 ):
     """Exchange a valid refresh token for a new access token."""
-    redis_client = redis.from_url(settings.REDIS_URL)
+    redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
     user_id_bytes = await redis_client.get(f"refresh:{body.refresh_token}")
 
     if not user_id_bytes:
