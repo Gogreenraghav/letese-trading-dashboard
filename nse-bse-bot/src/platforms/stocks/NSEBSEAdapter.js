@@ -19,21 +19,23 @@ class NSEBSEAdapter {
     this.prices = {}; // Current prices cache
     
     // Default tracked symbols (NSE stocks with Yahoo Finance suffix)
+    // Note: HUL=HINDUNILVR (NSE symbol), HDFC merged into HDFC Bank
     this.trackedSymbols = [
       'RELIANCE.NS', 'TCS.NS', 'HDFCBANK.NS', 'INFY.NS', 'ICICIBANK.NS',
       'SBIN.NS', 'BHARTIARTL.NS', 'ITC.NS', 'KOTAKBANK.NS', 'LT.NS',
-      'HUL.NS', 'SUNPHARMA.NS', 'ASIANPAINT.NS', 'NESTLEIND.NS', 'MARUTI.NS',
-      'AXISBANK.NS', 'BAJFINANCE.NS', 'HDFC.NS', 'ADANIPORTS.NS', 'ONGC.NS',
-      'NESTLEIND.NS', 'COALINDIA.NS', 'NTPC.NS', 'POWERGRID.NS', 'GRASIM.NS',
+      'HINDUNILVR.NS', 'SUNPHARMA.NS', 'ASIANPAINT.NS', 'NESTLEIND.NS', 'MARUTI.NS',
+      'AXISBANK.NS', 'BAJFINANCE.NS', 'ADANIPORTS.NS', 'ONGC.NS',
+      'COALINDIA.NS', 'NTPC.NS', 'POWERGRID.NS', 'GRASIM.NS',
       'TITAN.NS', 'ULTRACEMCO.NS', 'TECHM.NS', 'WIPRO.NS', 'M&M.NS',
+      'DRREDDY.NS', 'CIPLA.NS', 'APOLLOHOSP.NS', 'SBILIFE.NS',
     ];
 
-    // Index symbols
+    // Index symbols (Finnifty uses NFLXFINTECH.NS or BSE index directly)
     this.indexSymbols = {
       'NIFTY50': '^NSEI',
       'BANKNIFTY': '^NSEBANK',
       'SENSEX': '^BSESN',
-      'FINNIFTY': '^NSEFI',
+      'FINNIFTY': 'NFLXFINTECH.NS',
     };
 
     this.updateInterval = null;
