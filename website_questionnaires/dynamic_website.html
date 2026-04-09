@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Website - Questionnaire</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #2196F3;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2196F3;
+            margin-top: 30px;
+        }
+        .question {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #2196F3;
+            border-radius: 5px;
+        }
+        .required {
+            color: red;
+        }
+        .note {
+            background: #e3f2fd;
+            padding: 10px;
+            border-left: 4px solid #2196F3;
+            margin: 15px 0;
+        }
+        .feature-list {
+            background: #f1f8ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Dynamic Website Questionnaire</h1>
+        <p class="note"><strong>Note:</strong> This questionnaire is for dynamic websites with CMS, user interactions, databases, and complex functionality.</p>
+        
+        <h2>📋 Project Overview</h2>
+        <div class="question">
+            <strong>1. What is your business/organization name? <span class="required">*</span></strong>
+        </div>
+        
+        <div class="question">
+            <strong>2. What type of dynamic website do you need? <span class="required">*</span></strong>
+            <div class="feature-list">
+                <p>Options: E-commerce, Blog with CMS, Membership site, Web application, Business portal, Educational platform</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>3. What are your top 3 business goals? <span class="required">*</span></strong>
+        </div>
+        
+        <h2>🎨 Design & User Experience</h2>
+        <div class="question">
+            <strong>4. Do you have brand guidelines? <span class="required">*</span></strong>
+            <p>Options: Complete brand kit, Logo only, Need brand design</p>
+        </div>
+        
+        <div class="question">
+            <strong>5. Share 3-5 reference websites (design + functionality):</strong>
+        </div>
+        
+        <h2>⚙️ Core Features Required</h2>
+        <div class="question">
+            <strong>6. Select required features: <span class="required">*</span></strong>
+            <div class="feature-list">
+                <p>✓ User registration/login<br>
+                ✓ Content Management System (CMS)<br>
+                ✓ Database integration<br>
+                ✓ Admin dashboard<br>
+                ✓ Search functionality<br>
+                ✓ Contact forms with backend<br>
+                ✓ File upload/download<br>
+                ✓ Email notifications<br>
+                ✓ API integrations</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>7. Do you need e-commerce functionality?</strong>
+            <div class="feature-list">
+                <p>If yes: Product catalog, Shopping cart, Payment gateway, Order management, Inventory tracking</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>8. Do you need user roles/permissions?</strong>
+            <p>Options: Admin, Editor, User, Guest, Custom roles</p>
+        </div>
+        
+        <h2>💾 Technical Specifications</h2>
+        <div class="question">
+            <strong>9. Preferred technology stack:</strong>
+            <div class="feature-list">
+                <p>Frontend: React, Vue, Angular, Plain HTML/CSS/JS<br>
+                Backend: Node.js, Python (Django/Flask), PHP (Laravel), Ruby on Rails<br>
+                Database: MySQL, PostgreSQL, MongoDB, Firebase</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>10. Do you need mobile app compatibility? <span class="required">*</span></strong>
+            <p>Options: Responsive web, PWA (Progressive Web App), Native app later</p>
+        </div>
+        
+        <div class="question">
+            <strong>11. Third-party integrations needed:</strong>
+            <div class="feature-list">
+                <p>Payment gateways, Email services, Social media APIs, CRM, Analytics, Cloud storage</p>
+            </div>
+        </div>
+        
+        <h2>🏆 Competitor Analysis</h2>
+        <div class="question">
+            <strong>12. Who are your main competitors? <span class="required">*</span></strong>
+        </div>
+        
+        <div class="question">
+            <strong>13. Please share competitor website links:</strong>
+            <p>This helps us understand market standards and features.</p>
+        </div>
+        
+        <div class="question">
+            <strong>14. What features do competitors have that you want/need?</strong>
+        </div>
+        
+        <h2>📄 Content & Legal Requirements</h2>
+        <div class="question">
+            <strong>15. Content management responsibility:</strong>
+            <p>Options: We'll manage via CMS, You provide content, Need content creation service</p>
+        </div>
+        
+        <div class="question">
+            <strong>16. Do you have any tax documents, legal documents, or compliance requirements? <span class="required">*</span></strong>
+            <p>Options: GST documents, Company registration, Privacy policy, Terms of service, Industry compliance</p>
+        </div>
+        
+        <div class="question">
+            <strong>17. Do you have user data/privacy requirements?</strong>
+            <p>Options: GDPR compliance, Data encryption, User data management</p>
+        </div>
+        
+        <h2>📊 Data & Analytics</h2>
+        <div class="question">
+            <strong>18. What data needs to be stored/processed?</strong>
+            <p>Options: User profiles, Transactions, Content, Analytics data, Files</p>
+        </div>
+        
+        <div class="question">
+            <strong>19. Reporting/analytics requirements:</strong>
+            <p>Options: Admin reports, User analytics, Business intelligence, Custom dashboards</p>
+        </div>
+        
+        <h2>📅 Project Management</h2>
+        <div class="question">
+            <strong>20. Expected launch timeline: <span class="required">*</span></strong>
+            <p>Options: 1-2 months, 3-4 months, 4-6 months, Flexible</p>
+        </div>
+        
+        <div class="question">
+            <strong>21. Budget range: <span class="required">*</span></strong>
+            <p>Options: ₹50,000-₹1,00,000, ₹1,00,000-₹2,50,000, ₹2,50,000-₹5,00,000, Custom</p>
+        </div>
+        
+        <div class="question">
+            <strong>22. Maintenance & support requirements:</strong>
+            <p>Options: Regular updates, Bug fixes, Security monitoring, Hosting management</p>
+        </div>
+        
+        <h2>🎯 Success Metrics</h2>
+        <div class="question">
+            <strong>23. How will you measure success?</strong>
+            <p>Options: User signups, Transactions, Content engagement, Traffic growth, ROI</p>
+        </div>
+        
+        <div class="question">
+            <strong>24. Any other specific requirements or constraints?</strong>
+        </div>
+        
+        <div class="note">
+            <strong>Total Questions: 24</strong><br>
+            <strong>Estimated Development Time: 2-6 months</strong><br>
+            <strong>Complexity: Medium to High</strong><br>
+            <strong>Key Features: CMS, Database, User management, Dynamic content</strong>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LETESE | Advocate Suite - India's #1 Legal AI Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-background": "#191c20",
+                      "background": "#f8f9fe",
+                      "surface-container-highest": "#e1e2e7",
+                      "on-secondary-fixed": "#0b1843",
+                      "surface-container-low": "#f2f3f9",
+                      "on-primary-container": "#c9d2ff",
+                      "primary-fixed-dim": "#b7c4ff",
+                      "on-surface-variant": "#444654",
+                      "primary-container": "#2b51c7",
+                      "secondary-container": "#becafe",
+                      "on-tertiary-container": "#45efa0",
+                      "on-tertiary-fixed": "#002111",
+                      "on-secondary-container": "#485481",
+                      "secondary-fixed": "#dce1ff",
+                      "tertiary-container": "#006941",
+                      "on-error-container": "#93000a",
+                      "surface-container-high": "#e6e8ed",
+                      "error": "#ba1a1a",
+                      "inverse-surface": "#2e3135",
+                      "outline-variant": "#c4c5d6",
+                      "inverse-on-surface": "#eff1f6",
+                      "secondary-fixed-dim": "#b9c4f8",
+                      "outline": "#747685",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#001551",
+                      "on-tertiary-fixed-variant": "#005231",
+                      "on-primary-fixed-variant": "#053ab2",
+                      "surface": "#f8f9fe",
+                      "error-container": "#ffdad6",
+                      "inverse-primary": "#b7c4ff",
+                      "surface-tint": "#2f54ca",
+                      "surface-bright": "#f8f9fe",
+                      "secondary": "#515c8a",
+                      "on-secondary": "#ffffff",
+                      "surface-dim": "#d8dadf",
+                      "surface-container": "#eceef3",
+                      "on-secondary-fixed-variant": "#394471",
+                      "primary-fixed": "#dce1ff",
+                      "tertiary-fixed-dim": "#30e194",
+                      "tertiary-fixed": "#59feae",
+                      "primary": "#0037ad",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "tertiary": "#004e2f",
+                      "on-surface": "#191c20",
+                      "surface-variant": "#e1e2e7"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Manrope"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); }
+        .sky-gradient { background: linear-gradient(135deg, #819bff 0%, #2b51c7 100%); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface-container-low text-on-surface">
+<!-- Browser Frame (Mock) -->
+<div class="fixed top-0 left-0 w-full h-1 bg-primary z-[100]"></div>
+<!-- Navigation -->
+<nav class="sticky top-0 z-50 glass">
+<div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2">
+<img alt="LETESE logo" class="w-10 h-10 rounded-lg" data-alt="professional geometric logo with the letter L in deep blue and emerald green accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdqOszC8cEKIM0RaP3Nz0wJc2Cep9WXoqgIqiXf_bJG1QxS5uYvZpjqCl9oENzx_96UumRuTUux8r4PesG3gZl0sgEto-ci48v0Iwy0NW9Gu4UbhIxAsQ72ZjNaiu1LU6Rp9dYoBqzdc5rfDES7ZLg7btNBkGV4SWNEluWS87xCED0JIUGYXOmyKFk21SFrTrjMj3qpSJmETzJbDXdIiYTNn0MT3Sw67nWgP5xravLTUPRtOdB5Q3wSDhqSE2cSgLl4XzeajdJJwA"/>
+<span class="text-2xl font-extrabold tracking-tight text-primary">LETESE</span>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="#">Features</a>
+<a class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="#">Pricing</a>
+<a class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="#">Docs</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<a class="text-sm font-semibold text-primary px-4 py-2 hover:bg-primary/5 rounded-full transition-colors" href="#">Login</a>
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-full text-sm font-bold shadow-[0_8px_24px_rgba(43,81,199,0.15)] hover:bg-primary-container transition-all">Get Started Free</button>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="sky-gradient pt-24 pb-32 overflow-hidden relative">
+<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+<div class="flex-1 text-center md:text-left z-10">
+<div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 mb-8">
+<span class="text-xs font-bold text-tertiary-fixed">🚀 India's #1 Legal AI Platform</span>
+</div>
+<h1 class="text-5xl md:text-7xl font-extrabold text-white leading-[1.1] mb-6">
+                    LETESE — <br/><span class="text-tertiary-fixed">Advocate Suite</span>
+</h1>
+<p class="text-xl text-primary-fixed-dim max-w-xl mb-10 leading-relaxed font-medium">
+                    AI-powered case management, drafting &amp; court monitoring specifically engineered for the modern Indian advocate.
+                </p>
+<div class="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
+<button class="bg-tertiary-fixed text-on-tertiary-fixed px-8 py-4 rounded-full text-lg font-bold hover:scale-105 transition-transform shadow-xl">Start Free Trial</button>
+<button class="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white border border-white/30 px-8 py-4 rounded-full text-lg font-bold hover:bg-white/20 transition-all">
+<span class="material-symbols-outlined">play_circle</span>
+                        Watch Demo
+                    </button>
+</div>
+</div>
+<div class="flex-1 relative">
+<!-- Phone Mockup -->
+<div class="relative z-20 w-[280px] md:w-[320px] mx-auto bg-slate-900 p-3 rounded-[3rem] border-[8px] border-slate-800 shadow-2xl">
+<div class="bg-white rounded-[2.2rem] h-[580px] overflow-hidden flex flex-col">
+<div class="p-6 bg-primary text-white space-y-4">
+<div class="flex justify-between items-center">
+<span class="material-symbols-outlined">menu</span>
+<span class="font-bold">Dashboard</span>
+<img alt="Profile" class="w-8 h-8 rounded-full bg-primary-container" data-alt="close up of a professional woman profile avatar on a blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASEC1DidoXqqWbJNWBFgTjJGFaphfVib6yn6tdBVijP22-CU43STHc4u8ZJZVeIndkXPQJZkgDCrfGwFZKBCupBCcRNUAJBDsWdD0zH5XkQGqkIVHTtNE6o866f-rvGw7b83dbbmK_0Swd7GI5YsfH2CNxWPsigL-kqahEbHBcfFcFbgH3TuB80SeBOwa28xMJFzoWrMC1bHOiMGZfsgRCviklOCorLZ19EXQrHAxR0GW1pqGBe-9nefB8eouErGHJJcSR9-N3BTw"/>
+</div>
+<div class="space-y-1">
+<h4 class="text-lg font-bold">Good morning, Counsel.</h4>
+<p class="text-xs text-primary-fixed-dim">3 hearings scheduled for today.</p>
+</div>
+</div>
+<div class="p-4 flex-1 bg-surface-container-low space-y-4">
+<div class="bg-white p-4 rounded-2xl shadow-sm space-y-2">
+<div class="flex justify-between">
+<span class="text-[10px] font-bold text-tertiary uppercase tracking-widest">Next Hearing</span>
+<span class="text-[10px] text-on-surface-variant">10:30 AM</span>
+</div>
+<p class="text-sm font-bold">Sharma vs. Union of India</p>
+<p class="text-[10px] text-on-surface-variant">Supreme Court - Court Room 4</p>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-white p-3 rounded-2xl shadow-sm flex flex-col items-center">
+<span class="material-symbols-outlined text-primary mb-1">description</span>
+<span class="text-[10px] font-bold">Drafts</span>
+</div>
+<div class="bg-white p-3 rounded-2xl shadow-sm flex flex-col items-center">
+<span class="material-symbols-outlined text-primary mb-1">chat</span>
+<span class="text-[10px] font-bold">AI Chat</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Decorative Elements -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary-container rounded-full blur-[100px] opacity-30"></div>
+</div>
+</div>
+</header>
+<!-- Features Bento Grid -->
+<section class="py-32 bg-surface-container-low">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center mb-20">
+<h2 class="text-4xl font-extrabold text-on-surface mb-4">Precision Tools for Legal Experts</h2>
+<p class="text-lg text-on-surface-variant max-w-2xl mx-auto">Simplify your practice with our purpose-built AI modules designed to handle the complexities of the Indian legal system.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Case Management -->
+<div class="md:col-span-8 bg-surface-container-lowest p-8 rounded-lg flex flex-col md:flex-row gap-8 items-center border border-outline-variant/10 shadow-[0_8px_24px_rgba(43,81,199,0.04)]">
+<div class="flex-1">
+<div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+</div>
+<h3 class="text-2xl font-bold mb-4">Case Management</h3>
+<p class="text-on-surface-variant mb-6">Centralize your entire case history, documents, and timelines. Intelligent categorization specifically for High Court and Supreme Court filings.</p>
+<ul class="space-y-2 text-sm font-medium text-on-surface">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary-fixed-variant text-base">check_circle</span> Auto-sync with e-Courts</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary-fixed-variant text-base">check_circle</span> Digital Evidence Locker</li>
+</ul>
+</div>
+<div class="flex-1 h-full w-full bg-slate-100 rounded-xl overflow-hidden min-h-[200px]">
+<img class="w-full h-full object-cover grayscale-[0.5] opacity-80" data-alt="a clean close-up of organized legal file folders on a wooden shelf in a bright modern law office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0K_WVCGhHXEL-DVJDMypQslpdJHXwD4mOIWkoyw0peuH7g7vT3eWQFROG7wVf2RvS-DJbM6cHkKFSUa5YUMSepVqvwvYbaHjqHyJBn4got2yxps2bMf5S85FECrPBPjD2o-AxZh_Ti6PvtJpGr12k6JEI19t5rGBGqG54yZ6wQGqMFrTEEgq3IH2EB9bMKRsnx887kTOtEBudwKELfisXn93hlTTflUP40lRGdMQZsEhLUkq3e7tKR-4k8AwksDXEguUyKDGCyq8"/>
+</div>
+</div>
+<!-- AIPOT Feed -->
+<div class="md:col-span-4 bg-primary text-white p-8 rounded-lg flex flex-col justify-between shadow-xl">
+<div>
+<div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined">rss_feed</span>
+</div>
+<h3 class="text-2xl font-bold mb-4">AIPOT Feed</h3>
+<p class="text-primary-fixed-dim">Real-time legal updates, latest judgements, and point-of-law analysis curated by our proprietary AI models.</p>
+</div>
+<div class="mt-8 pt-8 border-t border-white/10 flex items-center justify-between">
+<span class="text-sm font-bold">View Latest Trends</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</div>
+</div>
+<!-- AI Drafting -->
+<div class="md:col-span-4 glass p-8 rounded-lg flex flex-col justify-between border border-primary/10">
+<div>
+<div class="w-12 h-12 bg-tertiary/10 rounded-2xl flex items-center justify-center text-tertiary mb-6">
+<span class="material-symbols-outlined">edit_note</span>
+</div>
+<h3 class="text-2xl font-bold mb-4">AI Drafting</h3>
+<p class="text-on-surface-variant">Generate plaints, petitions, and notices in seconds. Trained on thousands of successful Indian court precedents.</p>
+</div>
+<div class="mt-8 bg-surface-container rounded-xl p-4">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></div>
+<span class="text-[10px] font-bold text-on-surface-variant">AI GENERATING DRAFT...</span>
+</div>
+<div class="h-2 bg-outline-variant/30 rounded w-full mb-2"></div>
+<div class="h-2 bg-outline-variant/30 rounded w-3/4"></div>
+</div>
+</div>
+<!-- WhatsApp Alerts -->
+<div class="md:col-span-8 bg-white p-8 rounded-lg flex flex-col md:flex-row gap-8 items-center border border-outline-variant/10 shadow-sm">
+<div class="flex-1 order-2 md:order-1">
+<div class="flex flex-col gap-3">
+<div class="bg-[#25D366]/10 text-[#25D366] self-start px-3 py-1 rounded-full text-xs font-bold">ACTIVE INTEGRATION</div>
+<h3 class="text-2xl font-bold mb-4">WhatsApp Alerts</h3>
+<p class="text-on-surface-variant mb-6">Never miss a listing. Receive cause list updates, daily orders, and urgent notifications directly on your WhatsApp.</p>
+<button class="flex items-center gap-2 text-primary font-bold">
+                                Connect Now <span class="material-symbols-outlined text-sm">open_in_new</span>
+</button>
+</div>
+</div>
+<div class="flex-1 order-1 md:order-2 flex justify-center">
+<div class="relative">
+<div class="w-48 h-48 bg-emerald-50 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-[#25D366]">chat_bubble</span>
+</div>
+<div class="absolute -top-2 -right-2 bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg text-xs font-bold">3</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pricing -->
+<section class="py-32 sky-gradient text-white">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center mb-20">
+<h2 class="text-4xl font-extrabold mb-4">Simple, Transparent Pricing</h2>
+<p class="text-primary-fixed-dim text-lg">Scalable solutions for independent advocates and large law firms.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Free -->
+<div class="bg-white/10 backdrop-blur-md p-10 rounded-lg border border-white/10 flex flex-col h-full transition-transform hover:-translate-y-2">
+<h4 class="text-xl font-bold mb-2">Free</h4>
+<div class="flex items-baseline gap-1 mb-8">
+<span class="text-4xl font-extrabold">₹0</span>
+</div>
+<ul class="space-y-4 flex-1 mb-10">
+<li class="flex items-center gap-3 text-sm text-primary-fixed-dim"><span class="material-symbols-outlined text-lg">check</span> Up to 5 Active Cases</li>
+<li class="flex items-center gap-3 text-sm text-primary-fixed-dim"><span class="material-symbols-outlined text-lg">check</span> Basic AI Drafting</li>
+<li class="flex items-center gap-3 text-sm text-primary-fixed-dim"><span class="material-symbols-outlined text-lg">check</span> Court Cause Lists</li>
+</ul>
+<button class="w-full py-4 rounded-full border border-white/30 text-sm font-bold hover:bg-white/10 transition-colors">Start for Free</button>
+</div>
+<!-- Pro -->
+<div class="bg-white p-10 rounded-lg flex flex-col h-full relative shadow-2xl transition-transform hover:-translate-y-2">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-tertiary-fixed text-on-tertiary-fixed px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">Most Popular</div>
+<h4 class="text-xl font-bold text-primary mb-2">Pro</h4>
+<div class="flex items-baseline gap-1 mb-8">
+<span class="text-4xl font-extrabold text-on-surface">₹2,000</span>
+<span class="text-on-surface-variant text-sm">/mo</span>
+</div>
+<ul class="space-y-4 flex-1 mb-10">
+<li class="flex items-center gap-3 text-sm text-on-surface"><span class="material-symbols-outlined text-lg text-primary">check_circle</span> Unlimited Active Cases</li>
+<li class="flex items-center gap-3 text-sm text-on-surface"><span class="material-symbols-outlined text-lg text-primary">check_circle</span> Advanced AI Drafting Pro</li>
+<li class="flex items-center gap-3 text-sm text-on-surface"><span class="material-symbols-outlined text-lg text-primary">check_circle</span> Full WhatsApp Alerts</li>
+<li class="flex items-center gap-3 text-sm text-on-surface"><span class="material-symbols-outlined text-lg text-primary">check_circle</span> AIPOT Feed Analysis</li>
+</ul>
+<button class="w-full py-4 rounded-full bg-primary text-white text-sm font-bold shadow-lg hover:scale-[1.02] transition-transform">Get Started Pro</button>
+</div>
+<!-- Enterprise -->
+<div class="bg-white/10 backdrop-blur-md p-10 rounded-lg border border-white/10 flex flex-col h-full transition-transform hover:-translate-y-2">
+<h4 class="text-xl font-bold mb-2">Enterprise</h4>
+<div class="flex items-baseline gap-1 mb-8">
+<span class="text-4xl font-extrabold">Custom</span>
+</div>
+<ul class="space-y-4 flex-1 mb-10">
+<li class="flex items-center gap-3 text-sm text-primary-fixed-dim"><span class="material-symbols-outlined text-lg">check</span> Multi-user Management</li>
+<li class="flex items-center gap-3 text-sm text-primary-fixed-dim"><span class="material-symbols-outlined text-lg">check</span> Custom AI Models</li>
+<li class="flex items-center gap-3 text-sm text-primary-fixed-dim"><span class="material-symbols-outlined text-lg">check</span> Priority Concierge Support</li>
+<li class="flex items-center gap-3 text-sm text-primary-fixed-dim"><span class="material-symbols-outlined text-lg">check</span> White-label Reports</li>
+</ul>
+<button class="w-full py-4 rounded-full border border-white/30 text-sm font-bold hover:bg-white/10 transition-colors">Contact Sales</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="py-32 bg-surface-container-low">
+<div class="max-w-7xl mx-auto px-6">
+<h2 class="text-3xl font-extrabold text-on-surface text-center mb-16 italic">"Trusted by India's finest legal minds."</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Testimonial 1 -->
+<div class="flex flex-col md:flex-row gap-6 items-start">
+<img alt="Advocate Priya S." class="w-16 h-16 rounded-full bg-primary-container" data-alt="professional portrait of a south asian woman advocate in formal attire with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIFF-uvrMuhoKAJL6bgWESTM3a3n3NW-2iF9DI9W-CPTROHbion3eEVg4DdhuqsBRiqQUGzws2XgCTHfPGoQr7NVt8hFv6thKIS0ZGLFnZoG4aAHK3QKqMwbUQUOsznKWIQgYw3Aw5xaoHJU_hXuR4pMaN8D1ose1i0eBa5pIr5UdZiUXTWrmPqavjwtkmpM2vH1OchF1Rncs9VFuxd8uARCVpYYOA7LezJwUcasVgGY94dsvlEa9_XahOPbNLANRTWcdCmHY8wgY"/>
+<div>
+<p class="text-lg text-on-surface-variant mb-4 font-medium leading-relaxed">"The AI drafting capabilities are game-changing. What used to take hours of manual reference search now takes minutes. Letese has become an essential part of my daily litigation practice."</p>
+<h5 class="font-bold text-on-surface">— Advocate Priya S.</h5>
+<p class="text-sm text-primary">High Court of Bombay</p>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="flex flex-col md:flex-row gap-6 items-start">
+<img alt="Advocate Rajesh M." class="w-16 h-16 rounded-full bg-secondary-container" data-alt="professional portrait of a south asian man advocate with glasses in a formal suit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEIoxA8wTUN0lEgz13T8ns1xzF0v46J9LVLRuQszuVYQDy9osDCrwtryY2jIvzOQuvzgmLo7P_rTpA3QDY8s_Z8yMKxO7WoeQ9SpUASAlxD5gKUis3jmhakzA791E1--2fYQPPmD5xaRLOcUgi4lnk-OseHmF_eYJSekK4hBEP1k08xK-ax9ADKj-ZzkvvmXI0tjSUw-H5A7Wc3KCwMEHKX7vNt7RA24HCCBMA5rjAuyo7-E5FKAiIuP-huIJIT8gM7tCM9TWkx6g"/>
+<div>
+<p class="text-lg text-on-surface-variant mb-4 font-medium leading-relaxed">"The WhatsApp alerting system ensures I never miss a listing. Even when I am in court, my phone keeps me updated on other chambers. Highly recommended for busy practitioners."</p>
+<h5 class="font-bold text-on-surface">— Advocate Rajesh M.</h5>
+<p class="text-sm text-primary">Supreme Court of India</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="py-20 border-t border-outline-variant/10 bg-surface-container-lowest">
+<div class="max-w-7xl mx-auto px-6">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
+<div class="space-y-4">
+<div class="flex items-center gap-2">
+<img alt="LETESE logo" class="w-8 h-8 rounded" data-alt="minimalist logo design with deep blue and soft emerald accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWmmqrMDojVNMGN7NkqbDKCVQ0LAnUCm-69gA32KqVJ_18mIHN2XDOj8lTsERZdxO26GzD_XfTDcvV2LQpbwGGtEwGRBY3S0JCEy1DoBc4qmpBmv8SlKREUAJUjOD-oX_GFHFmWCku_yf4NQOmiuLzo5pS-tIgAZbNOGg0LPOjQO5l_lNxSRJ4HM9uZQbH-K7UFdaUmQ16HuuhgylQE6XxVkIm4ozQ7VldNdAwJwDEDquXEnGtG5IhMPmXio_bZ6SpEe3Cn1aaVXU"/>
+<span class="text-xl font-extrabold text-primary">LETESE</span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium">Powered by Lattice.</p>
+</div>
+<div class="flex gap-8 text-sm font-bold text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Twitter</a>
+<a class="hover:text-primary transition-colors" href="#">LinkedIn</a>
+<a class="hover:text-primary transition-colors" href="#">Contact</a>
+</div>
+</div>
+<div class="pt-12 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between text-xs text-on-surface-variant gap-4">
+<p>© 2024 LETESE AI. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary" href="#">Privacy Policy</a>
+<a class="hover:text-primary" href="#">Terms of Service</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

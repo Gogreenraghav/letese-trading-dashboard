@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LETESE - Customer Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#191c20",
+                        "background": "#f8f9fe",
+                        "surface-container-highest": "#e1e2e7",
+                        "on-secondary-fixed": "#0b1843",
+                        "surface-container-low": "#f2f3f9",
+                        "on-primary-container": "#c9d2ff",
+                        "primary-fixed-dim": "#b7c4ff",
+                        "on-surface-variant": "#444654",
+                        "primary-container": "#2b51c7",
+                        "secondary-container": "#becafe",
+                        "on-tertiary-container": "#45efa0",
+                        "on-tertiary-fixed": "#002111",
+                        "on-secondary-container": "#485481",
+                        "secondary-fixed": "#dce1ff",
+                        "tertiary-container": "#006941",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e6e8ed",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#2e3135",
+                        "outline-variant": "#c4c5d6",
+                        "inverse-on-surface": "#eff1f6",
+                        "secondary-fixed-dim": "#b9c4f8",
+                        "outline": "#747685",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#001551",
+                        "on-tertiary-fixed-variant": "#005231",
+                        "on-primary-fixed-variant": "#053ab2",
+                        "surface": "#f8f9fe",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b7c4ff",
+                        "surface-tint": "#2f54ca",
+                        "surface-bright": "#f8f9fe",
+                        "secondary": "#515c8a",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d8dadf",
+                        "surface-container": "#eceef3",
+                        "on-secondary-fixed-variant": "#394471",
+                        "primary-fixed": "#dce1ff",
+                        "tertiary-fixed-dim": "#30e194",
+                        "tertiary-fixed": "#59feae",
+                        "primary": "#0037ad",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "tertiary": "#004e2f",
+                        "on-surface": "#191c20",
+                        "surface-variant": "#e1e2e7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .canvas-bg {
+            background: linear-gradient(135deg, #819bff 0%, #2b51c7 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active {
+            background-color: #f2f3f9;
+            border-right: 4px solid #59feae;
+            color: #0037ad;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="bg-surface overflow-hidden">
+<!-- Chrome-style Browser Frame Wrap -->
+<div class="flex h-screen flex-col">
+<!-- Mock Browser Header -->
+<div class="bg-surface-container-highest flex items-center px-4 py-2 space-x-4 border-b border-outline-variant/10">
+<div class="flex space-x-2">
+<div class="w-3 h-3 rounded-full bg-error"></div>
+<div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed-dim"></div>
+</div>
+<div class="flex-1 bg-surface-container-lowest rounded-full px-4 py-1 text-xs text-on-surface-variant flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-2">lock</span>
+                app.letese.ai
+            </div>
+</div>
+<div class="flex flex-1 overflow-hidden">
+<!-- Sidebar: Exact implementation from SCJ and Design System -->
+<aside class="w-[240px] h-full flex-shrink-0 bg-white dark:bg-slate-900 flex flex-col py-8 px-4 z-20">
+<div class="mb-8 px-2">
+<img alt="LETESE logo" class="w-10 h-10 mb-4" data-alt="Modern abstract geometric logo for a legal tech company featuring interconnected professional blue shapes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrOLxQX5L2yRUpMIsZ4JtdqjBOBUMf9oyB2QFEqLTpPU14CT55PV50dpBT7JpaY3pp6GmtzIIW3BoWecxkFQacvq5I2Qb_Fgp9E2mOeuxGIDxQNihzc8MCG8abZxwLMcENTPeCxGA5TRsOrxmeU-wVBkM12TvInkYsDGhww83Wbtb4J9_2_VQundexEjrSVAtTz2_q4QXEGvR23BDE9Krz9PoFEuT22wQzmKlKxeCF7snLqgMx6xf3BnQd-xe2oQ6_CT2ndGNeK8Q"/>
+<h1 class="text-2xl font-extrabold text-primary dark:text-blue-400 font-headline leading-tight">LETESE</h1>
+<p class="text-xs font-semibold text-primary/60 tracking-wider">Sharma Law Partners</p>
+</div>
+<nav class="flex-1 space-y-1 overflow-y-auto">
+<!-- Dashboard (Active) -->
+<a class="sidebar-active flex items-center px-4 py-3 rounded-r-lg transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-headline text-sm">Dashboard</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 px-4 py-3 rounded-r-lg flex items-center transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">folder_open</span>
+<span class="font-headline text-sm">Cases</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 px-4 py-3 rounded-r-lg flex items-center transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">group</span>
+<span class="font-headline text-sm">Team</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 px-4 py-3 rounded-r-lg flex items-center transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">edit_note</span>
+<span class="font-headline text-sm">AI &amp; Drafts</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 px-4 py-3 rounded-r-lg flex items-center transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">forum</span>
+<span class="font-headline text-sm">Communications</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 px-4 py-3 rounded-r-lg flex items-center transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-headline text-sm">Analytics</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 px-4 py-3 rounded-r-lg flex items-center transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">payments</span>
+<span class="font-headline text-sm">Billing</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 px-4 py-3 rounded-r-lg flex items-center transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">chat</span>
+<span class="font-headline text-sm">WhatsApp Hub</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 px-4 py-3 rounded-r-lg flex items-center transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">assignment_turned_in</span>
+<span class="font-headline text-sm">Reports</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 px-4 py-3 rounded-r-lg flex items-center transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-headline text-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-surface-container-low flex items-center px-2">
+<div class="w-8 h-8 rounded-full bg-primary-container text-white flex items-center justify-center font-bold text-xs mr-3">RS</div>
+<div class="overflow-hidden">
+<p class="text-sm font-bold text-on-surface truncate">Rajesh Sharma</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Admin Access</p>
+</div>
+</div>
+</aside>
+<!-- Main Canvas Area -->
+<main class="flex-1 canvas-bg relative overflow-y-auto">
+<!-- Top Nav Bar -->
+<header class="sticky top-0 z-10 flex justify-between items-center px-8 py-6 bg-white/10 backdrop-blur-md">
+<div>
+<h2 class="text-3xl font-extrabold text-white font-headline tracking-tight">Welcome back, Rajesh</h2>
+<p class="text-white/70 text-sm">Your legal operations overview for today.</p>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative cursor-pointer text-white">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+<span class="absolute -top-1 -right-1 bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">5</span>
+</div>
+<button class="bg-primary text-white px-6 py-2.5 rounded-full font-bold shadow-[0_8px_24px_rgba(0,55,173,0.3)] hover:scale-105 transition-transform flex items-center space-x-2">
+<span class="material-symbols-outlined">add</span>
+<span>Quick Add</span>
+</button>
+</div>
+</header>
+<!-- Content Grid -->
+<div class="p-8 space-y-8">
+<!-- Row 1: Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="glass-card p-6 rounded-lg shadow-[0_8px_24px_rgba(43,81,199,0.08)]">
+<p class="text-on-surface-variant text-sm font-medium mb-1">Active Cases</p>
+<h3 class="text-4xl font-extrabold font-headline text-primary">47</h3>
+<div class="mt-2 text-xs text-tertiary flex items-center">
+<span class="material-symbols-outlined text-xs mr-1">trending_up</span> +3 this week
+                            </div>
+</div>
+<div class="glass-card p-6 rounded-lg shadow-[0_8px_24px_rgba(43,81,199,0.08)]">
+<p class="text-on-surface-variant text-sm font-medium mb-1">Team Members</p>
+<h3 class="text-4xl font-extrabold font-headline text-primary">8</h3>
+<div class="mt-2 text-xs text-on-surface-variant">All currently active</div>
+</div>
+<div class="glass-card p-6 rounded-lg shadow-[0_8px_24px_rgba(43,81,199,0.08)]">
+<p class="text-on-surface-variant text-sm font-medium mb-1">Hearings Today</p>
+<h3 class="text-4xl font-extrabold font-headline text-primary">12</h3>
+<div class="mt-2 text-xs text-error flex items-center">
+<span class="material-symbols-outlined text-xs mr-1">schedule</span> Next in 45m
+                            </div>
+</div>
+<div class="glass-card p-6 rounded-lg shadow-[0_8px_24px_rgba(43,81,199,0.08)]">
+<p class="text-on-surface-variant text-sm font-medium mb-1">Revenue (MTD)</p>
+<h3 class="text-4xl font-extrabold font-headline text-primary">₹2.4L</h3>
+<div class="mt-2 text-xs text-tertiary flex items-center">
+<span class="material-symbols-outlined text-xs mr-1">check_circle</span> Target: 80%
+                            </div>
+</div>
+</div>
+<!-- Row 2: Cases and Team -->
+<div class="grid grid-cols-1 lg:grid-cols-10 gap-8">
+<!-- Left 60%: Active Cases -->
+<div class="lg:col-span-6 glass-card rounded-lg overflow-hidden flex flex-col">
+<div class="p-6 border-b border-outline-variant/10 flex justify-between items-center">
+<h4 class="font-headline font-extrabold text-xl">Active Cases Panel</h4>
+<button class="text-primary font-bold text-sm">View All</button>
+</div>
+<div class="p-0">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low text-on-surface-variant text-xs uppercase tracking-widest">
+<tr>
+<th class="px-6 py-3 font-semibold">Case Reference</th>
+<th class="px-6 py-3 font-semibold">Status</th>
+<th class="px-6 py-3 font-semibold">Assignee</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-6 py-4 font-bold text-on-surface">S.C. Jain vs State</td>
+<td class="px-6 py-4"><span class="w-3 h-3 rounded-full bg-error inline-block animate-pulse"></span> <span class="ml-2 text-sm">Urgent Filing</span></td>
+<td class="px-6 py-4 text-sm">Arjun K.</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-6 py-4 font-bold text-on-surface">Mehta vs Union</td>
+<td class="px-6 py-4"><span class="w-3 h-3 rounded-full bg-yellow-400 inline-block"></span> <span class="ml-2 text-sm">Drafting</span></td>
+<td class="px-6 py-4 text-sm">Sana M.</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-6 py-4 font-bold text-on-surface">R. Singh vs Steel Corp</td>
+<td class="px-6 py-4"><span class="w-3 h-3 rounded-full bg-tertiary-fixed-dim inline-block"></span> <span class="ml-2 text-sm">Advised</span></td>
+<td class="px-6 py-4 text-sm">Rahul V.</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-6 py-4 font-bold text-on-surface">State vs Kumar</td>
+<td class="px-6 py-4"><span class="w-3 h-3 rounded-full bg-error inline-block"></span> <span class="ml-2 text-sm">High Priority</span></td>
+<td class="px-6 py-4 text-sm">Admin (You)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right 40%: Team -->
+<div class="lg:col-span-4 glass-card rounded-lg p-6">
+<h4 class="font-headline font-extrabold text-xl mb-6">Team Members</h4>
+<div class="space-y-5">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<div class="relative">
+<img alt="Team member" class="w-10 h-10 rounded-full bg-secondary-container" data-alt="Professional headshot of a young lawyer in a suit with a warm and confident expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhzoGAXqvPDI5-0ISceK4jtCnIiYPKul7lhxG5HSIPyU-cJ_C5en54v00_hd12ese7paD9-VDzPOVOMpqPoWeJg4CVxmbtYuBppo4fVDVSl9m2IXNW8XwlZOk8H3ggcsrPnh5ONqagGvnKhxiyUpL2I8nevy-X3XRayaTSHUvn2iunHdx8lYUkmU25_XYFM7wKFKttjIac5Pk6Cb7D5y0lFas7DX6B6VH6A-1knUeAKKLSGlow-tYA_ogQI1xNi7fqvxMBeApXWfY"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-fixed-dim border-2 border-white rounded-full"></div>
+</div>
+<div>
+<p class="font-bold text-sm">Arjun Kapur</p>
+<p class="text-xs text-on-surface-variant">Senior Associate</p>
+</div>
+</div>
+<span class="text-[10px] bg-tertiary-fixed/20 text-tertiary px-2 py-0.5 rounded-full font-bold uppercase">Online</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<div class="relative">
+<img alt="Team member" class="w-10 h-10 rounded-full bg-secondary-container" data-alt="Headshot of a professional female lawyer with glasses and a friendly demeanor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4LO1sbJJv7gpmwi51P0a9FNf0sJvKbrzrhxsisN3BRN58zWK-GgoWeShA_7kX0sk7m3yywWwgJj1kZhZ0aJTwIebCjxz-GN993MavBmUCOEopBkbxHajSyfFvRTTZTh6O7V3H41fUODUG5xVnJ5Ewvg7OrRqngW-qgsPWCm_mJU4cuGObyBnuQr84f-lgUMYQTyWkJnNOaNEqe3FTOC21Bme-oR2505HjZs2tSkCu_wuEsx7LbuKBhqpTgpsKFq5UIf9cTR7oPH8"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-fixed-dim border-2 border-white rounded-full"></div>
+</div>
+<div>
+<p class="font-bold text-sm">Sana Mirza</p>
+<p class="text-xs text-on-surface-variant">Legal Researcher</p>
+</div>
+</div>
+<span class="text-[10px] bg-tertiary-fixed/20 text-tertiary px-2 py-0.5 rounded-full font-bold uppercase">Online</span>
+</div>
+<div class="flex items-center justify-between opacity-60">
+<div class="flex items-center space-x-3">
+<div class="relative">
+<img alt="Team member" class="w-10 h-10 rounded-full bg-secondary-container" data-alt="Headshot of a male professional in formal attire looking attentive" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCgNyhKXlMZ_6Sx8DfsDlh1kM7hgCn10djDoXnbZAHt3CDi-WYF1s527ZtAKSbI9CJvjH1c6UN0-brylZmBQpR3l1ZHKv51Y9kOmSyBUKkuinftZ5XQfpZ9p947TycEzfc6uHD7pU14fGICenZN9AhINRvSvruaqvdpQjVsA85sp8msFcRqaVxRDrva26YCFrqDJ607MeveyVYuFKQf_NNOT_GJYjvLD-jsCCJYrJWwrlZPrPRFajF2s3h9W8W9xQvYy0HNp5WN84"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-yellow-400 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<p class="font-bold text-sm">Rahul Verma</p>
+<p class="text-xs text-on-surface-variant">Junior Associate</p>
+</div>
+</div>
+<span class="text-[10px] bg-surface-container-highest text-on-surface-variant px-2 py-0.5 rounded-full font-bold uppercase">Away</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<div class="relative">
+<img alt="Team member" class="w-10 h-10 rounded-full bg-secondary-container" data-alt="Professional female legal advisor with a stylish and expert appearance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYStFhII5HMeBSOTDEWCw778R2pgyJGEDii4rSN2JdNk4dww65VKRXFRctrG6TZkF71HUP5osBop5NCiYmGGP-nWcpvFRHDrZaxI4Z5k9Nl9icQDpIgx7KkPVBoRsJihtk2IiGWQti9wzd_C9IA57hgj8C1Hkimg56ugHTw_GH9ATaDwCOoGpgHNxy0BvQoDQqmTW4x9rw94_v7Yj0da9HKbpyJtB_QjlhYlW7__htaFJHiOInTWqqD10X2WN2XdkfhcHvXig9yEY"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-fixed-dim border-2 border-white rounded-full"></div>
+</div>
+<div>
+<p class="font-bold text-sm">Priya Nath</p>
+<p class="text-xs text-on-surface-variant">Litigation Head</p>
+</div>
+</div>
+<span class="text-[10px] bg-tertiary-fixed/20 text-tertiary px-2 py-0.5 rounded-full font-bold uppercase">Online</span>
+</div>
+</div>
+<button class="w-full mt-8 py-3 rounded-full border border-primary/20 text-primary font-bold hover:bg-primary/5 transition-all">Manage Team</button>
+</div>
+</div>
+<!-- Row 3: AI Drafts and Comms -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- AI Drafts -->
+<div class="glass-card rounded-lg p-6">
+<div class="flex justify-between items-center mb-6">
+<h4 class="font-headline font-extrabold text-xl flex items-center">
+<span class="material-symbols-outlined text-primary mr-2">auto_awesome</span>
+                                    AI Drafts
+                                </h4>
+<span class="text-xs font-bold text-primary px-3 py-1 bg-primary/10 rounded-full">PRO FEATURE</span>
+</div>
+<div class="space-y-4">
+<div class="group cursor-pointer p-4 rounded-xl border border-outline-variant/10 hover:bg-white hover:shadow-lg transition-all">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-bold text-on-surface">Reply to Section 5 Application</p>
+<p class="text-xs text-on-surface-variant">Drafted 2h ago • Case: 482/23</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<div class="group cursor-pointer p-4 rounded-xl border border-outline-variant/10 hover:bg-white hover:shadow-lg transition-all">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-bold text-on-surface">Viva Voce Arguments for Bail</p>
+<p class="text-xs text-on-surface-variant">Drafted 5h ago • Case: Kumar vs CP</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<div class="group cursor-pointer p-4 rounded-xl border border-outline-variant/10 hover:bg-white hover:shadow-lg transition-all">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-bold text-on-surface">Interrogatories for Cross-Exam</p>
+<p class="text-xs text-on-surface-variant">Drafted 1d ago • Case: Singh Civil</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Communications Hub -->
+<div class="glass-card rounded-lg p-0 flex flex-col overflow-hidden">
+<div class="p-6 border-b border-outline-variant/10">
+<h4 class="font-headline font-extrabold text-xl mb-4">Communications Hub</h4>
+<div class="flex space-x-1 bg-surface-container-low p-1 rounded-full">
+<button class="flex-1 py-1.5 px-4 rounded-full bg-white shadow-sm font-bold text-sm text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-sm mr-2" style="font-variation-settings: 'FILL' 1;">chat</span> WhatsApp
+                                    </button>
+<button class="flex-1 py-1.5 px-4 rounded-full text-on-surface-variant font-medium text-sm hover:bg-white/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm mr-2">mail</span> Email
+                                    </button>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex items-start space-x-3">
+<img alt="Client" class="w-8 h-8 rounded-full" data-alt="Minimalist avatar with initials CA in a circle with soft blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3iie2AF6fuCou6Em45EoWgLQANSmi9Un9WSdxJktIdqJ7BW_rKjfXXEz8GKoJoP2HnCiNsU7_3pOdCPtquSDMBAUDo1T_PCx5wG1mxFsKWor_u8adXrmTo__Wu4VuqW-V5UJuDZHhy3RY8h_3PujxlqOgSHhnGencOB5OimWVnltioxlSBDVYVlWDLbWu2UgqdkajE0mzI9WFrJjnOeEGeBzgEfdSoaXGDWTgUVCOsn6N_mYH738KLcww23Trr5UiCt1x13fg_iQ"/>
+<div class="flex-1 bg-surface-container-low rounded-tr-lg rounded-bl-lg rounded-br-lg p-3">
+<p class="text-xs font-bold text-primary mb-1">Adv. Ramesh (Opposite Counsel)</p>
+<p class="text-sm text-on-surface">The documents have been shared. Please confirm the hearing time.</p>
+<p class="text-[10px] text-right text-on-surface-variant mt-1">10:45 AM</p>
+</div>
+</div>
+<div class="flex items-start space-x-3 flex-row-reverse">
+<img alt="Admin" class="w-8 h-8 rounded-full ml-3" data-alt="Minimalist avatar with initials RS in a circle with primary blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKg1KVeVMisXvTUvcTwGciAvyvZ3frIP0rzMK81NPPQ3R7YHq68WfAnFiOdTqp92itwKVFSZrJiVRZtQqZlWdiM1ZAN2C4QqLe1XtQzjBfc5WwbODMPqyNGceGuqqMkly8Z6OiBleR4vTPqPJgfPdRA7nTitoz7z4voQACQsrhF7syD3eDni5rCow3AeFP-W-MELOpFddzhP-xyMY25Ku-Yvh8wY2dUnqIG3jezgyk04gVOD-7602YxcYhs56KZ-JdN3r6Z05Mg28"/>
+<div class="flex-1 bg-primary text-white rounded-tl-lg rounded-bl-lg rounded-br-lg p-3">
+<p class="text-sm">Received. Will check with my senior and revert by evening.</p>
+<p class="text-[10px] text-right opacity-70 mt-1">11:02 AM • Sent</p>
+</div>
+</div>
+<div class="mt-4 flex space-x-2">
+<input class="flex-1 bg-surface-container-high border-none rounded-full px-4 text-sm focus:ring-2 focus:ring-primary/40" placeholder="Type a message..." type="text"/>
+<button class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 4: Billing and Analytics -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Billing Summary -->
+<div class="glass-card rounded-lg p-6">
+<h4 class="font-headline font-extrabold text-xl mb-4">Billing &amp; Usage</h4>
+<div class="flex items-center justify-between mb-6">
+<div>
+<p class="text-xs font-bold text-on-surface-variant tracking-wider uppercase">Current Plan</p>
+<p class="text-xl font-extrabold text-primary">Pro Enterprise Plan</p>
+</div>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-4 py-1 rounded-full text-xs font-bold">ACTIVE</span>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold">
+<span>Case Storage</span>
+<span>847 / 1,000 cases</span>
+</div>
+<div class="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[84.7%] rounded-full shadow-[0_0_10px_rgba(0,55,173,0.3)]"></div>
+</div>
+<p class="text-[11px] text-on-surface-variant">Next billing date: 14 Oct 2023</p>
+</div>
+</div>
+<!-- Quick Analytics -->
+<div class="glass-card rounded-lg p-6 flex flex-col">
+<h4 class="font-headline font-extrabold text-xl mb-4">Efficiency Analytics</h4>
+<div class="flex-1 flex items-end justify-between space-x-2 pb-2">
+<div class="flex flex-col items-center flex-1">
+<div class="w-full bg-primary/20 rounded-t-md h-24 relative group">
+<div class="absolute bottom-0 w-full bg-primary h-[60%] rounded-t-md transition-all group-hover:h-[80%]"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold uppercase text-on-surface-variant">Mon</span>
+</div>
+<div class="flex flex-col items-center flex-1">
+<div class="w-full bg-primary/20 rounded-t-md h-24 relative group">
+<div class="absolute bottom-0 w-full bg-primary h-[40%] rounded-t-md transition-all group-hover:h-[60%]"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold uppercase text-on-surface-variant">Tue</span>
+</div>
+<div class="flex flex-col items-center flex-1">
+<div class="w-full bg-primary/20 rounded-t-md h-24 relative group">
+<div class="absolute bottom-0 w-full bg-primary h-[90%] rounded-t-md transition-all group-hover:h-[100%]"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold uppercase text-on-surface-variant">Wed</span>
+</div>
+<div class="flex flex-col items-center flex-1">
+<div class="w-full bg-primary/20 rounded-t-md h-24 relative group">
+<div class="absolute bottom-0 w-full bg-primary h-[75%] rounded-t-md transition-all group-hover:h-[85%]"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold uppercase text-on-surface-variant">Thu</span>
+</div>
+<div class="flex flex-col items-center flex-1">
+<div class="w-full bg-primary/20 rounded-t-md h-24 relative group">
+<div class="absolute bottom-0 w-full bg-primary h-[55%] rounded-t-md transition-all group-hover:h-[65%]"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold uppercase text-on-surface-variant">Fri</span>
+</div>
+<div class="flex flex-col items-center flex-1">
+<div class="w-full bg-primary/20 rounded-t-md h-24 relative group">
+<div class="absolute bottom-0 w-full bg-primary h-[20%] rounded-t-md transition-all group-hover:h-[30%]"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold uppercase text-on-surface-variant">Sat</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 5: AIPOT Alerts -->
+<div class="glass-card rounded-lg p-8">
+<div class="flex items-center mb-6">
+<div class="w-12 h-12 rounded-xl bg-tertiary-container flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-white text-3xl">policy</span>
+</div>
+<div>
+<h4 class="font-headline font-extrabold text-2xl">AIPOT Judgement Alerts</h4>
+<p class="text-on-surface-variant">Critical recent rulings matching your active practice areas.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="p-5 rounded-2xl bg-surface-container-low border-l-4 border-primary">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-extrabold bg-primary text-white px-2 py-0.5 rounded">SUPREME COURT</span>
+<span class="text-xs text-on-surface-variant">2h ago</span>
+</div>
+<h5 class="font-bold text-on-surface mb-2">Section 138 NI Act: New Guidelines on Summary Trial</h5>
+<p class="text-sm text-on-surface-variant line-clamp-2">The Hon'ble SC clarifies that the accused must disclose the defense at the stage of framing notice under Section 251 CrPC...</p>
+<a class="text-primary text-xs font-bold mt-4 inline-block hover:underline" href="#">Read Analysis</a>
+</div>
+<div class="p-5 rounded-2xl bg-surface-container-low border-l-4 border-tertiary-fixed-dim">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-extrabold bg-tertiary-container text-white px-2 py-0.5 rounded">P&amp;H HIGH COURT</span>
+<span class="text-xs text-on-surface-variant">5h ago</span>
+</div>
+<h5 class="font-bold text-on-surface mb-2">Pre-Arrest Bail in Matrimonial Disputes</h5>
+<p class="text-sm text-on-surface-variant line-clamp-2">Detailed ruling on Section 498A IPC regarding the necessity of custodial interrogation when mediation is underway...</p>
+<a class="text-primary text-xs font-bold mt-4 inline-block hover:underline" href="#">Read Analysis</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Spacer -->
+<div class="h-16"></div>
+</main>
+</div>
+</div>
+</body></html>

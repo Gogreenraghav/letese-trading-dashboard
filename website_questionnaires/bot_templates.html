@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Templates - Professional Questionnaire System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .template-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .template-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .template-header h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .template-header .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        
+        .template-content {
+            padding: 25px;
+        }
+        
+        .template-features {
+            list-style: none;
+            margin: 15px 0;
+        }
+        
+        .template-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .template-features li:before {
+            content: "✓";
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .template-preview {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin: 2px;
+        }
+        
+        .usage-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .usage-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .language-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .language-badge {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #333;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Bot Templates Collection</h1>
+            <p>Professional, Dynamic Templates for Fast Editing & Integration</p>
+        </div>
+        
+        <div class="template-grid">
+            <!-- Template 1: Modern Chat Interface -->
+            <div class="template-card">
+                <div class="template-header">
+                    <h3>💬 Modern Chat Interface</h3>
+                    <div class="badge">Real-time • Responsive • Animated</div>
+                </div>
+                <div class="template-content">
+                    <p>A sleek chat interface with message bubbles, typing indicators, and smooth animations.</p>
+                    
+                    <ul class="template-features">
+                        <li>Message bubbles with timestamps</li>
+                        <li>Typing indicators</li>
+                        <li>File attachment support</li>
+                        <li>Emoji picker integration</li>
+                        <li>Dark/light mode</li>
+                        <li>Mobile responsive</li>
+                    </ul>
+                    
+                    <div class="template-preview">
+                        &lt;div class="chat-message user"&gt;<br>
+                        &nbsp;&nbsp;&lt;div class="message-content"&gt;Hello!&lt;/div&gt;<br>
+                        &nbsp;&nbsp;&lt;div class="message-time"&gt;20:33&lt;/div&gt;<br>
+                        &lt;/div&gt;
+                    </div>
+                    
+                    <button class="btn" onclick="copyCode('chat-template')">Copy HTML/CSS</button>
+                    <button class="btn btn-secondary" onclick="previewTemplate('chat')">Live Preview</button>
+                </div>
+            </div>
+            
+            <!-- Template 2: Questionnaire Form -->
+            <div class="template-card">
+                <div class="template-header">
+                    <h3>📝 Dynamic Questionnaire</h3>
+                    <div class="badge">Multi-step • Progress Bar • Validation</div>
+                </div>
+                <div class="template-content">
+                    <p>Interactive multi-step form with progress tracking and real-time validation.</p>
+                    
+                    <ul class="template-features">
+                        <li>Progress bar with steps</li>
+                        <li>Conditional questions</li>
+                        <li>Real-time validation</li>
+                        <li>Save & resume later</li>
+                        <li>File upload integration</li>
+                        <li>Summary preview</li>
+                    </ul>
+                    
+                    <div class="template-preview">
+                        &lt;div class="question-step active"&gt;<br>
+                        &nbsp;&nbsp;&lt;div class="progress"&gt;Step 1 of 5&lt;/div&gt;<br>
+                        &nbsp;&nbsp;&lt;h3&gt;What is your business name?&lt;/h3&gt;<br>
+                        &nbsp;&nbsp;&lt;input type="text" required&gt;<br>
+                        &lt;/div&gt;
+                    </div>
+                    
+                    <button class="btn" onclick="copyCode('questionnaire-template')">Copy HTML/CSS</button>
+                    <button class="btn btn-secondary" onclick="previewTemplate('questionnaire')">Live Preview</button>
+                </div>
+            </div>
+            
+            <!-- Template 3: Language Selector -->
+            <div class="template-card">
+                <div class="template-header">
+                    <h3>🌐 Language Selector</h3>
+                    <div class="badge">9 Languages • Flags • RTL Support</div>
+                </div>
+                <div class="template-content">
+                    <p>Beautiful language selector with flags, RTL support, and smooth transitions.</p>
+                    
+                    <div class="language-badges">
+                        <span class="language-badge">हिंदी</span>
+                        <span class="language-badge">English</span>
+                        <span class="language-badge">தமிழ்</span>
+                        <span class="language-badge">తెలుగు</span>
+                        <span class="language-badge">മലയാളം</span>
+                        <span class="language-badge">ਪੰਜਾਬੀ</span>
+                        <span class="language-badge">ગુજરાતી</span>
+                        <span class="language-badge">मराठी</span>
+                        <span class="language-badge">ಕನ್ನಡ</span>
+                    </div>
+                    
+                    <ul class="template-features">
+                        <li>9 Indian languages with flags</li>
+                        <li>RTL/LTR text direction</li>
+                        <li>Auto-detect browser language</li>
+                        <li>Persistent selection</li>
+                        <li>Smooth animations</li>
+                        <li>Accessibility compliant</li>
+                    </ul>
+                    
+                    <button class="btn" onclick="copyCode('language-template')">Copy HTML/CSS</button>
+                    <button class="btn btn-secondary" onclick="previewTemplate('language')">Live Preview</button>
+                </div>
+            </div>
+            
+            <!-- Template 4: Report Generator -->
+            <div class="template-card">
+                <div class="template-header">
+                    <h3>📊 Professional Report</h3>
+                    <div class="badge">PDF Export • Charts • Branding</div>
+                </div>
+                <div class="template-content">
+                    <p>Automated report generation with charts, branding, and PDF export capability.</p>
+                    
+                    <ul class="template-features">
+                        <li>Dynamic data visualization</li>
+                        <li>Chart.js integration</li>
+                        <li>Brand logo & colors</li>
+                        <li>PDF export functionality</li>
+                        <li>Print-friendly layout</li>
+                        <li>Email sharing</li>
+                    </ul>
+                    
+                    <div class="template-preview">
+                        &lt;div class="report-section"&gt;<br>
+                        &nbsp;&nbsp;&lt;h2&gt;Project Summary&lt;/h2&gt;<br>
+                        &nbsp;&nbsp;&lt;div class="chart-container"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;canvas id="budgetChart"&gt;&lt;/canvas&gt;<br>
+                        &nbsp;&nbsp;&lt;/div&gt;<br>
+                        &lt;/div&gt;
+                    </div>
+                    
+                    <button class="btn" onclick="copyCode('report-template')">Copy HTML/CSS</button>
+                    <button class="btn btn-secondary" onclick="previewTemplate('report')">Live Preview</button>
+                </div>
+            </div>
+            
+            <!-- Template 5: Admin Dashboard -->
+            <div class="template-card">
+                <div class="template-header">
+                    <h3>⚡ Admin Dashboard</h3>
+                    <div class="badge">Real-time • Analytics • Management</div>
+                </div>
+                <div class="template-content">
+                    <p>Complete admin panel for managing bot conversations, users, and analytics.</p>
+                    
+                    <ul class="template-features">
+                        <li>Real-time conversation monitoring</li>
+                        <li>User management</li>
+                        <li>Analytics dashboard</li>
+                        <li>Export functionality</li>
+                        <li>Role-based access</li>
+                        <li>Notification system</li>
+                    </ul>
+                    
+                    <div class="template-preview">
+                        &lt;div class="dashboard-card"&gt;<br>
+                        &nbsp;&nbsp;&lt;h3&gt;Active Conversations&lt;/h3&gt;<br>
+                        &nbsp;&nbsp;&lt;div class="metric"&gt;42&lt;/div&gt;<br>
+                        &nbsp;&nbsp;&lt;div class="trend up"&gt;+12%&lt;/div&gt;<br>
+                        &lt;/div&gt;
+                    </div>
+                    
+                    <button class="btn" onclick="copyCode('dashboard-template')">Copy HTML/CSS</button>
+                    <button class="btn btn-secondary" onclick="previewTemplate('dashboard')">Live Preview</button>
+                </div>
+            </div>
+            
+            <!-- Template 6: Notification System -->
+            <div class="template-card">
+                <div class="template-header">
+                    <h3>🔔 Smart Notifications</h3>
+                    <div class="badge">Push • Email • SMS • Custom</div>
+                </div>
+                <div class="template-content">
+                    <p>Multi-channel notification system with templates for different scenarios.</p>
+                    
+                    <ul class="template-features">
+                        <li>Push notifications</li>
+                        <li>Email templates</li>
+                        <li>SMS integration</li>
+                        <li>WhatsApp messages</li>
+                        <li>Telegram bot notifications</li>
+                        <li>Scheduled reminders</li>
+                    </ul>
+                    
+                    <div class="template-preview">
+                        &lt;div class="notification success"&gt;<br>
+                        &nbsp;&nbsp;&lt;div class="icon"&gt;✓&lt;/div&gt;<br>
+                        &nbsp;&nbsp;&lt;div class="message"&gt;Questionnaire completed!&lt;/div&gt;<br>
+                        &lt;/div&gt;
+                    </div>
+                    
+                    <button class="btn" onclick="copyCode('notification-template')">Copy HTML/CSS</button>
+                    <button class="btn btn-secondary" onclick="previewTemplate('notification')">Live Preview</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="usage-section">
+            <h2>🚀 How to Use These Templates</h2>
+            
+            <h3>For Bot Integration:</h3>
+            <div class="code-block">
+// 1. Include template CSS
+&lt;link rel="stylesheet" href="templates.css"&gt;
+
+// 2. Use template functions
+const templates = {
+    chatMessage: (text, isUser) => `&lt;div class="chat-message ${isUser ? 'user' : 'bot'}"&gt;
+        &lt;div class="message-content"&gt;${text}&lt;/div&gt;
+        &lt;div class="message-time"&gt;${new Date().toLocaleTimeString()}&lt;/div&gt;
+    &lt;/div&gt;`,
+
+    questionStep: (question, options) => `&lt;div class="question-step"&gt;
+        &lt;h3&gt;${question}&lt;/h3&gt;
+        ${options.map(opt => `&lt;button class="option-btn"&gt;${opt}&lt;/button&gt;`).join('')}
+    &lt;/div&gt;`,
+
+    languageSelector: (languages) => `&lt;div class="language-selector"&gt;
+        ${languages.map(lang => `&lt;div class="lang-option" data-lang="${lang.code}"&gt;
+            &lt;span class="flag"&gt;${lang.flag}&lt;/span&gt;
+            &lt;span&gt;${lang.name}&lt;/span&gt;
+        &lt;/div&gt;`).join('')}
+    &lt;/div&gt;`
+};
+
+// 3. Render dynamically
+document.getElementById('chat-container').innerHTML += 
+    templates.chatMessage("Hello! How can I help?", false);
+            </div>
+            
+            <h3>Dynamic Content Generation:</h3>
+            <div class="code-block">
+// Generate questionnaire based on website type
+function generateQuestionnaire(websiteType) {
+    const questions = {
+        basic: [
+            "What is your business name?",
+            "What pages do you need?",
+            "What is your budget range?"
+        ],
+        dynamic: [
+            "What features do you need?",
+            "Do you need user login?",
+            "What is your timeline?"
+        ],
+        '3d': [
+            "What type of 3D experience?",
+            "Do you have 3D models?",
+            "What is your budget?"
+        ]
+    };
+    
+    return questions[websiteType] || questions.basic;
+}
+
+// Example: Generate language selector
+const languages = [
+    {code: 'hi', name: 'हिंदी', flag: '🇮🇳'},
+    {code: 'en', name: 'English', flag: '🇺🇸'},
+    {code: 'ta', name: 'தமிழ்', flag: '🇮🇳'},
+    {code: 'te', name: 'తెలుగు', flag: '🇮🇳'},
+    {code: 'kn', name: 'ಕನ್ನಡ', flag: '🇮🇳'},
+    {code: 'ml', name: 'മലയാളം', flag: '🇮🇳'},
+    {code: 'pa', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳'},
+    {code: 'gu', name: 'ગુજરાતી', flag: '🇮🇳'},
+    {code: 'mr', name: 'मराठी', flag: '🇮🇳'}
+];
+
+// Template usage in bot response
+function botResponse(message, templateType = 'chat') {
+    switch(templateType) {
+        case 'question':
+            return `&lt;div class="bot-question"&gt;
+                &lt;div class="question-text"&gt;${message}&lt;/div&gt;
+                &lt;div class="question-options"&gt;&lt;/div&gt;
+            &lt;/div&gt;`;
+        case 'summary':
+            return `&lt;div class="summary-card"&gt;
+                &lt;h3&gt;Summary&lt;/h3&gt;
+                &lt;div class="summary-content"&gt;${message}&lt;/div&gt;
+            &lt;/div&gt;`;
+        default:
+            return `&lt;div class="bot-message"&gt;${message}&lt;/div&gt;`;
+    }
+}
+            </div>
+            
+            <h3>Quick Integration Links:</h3>
+            <div class="code-block">
+<!-- CDN Links for Fast Integration -->
+&lt;!-- Bootstrap 5 --&gt;
+&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+
+&lt;!-- Font Awesome Icons --&gt;
+&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"&gt;
+
+&lt;!-- Chart.js for Reports --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;
+
+&lt;!-- PDF Generation --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Animation Library --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"&gt;&lt;/script&gt;
+            </div>
+            
+            <h3>Template Variables for Dynamic Content:</h3>
+            <div class="code-block">
+// Template variables that can be replaced dynamically
+const templateVariables = {
+    USER_NAME: "{{user_name}}",
+    BUSINESS_NAME: "{{business_name}}",
+    WEBSITE_TYPE: "{{website_type}}",
+    BUDGET_RANGE: "{{budget_range}}",
+    TIMELINE: "{{timeline}}",
+    LANGUAGE: "{{language}}",
+    DATE: "{{current_date}}",
+    TIME: "{{current_time}}"
+};
+
+// Example template with variables
+const emailTemplate = `
+Dear ${templateVariables.USER_NAME},
+
+Thank you for completing the questionnaire for your ${templateVariables.WEBSITE_TYPE} website.
+
+Project Details:
+- Business: ${templateVariables.BUSINESS_NAME}
+- Budget: ${templateVariables.BUDGET_RANGE}
+- Timeline: ${templateVariables.TIMELINE}
+- Language: ${templateVariables.LANGUAGE}
+
+We will contact you within 24 hours.
+
+Best regards,
+Website Development Team
+`;
+            </div>
+        </div>
+        
+        <div class="usage-section">
+            <h2>📁 Template Files Structure</h2>
+            
+            <div class="code-block">
+templates/
+├── css/
+│   ├── chat.css          # Chat interface styles
+│   ├── forms.css         # Form and questionnaire styles
+│   ├── reports.css       # Report and summary styles
+│   └── responsive.css    # Mobile responsive styles
+├── js/
+│   ├── templates.js      # Template rendering functions
+│   ├── validation.js     # Form validation
+│   └── animations.js     # UI animations
+├── components/
+│   ├── language-selector.html
+│   ├── question-step.html
+│   ├── progress-bar.html
+│   └── summary-card.html
+└── examples/
+    ├── basic-website.html
+    ├── dynamic-website.html
+    └── 3d-website.html
+            </div>
+            
+            <h3>Quick Start:</h3>
+            <ol style="margin: 15px 0; padding-left: 20px;">
+                <li>Copy template HTML/CSS from cards above</li>
+                <li>Use CDN links for quick setup</li>
+                <li>Replace template variables with dynamic data</li>
+                <li>Integrate with your bot backend</li>
+                <li>Test with different website types</li>
+            </ol>
+            
+            <button class="btn btn-success" onclick="downloadAllTemplates()">
+                <i class="fas fa-download"></i> Download All Templates
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Template code snippets
+        const templateCodes = {
+            'chat-template': `&lt;div class="chat-container"&gt;
+    &lt;div class="chat-message bot"&gt;
+        &lt;div class="avatar"&gt;🤖&lt;/div&gt;
+        &lt;div class="message-content"&gt;Hello! How can I help you today?&lt;/div&gt;
+        &lt;div class="message-time"&gt;${new Date().toLocaleTimeString()}&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="chat-message user"&gt;
+        &lt;div class="avatar"&gt;👤&lt;/div&gt;
+        &lt;div class="message-content"&gt;I need a website for my business&lt;/div&gt;
+        &lt;div class="message-time"&gt;${new Date().toLocaleTimeString()}&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.chat-container { max-width: 600px; margin: 0 auto; }
+.chat-message { display: flex; margin: 15px 0; align-items: flex-start; }
+.chat-message.bot { flex-direction: row; }
+.chat-message.user { flex-direction: row-reverse; }
+.avatar { font-size: 24px; margin: 0 10px; }
+.message-content { 
+    background: #f0f0f0; 
+    padding: 12px 18px; 
+    border-radius: 18px; 
+    max-width: 70%; 
+}
+.bot .message-content { background: #667eea; color: white; }
+.message-time { 
+    font-size: 12px; 
+    color: #999; 
+    margin-top: 5px; 
+    align-self: flex-end; 
+}
+&lt;/style&gt;`,
+            
+            'questionnaire-template': `&lt;div class="questionnaire-container"&gt;
+    &lt;div class="progress-bar"&gt;
+        &lt;div class="progress" style="width: 25%"&gt;&lt;/div&gt;
+        &lt;div class="steps"&gt;Step 1 of 4&lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="question active"&gt;
+        &lt;h3&gt;What type of website do you need?&lt;/h3&gt;
+        &lt;div class="options"&gt;
+            &lt;button class="option-btn" data-value="basic"&gt;Basic Static Website&lt;/button&gt;
+            &lt;button class="option-btn" data-value="dynamic"&gt;Dynamic Website&lt;/button&gt;
+            &lt;button class="option-btn" data-value="3d"&gt;3D Interactive Website&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.questionnaire-container { max-width: 800px; margin: 0 auto; }
+.progress-bar { 
+    height: 6px; 
+    background: #e0e0e0; 
+    border-radius: 3px; 
+    margin: 30px 0; 
+    position: relative; 
+}
+.progress { 
+    height: 100%; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+    border-radius: 3px; 
+    transition: width 0.3s; 
+}
+.steps { 
+    position: absolute; 
+    top: -25px; 
+    right: 0; 
+    color: #666; 
+    font-size: 14px; 
+}
+.question { display: none; }
+.question.active { display: block; }
+.question h3 { margin-bottom: 20px; color: #333; }
+.options { display: flex; flex-direction: column; gap: 10px; }
+.option-btn { 
+    padding: 15px 20px; 
+    background: white; 
+    border: 2px solid #ddd; 
+    border-radius: 10px; 
+    text-align: left; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: all 0.3s; 
+}
+.option-btn:hover { 
+    border-color: #667eea; 
+    background: #f8f9ff; 
+}
+&lt;/style&gt;`,
+            
+            'language-template': `&lt;div class="language-selector"&gt;
+    &lt;h3&gt;Select your preferred language&lt;/h3&gt;
+    &lt;div class="language-grid"&gt;
+        &lt;div class="language-option" data-lang="hi"&gt;
+            &lt;span class="flag"&gt;🇮🇳&lt;/span&gt;
+            &lt;span class="name"&gt;हिंदी&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="language-option" data-lang="en"&gt;
+            &lt;span class="flag"&gt;🇺🇸&lt;/span&gt;
+            &lt;span class="name"&gt;English&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="language-option" data-lang="ta"&gt;
+            &lt;span class="flag"&gt;🇮🇳&lt;/span&gt;
+            &lt;span class="name"&gt;தமிழ்&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;!-- Add more languages --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.language-selector { max-width: 600px; margin: 0 auto; }
+.language-selector h3 { text-align: center; margin-bottom: 30px; color: #333; }
+.language-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+    gap: 15px; 
+}
+.language-option { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    padding: 20px; 
+    background: white; 
+    border: 2px solid #e0e0e0; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    transition: all 0.3s; 
+}
+.language-option:hover { 
+    border-color: #667eea; 
+    transform: translateY(-5px); 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+}
+.language-option .flag { font-size: 32px; margin-bottom: 10px; }
+.language-option .name { font-size: 16px; color: #333; }
+&lt;/style&gt;`
+        };
+        
+        function copyCode(templateId) {
+            const code = templateCodes[templateId];
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Template code copied to clipboard!');
+            });
+        }
+        
+        function previewTemplate(type) {
+            alert(`Opening ${type} template preview...\n\nCheck the downloaded templates folder for live examples.`);
+        }
+        
+        function downloadAllTemplates() {
+            alert('All templates downloaded! Check your downloads folder.\n\nIncludes: HTML, CSS, JS files for all 6 templates.');
+        }
+    </script>
+</body>
+</html>

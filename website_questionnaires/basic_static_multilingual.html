@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Static Website - Multilingual Questionnaire</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #4CAF50;
+            margin-top: 30px;
+        }
+        .question {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        .required {
+            color: red;
+        }
+        .note {
+            background: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        .language-section {
+            background: #E8F5E9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #4CAF50;
+        }
+        .language-option {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 Basic Static Website - Multilingual Questionnaire</h1>
+        
+        <div class="language-section">
+            <h2>🌐 Language Selection (First Question)</h2>
+            <div class="question">
+                <strong>Which language are you comfortable in? <span class="required">*</span></strong>
+                <div>
+                    <div class="language-option">हिंदी (Hindi)</div>
+                    <div class="language-option">English</div>
+                    <div class="language-option">मराठी (Marathi)</div>
+                    <div class="language-option">தமிழ் (Tamil)</div>
+                    <div class="language-option">తెలుగు (Telugu)</div>
+                    <div class="language-option">ಕನ್ನಡ (Kannada)</div>
+                    <div class="language-option">മലയാളം (Malayalam)</div>
+                    <div class="language-option">ਪੰਜਾਬੀ (Punjabi)</div>
+                    <div class="language-option">ગુજરાતી (Gujarati)</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="note">
+            <strong>Bot Implementation:</strong> Store selected language and show all following questions in that language.
+        </div>
+        
+        <h2>📋 Basic Information</h2>
+        <div class="question">
+            <strong>1. What is your business/organization name? <span class="required">*</span></strong>
+            <p><em>Hindi: आपके व्यवसाय/संगठन का नाम क्या है?</em></p>
+        </div>
+        
+        <div class="question">
+            <strong>2. What is the primary purpose of your website? <span class="required">*</span></strong>
+            <p>Options: Business showcase, Portfolio, Personal blog, Informational site, Other</p>
+            <p><em>Hindi: आपकी वेबसाइट का प्राथमिक उद्देश्य क्या है?</em></p>
+        </div>
+        
+        <div class="question">
+            <strong>3. What pages do you need? <span class="required">*</span></strong>
+            <p>Options: Home, About, Services, Portfolio, Contact, Blog (1-5 posts), Testimonials</p>
+            <p><em>Hindi: आपको कौन से पेज चाहिए?</em></p>
+        </div>
+        
+        <h2>🌐 Website Language Requirements</h2>
+        <div class="question">
+            <strong>4. In which language(s) do you want the website to be built? <span class="required">*</span></strong>
+            <div>
+                <div class="language-option">Single language (selected above)</div>
+                <div class="language-option">Multiple languages</div>
+                <div class="language-option">हिंदी + English</div>
+                <div class="language-option">Regional language + English</div>
+            </div>
+            <p><em>Hindi: आप वेबसाइट किन भाषा(ओं) में बनवाना चाहते हैं?</em></p>
+        </div>
+        
+        <div class="question">
+            <strong>5. Do you need a language switcher on the website?</strong>
+            <p>Options: Yes, No, Maybe later</p>
+            <p><em>Hindi: क्या आपको वेबसाइट पर भाषा बदलने का विकल्प चाहिए?</em></p>
+        </div>
+        
+        <h2>🎨 Design Preferences</h2>
+        <div class="question">
+            <strong>6. Do you have existing brand materials? <span class="required">*</span></strong>
+            <p>Options: Logo, Color palette, Font preferences, Style guide</p>
+            <p><em>Hindi: क्या आपके पास मौजूदा ब्रांड सामग्री है?</em></p>
+        </div>
+        
+        <div class="question">
+            <strong>7. Share 2-3 websites you like (for design reference):</strong>
+            <p><em>Hindi: 2-3 वेबसाइट्स शेयर करें जो आपको पसंद हैं (डिज़ाइन संदर्भ के लिए):</em></p>
+        </div>
+        
+        <h2>📱 Technical Requirements</h2>
+        <div class="question">
+            <strong>8. Do you need mobile responsiveness? <span class="required">*</span></strong>
+            <p>Options: Yes (essential), No (desktop only)</p>
+            <p><em>Hindi: क्या आपको मोबाइल रिस्पॉन्सिवनेस चाहिए?</em></p>
+        </div>
+        
+        <div class="question">
+            <strong>9. Do you need contact form? <span class="required">*</span></strong>
+            <p>Options: Simple contact form, Email only, Phone number display</p>
+            <p><em>Hindi: क्या आपको कॉन्टैक्ट फॉर्म चाहिए?</em></p>
+        </div>
+        
+        <h2>🏆 Competitor Analysis</h2>
+        <div class="question">
+            <strong>10. Do you have any competitors? <span class="required">*</span></strong>
+            <p>Options: Yes, No</p>
+            <p><em>Hindi: क्या आपके कोई प्रतियोगी हैं?</em></p>
+        </div>
+        
+        <div class="question">
+            <strong>11. If yes, would you like to share competitor website links?</strong>
+            <p>Please provide URLs:</p>
+            <p><em>Hindi: यदि हाँ, तो क्या आप प्रतियोगी वेबसाइट लिंक्स शेयर करना चाहेंगे?</em></p>
+        </div>
+        
+        <h2>📄 Content & Documents</h2>
+        <div class="question">
+            <strong>12. Do you have existing content? <span class="required">*</span></strong>
+            <p>Options: Text content ready, Need content writing, Have images/videos</p>
+            <p><em>Hindi: क्या आपके पास मौजूदा कंटेंट है?</em></p>
+        </div>
+        
+        <div class="question">
+            <strong>13. Do you have any tax documents or legal documents made for your organization/people?</strong>
+            <p>Options: Yes (please specify), No</p>
+            <p><em>Hindi: क्या आपके पास आपकी संस्था/लोगों के लिए कोई टैक्स दस्तावेज़ या कानूनी दस्तावेज़ बने हैं?</em></p>
+        </div>
+        
+        <h2>📅 Timeline & Budget</h2>
+        <div class="question">
+            <strong>14. What is your expected launch date?</strong>
+            <p><em>Hindi: आपकी अपेक्षित लॉन्च तिथि क्या है?</em></p>
+        </div>
+        
+        <div class="question">
+            <strong>15. What is your budget range? <span class="required">*</span></strong>
+            <p>Options: ₹10,000-₹25,000, ₹25,000-₹50,000, ₹50,000+</p>
+            <p><em>Hindi: आपका बजट रेंज क्या है?</em></p>
+        </div>
+        
+        <h2>🎯 Additional Requirements</h2>
+        <div class="question">
+            <strong>16. Do you need SEO optimization?</strong>
+            <p>Options: Basic SEO, Advanced SEO, Not needed</p>
+            <p><em>Hindi: क्या आपको SEO ऑप्टिमाइज़ेशन चाहिए?</em></p>
+        </div>
+        
+        <div class="question">
+            <strong>17. Do you need analytics setup?</strong>
+            <p>Options: Google Analytics, Other tracking</p>
+            <p><em>Hindi: क्या आपको एनालिटिक्स सेटअप चाहिए?</em></p>
+        </div>
+        
+        <div class="question">
+            <strong>18. Any other specific requirements?</strong>
+            <p><em>Hindi: कोई अन्य विशेष आवश्यकताएं?</em></p>
+        </div>
+        
+        <div class="note">
+            <strong>Total Questions: 18</strong><br>
+            <strong>Multilingual Features Added:</strong><br>
+            1. Language selection at start<br>
+            2. Website language requirements question<br>
+            3. Hindi translations shown as example<br>
+            4. Language switcher option<br>
+            <strong>Estimated Development Time: 2-4 weeks</strong><br>
+            <strong>Complexity: Low</strong>
+        </div>
+        
+        <div class="note">
+            <strong>For Bot Implementation:</strong><br>
+            1. Ask language preference first<br>
+            2. Store in session: user_language = "hindi"<br>
+            3. Load question translations from database/API<br>
+            4. Ask website language requirements<br>
+            5. Continue with translated questions<br>
+            6. Store answers with language metadata
+        </div>
+    </div>
+</body>
+</html>

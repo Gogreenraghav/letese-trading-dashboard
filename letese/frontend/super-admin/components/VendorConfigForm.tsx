@@ -62,7 +62,7 @@ export default function VendorConfigForm({
   const [values, setValues] = useState<Record<string, string | boolean>>(() => {
     const base: Record<string, string | boolean> = {};
     fields.forEach((f) => {
-      base[f.key] = initialConfig?.[f.key] ?? f.defaultValue ?? "";
+      base[f.key] = (initialConfig?.[f.key] ?? f.defaultValue ?? "") as string | boolean;
     });
     return base;
   });
@@ -80,7 +80,7 @@ export default function VendorConfigForm({
     fetchVendorConfig(vendorName)
       .then((cfg) => {
         setVerificationStatus(cfg.verification_status);
-        setValues((prev) => ({ ...prev, ...(cfg.config_data as Record<string, unknown>) }));
+        setValues((prev) => ({ ...prev, ...(cfg.config_data as Record<string, string | boolean>) }));
       })
       .catch(() => {/* vendor not configured yet */});
   }, [vendorName]);

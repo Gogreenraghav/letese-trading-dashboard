@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multilingual Website Questionnaire System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #FF5722;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #FF5722;
+            margin-top: 30px;
+        }
+        .language-section {
+            background: #FFF3E0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #FF9800;
+        }
+        .language-option {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #FF9800;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .language-option:hover {
+            background: #FF9800;
+            color: white;
+        }
+        .question {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #FF5722;
+            border-radius: 5px;
+        }
+        .note {
+            background: #FFECB3;
+            padding: 10px;
+            border-left: 4px solid #FFC107;
+            margin: 15px 0;
+        }
+        .translation-example {
+            background: #E8F5E9;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        .language-name {
+            font-weight: bold;
+            color: #D84315;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Multilingual Website Questionnaire System</h1>
+        
+        <div class="language-section">
+            <h2>Step 1: Language Selection</h2>
+            <p><strong>Bot should ask first:</strong> "Which language are you comfortable in?"</p>
+            
+            <div>
+                <strong>Available Languages:</strong><br>
+                <div class="language-option">हिंदी (Hindi)</div>
+                <div class="language-option">English</div>
+                <div class="language-option">मराठी (Marathi)</div>
+                <div class="language-option">தமிழ் (Tamil)</div>
+                <div class="language-option">తెలుగు (Telugu)</div>
+                <div class="language-option">ಕನ್ನಡ (Kannada)</div>
+                <div class="language-option">മലയാളം (Malayalam)</div>
+                <div class="language-option">ਪੰਜਾਬੀ (Punjabi)</div>
+                <div class="language-option">ગુજરાતી (Gujarati)</div>
+            </div>
+            
+            <div class="note">
+                <strong>Implementation:</strong><br>
+                1. Show language selection buttons/menu<br>
+                2. Store selected language in session<br>
+                3. All subsequent questions will be in selected language<br>
+                4. Allow language change anytime
+            </div>
+        </div>
+        
+        <h2>Step 2: Website Language Requirements</h2>
+        <div class="question">
+            <strong>Question to add in ALL questionnaires:</strong><br>
+            "In which language(s) do you want the website to be built?"
+        </div>
+        
+        <div class="question">
+            <strong>Follow-up options:</strong><br>
+            - Single language (selected above)<br>
+            - Multiple languages (select from list)<br>
+            - Language switcher feature needed<br>
+            - RTL support (for Urdu/Arabic if needed)<br>
+            - Translation management system
+        </div>
+        
+        <h2>Step 3: Multilingual Question Examples</h2>
+        
+        <div class="translation-example">
+            <h3>Example Question Translation:</h3>
+            <p><strong>English:</strong> "What is your business/organization name?"</p>
+            
+            <p><span class="language-name">Hindi:</span> "आपके व्यवसाय/संगठन का नाम क्या है?"</p>
+            <p><span class="language-name">Marathi:</span> "तुमच्या व्यवसाय/संस्थेचे नाव काय आहे?"</p>
+            <p><span class="language-name">Tamil:</span> "உங்கள் வணிகம்/நிறுவனத்தின் பெயர் என்ன?"</p>
+            <p><span class="language-name">Telugu:</span> "మీ వ్యాపారం/సంస్థ పేరు ఏమిటి?"</p>
+            <p><span class="language-name">Kannada:</span> "ನಿಮ್ಮ ವ್ಯವಸಾಯ/ಸಂಸ್ಥೆಯ ಹೆಸರೇನು?"</p>
+        </div>
+        
+        <h2>Step 4: Implementation for Each Website Type</h2>
+        
+        <div class="question">
+            <strong>For Basic Static Website:</strong><br>
+            1. Add language selection at start<br>
+            2. Add website language question<br>
+            3. Simple translation of 18 questions
+        </div>
+        
+        <div class="question">
+            <strong>For Dynamic Website:</strong><br>
+            1. Add language selection at start<br>
+            2. Add website language question<br>
+            3. Add multilingual CMS capability question<br>
+            4. Translation of 24 questions<br>
+            5. Ask about multilingual content management
+        </div>
+        
+        <div class="question">
+            <strong>For 3D Website:</strong><br>
+            1. Add language selection at start<br>
+            2. Add website language question<br>
+            3. Add multilingual UI/UX considerations<br>
+            4. Translation of 26 questions<br>
+            5. Ask about multilingual 3D text/audio
+        </div>
+        
+        <h2>Step 5: Technical Implementation</h2>
+        
+        <div class="note">
+            <strong>Chatbot Implementation:</strong><br>
+            1. Store language preference in user session<br>
+            2. Maintain translation dictionaries for all questions<br>
+            3. Use Google Translate API or custom translations<br>
+            4. Handle RTL languages properly<br>
+            5. Store answers in original language + English reference
+        </div>
+        
+        <div class="note">
+            <strong>Database Structure:</strong><br>
+            - User table: preferred_language<br>
+            - Questions table: translations for all languages<br>
+            - Answers table: store in user's language<br>
+            - Website requirements: requested_languages array
+        </div>
+        
+        <h2>Step 6: Sample Bot Conversation Flow</h2>
+        
+        <div class="translation-example">
+            <p><strong>Bot:</strong> नमस्ते! मैं आपकी वेबसाइट बनाने में मदद करूंगा। कृपया अपनी पसंदीदा भाषा चुनें।<br>
+            Hello! I will help you build your website. Please choose your preferred language.</p>
+            
+            <p><strong>User:</strong> हिंदी</p>
+            
+            <p><strong>Bot:</strong> धन्यवाद! अब मैं हिंदी में प्रश्न पूछूंगा।<br>
+            आप किस प्रकार की वेबसाइट चाहते हैं?<br>
+            Thank you! Now I will ask questions in Hindi.<br>
+            What type of website do you want?</p>
+            
+            <p><strong>User:</strong> बिजनेस वेबसाइट</p>
+            
+            <p><strong>Bot:</strong> आप वेबसाइट किन भाषाओं में बनवाना चाहते हैं?<br>
+            In which languages do you want the website to be built?</p>
+            
+            <p><strong>User:</strong> हिंदी और अंग्रेजी</p>
+            
+            <p><strong>Bot:</strong> बहुत अच्छा! अब मैं विस्तृत प्रश्न पूछूंगा...<br>
+            Excellent! Now I will ask detailed questions...</p>
+        </div>
+        
+        <div class="note">
+            <strong>Key Features Added:</strong><br>
+            1. Language selection before any questions<br>
+            2. Website language requirements question<br>
+            3. All questions translated to selected language<br>
+            4. Support for 9 Indian languages<br>
+            5. Proper RTL/LTR handling<br>
+            6. Multilingual content management options
+        </div>
+    </div>
+</body>
+</html>

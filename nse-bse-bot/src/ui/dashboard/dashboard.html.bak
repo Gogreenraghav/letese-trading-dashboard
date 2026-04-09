@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NSE/BSE Trading Bot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060b14; color: #e2e8f0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .glass { background: rgba(15, 21, 37, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); }
+    .green { color: #4ade80; } .red { color: #f87171; }
+    .card { background: rgba(15,21,37,0.7); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; }
+    .pulse { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+    .sentiment-bullish { color: #4ade80; }
+    .sentiment-bearish { color: #f87171; }
+    .sentiment-neutral { color: #fbbf24; }
+    .tab-active { border-bottom: 2px solid #6366f1; color: #818cf8; }
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 50; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .settings-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 12px; color: #e2e8f0; width: 100%; font-size: 13px; }
+    .settings-input:focus { outline: none; border-color: #6366f1; }
+    .speed-radio { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: all 0.2s; }
+    .speed-radio:hover { border-color: rgba(99,102,241,0.4); background: rgba(99,102,241,0.05); }
+    .speed-radio.selected { border-color: #6366f1; background: rgba(99,102,241,0.1); }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Header -->
+  <header class="glass sticky top-0 z-40 px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-sm">📈</div>
+      <div>
+        <h1 class="text-sm font-semibold text-white">NSE/BSE Bot</h1>
+        <p class="text-xs text-gray-500">Paper Trading · v1.0</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div id="marketStatus" class="flex items-center gap-2 text-xs">
+        <div class="w-2 h-2 rounded-full bg-yellow-500 pulse"></div>
+        <span class="text-gray-400">Checking...</span>
+      </div>
+      <div id="wsStatus" class="text-xs text-gray-500">WS: ○</div>
+      <button onclick="toggleSettingsModal()" class="p-2 rounded-lg hover:bg-white/10 transition" title="Settings">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Metrics Row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6" id="metricsRow">
+      <div class="card p-4"><p class="text-xs text-gray-500 mb-1">Portfolio Value</p><p class="text-lg font-bold" id="mTotalValue">₹1,00,000</p></div>
+      <div class="card p-4"><p class="text-xs text-gray-500 mb-1">Today's P/L</p><p class="text-lg font-bold green" id="mDayPL">₹0</p></div>
+      <div class="card p-4"><p class="text-xs text-gray-500 mb-1">Total Return</p><p class="text-lg font-bold" id="mTotalReturn">0%</p></div>
+      <div class="card p-4"><p class="text-xs text-gray-500 mb-1">Win Rate</p><p class="text-lg font-bold" id="mWinRate">—</p></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-1 mb-4 border-b border-white/10">
+      <button class="tab-btn tab-active px-4 py-2 text-sm transition" data-tab="dashboard">Dashboard</button>
+      <button class="tab-btn px-4 py-2 text-sm text-gray-500 transition" data-tab="trades">Trades</button>
+      <button class="tab-btn px-4 py-2 text-sm text-gray-500 transition" data-tab="signals">Signals</button>
+      <button class="tab-btn px-4 py-2 text-sm text-gray-500 transition" data-tab="ai">AI Summary</button>
+    </div>
+
+    <!-- Dashboard Tab -->
+    <div id="tab-dashboard" class="tab-content">
+      <div class="grid md:grid-cols-3 gap-4">
+        <!-- Positions -->
+        <div class="md:col-span-2 card p-4">
+          <h3 class="text-sm font-semibold mb-3 text-gray-300">📊 Open Positions</h3>
+          <div id="positionsList" class="space-y-2">
+            <p class="text-xs text-gray-500 text-center py-4">No positions yet. Waiting for signals...</p>
+          </div>
+        </div>
+        <!-- Sentiment -->
+        <div class="card p-4">
+          <h3 class="text-sm font-semibold mb-3 text-gray-300">📈 Market Sentiment</h3>
+          <div id="sentimentPanel">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="text-3xl" id="sentimentEmoji">🔄</div>
+              <div><p class="text-lg font-bold" id="sentimentText">Loading...</p><p class="text-xs text-gray-500" id="sentimentTime">—</p></div>
+            </div>
+            <div id="sentimentDetails" class="space-y-2 text-xs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trades Tab -->
+    <div id="tab-trades" class="tab-content hidden">
+      <div class="card p-4">
+        <h3 class="text-sm font-semibold mb-3 text-gray-300">📋 Trade History</h3>
+        <div id="tradesTable" class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr class="text-gray-500 text-xs border-b border-white/10">
+              <th class="text-left pb-2">Time</th><th class="text-left pb-2">Symbol</th><th class="text-left pb-2">Action</th>
+              <th class="text-right pb-2">Qty</th><th class="text-right pb-2">Entry</th><th class="text-right pb-2">Exit</th>
+              <th class="text-right pb-2">P/L</th><th class="text-right pb-2">%</th>
+            </tr></thead>
+            <tbody id="tradesBody"></tbody>
+          </table>
+          <p id="noTrades" class="text-xs text-gray-500 text-center py-4">No trades executed yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Signals Tab -->
+    <div id="tab-signals" class="tab-content hidden">
+      <div id="signalsList" class="space-y-3">
+        <p class="text-xs text-gray-500 text-center py-4">No signals generated yet.</p>
+      </div>
+    </div>
+
+    <!-- AI Summary Tab -->
+    <div id="tab-ai" class="tab-content hidden">
+      <div class="card p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-semibold text-gray-300">🤖 AI Trading Summary</h3>
+          <button onclick="regenerateSummary()" id="regenBtn" class="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">🔄 Regenerate</button>
+        </div>
+        <div id="aiSummaryContent">
+          <p class="text-xs text-gray-500 text-center py-6">Loading summary...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal-overlay">
+    <div class="glass rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-semibold">⚙️ Settings</h2>
+        <button onclick="toggleSettingsModal()" class="text-gray-400 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- API Keys Section -->
+      <div class="mb-6">
+        <h3 class="text-sm font-semibold text-indigo-400 mb-3">🔑 API Keys</h3>
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs text-gray-400 mb-1 block">Groq API Key</label>
+            <div class="flex gap-2">
+              <input type="password" id="keyGroq" placeholder="gsk_..." class="settings-input flex-1">
+              <button onclick="testKey('groq')" class="text-xs px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition">Test</button>
+            </div>
+          </div>
+          <div>
+            <label class="text-xs text-gray-400 mb-1 block">OpenRouter API Key</label>
+            <div class="flex gap-2">
+              <input type="password" id="keyOpenrouter" placeholder="sk-or-..." class="settings-input flex-1">
+              <button onclick="testKey('openrouter')" class="text-xs px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition">Test</button>
+            </div>
+          </div>
+          <div>
+            <label class="text-xs text-gray-400 mb-1 block">Gemini API Key</label>
+            <div class="flex gap-2">
+              <input type="password" id="keyGemini" placeholder="AI..." class="settings-input flex-1">
+              <button onclick="testKey('gemini')" class="text-xs px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition">Test</button>
+            </div>
+          </div>
+          <div>
+            <label class="text-xs text-gray-400 mb-1 block">HuggingFace Token</label>
+            <div class="flex gap-2">
+              <input type="password" id="keyHuggingface" placeholder="hf_..." class="settings-input flex-1">
+              <button onclick="testKey('huggingface')" class="text-xs px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition">Test</button>
+            </div>
+          </div>
+        </div>
+        <div id="keyStatus" class="text-xs mt-2 text-gray-500"></div>
+      </div>
+
+      <!-- Speed Mode Section -->
+      <div class="mb-6">
+        <h3 class="text-sm font-semibold text-indigo-400 mb-3">🚀 Speed Mode</h3>
+        <div class="space-y-2" id="speedModes">
+          <div class="speed-radio selected" data-mode="LIGHT" onclick="selectSpeedMode('LIGHT')">
+            <input type="radio" name="speedMode" value="LIGHT" checked>
+            <div><p class="text-sm font-medium">LIGHT</p><p class="text-xs text-gray-500">60 sec — Light scan</p></div>
+          </div>
+          <div class="speed-radio" data-mode="NORMAL" onclick="selectSpeedMode('NORMAL')">
+            <input type="radio" name="speedMode" value="NORMAL">
+            <div><p class="text-sm font-medium">NORMAL</p><p class="text-xs text-gray-500">30 sec — Regular</p></div>
+          </div>
+          <div class="speed-radio" data-mode="TURBO" onclick="selectSpeedMode('TURBO')">
+            <input type="radio" name="speedMode" value="TURBO">
+            <div><p class="text-sm font-medium">TURBO</p><p class="text-xs text-gray-500">10 sec — Active intraday</p></div>
+          </div>
+          <div class="speed-radio" data-mode="HYPERSCAN" onclick="selectSpeedMode('HYPERSCAN')">
+            <input type="radio" name="speedMode" value="HYPERSCAN">
+            <div><p class="text-sm font-medium">HYPERSCAN</p><p class="text-xs text-gray-500">5 sec — Options scalping</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Summary Button -->
+      <div class="mb-6">
+        <h3 class="text-sm font-semibold text-indigo-400 mb-3">🤖 AI Summary</h3>
+        <button onclick="generateSummary()" id="genSummaryBtn" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 rounded-xl text-sm font-medium transition">
+          Generate Daily Summary
+        </button>
+        <div id="summaryStatus" class="text-xs text-gray-500 mt-2"></div>
+      </div>
+
+      <!-- Save Button -->
+      <button onclick="saveSettings()" id="saveBtn" class="w-full py-2.5 bg-green-600 hover:bg-green-700 rounded-xl text-sm font-medium transition">
+        💾 Save Settings
+      </button>
+      <p id="saveStatus" class="text-xs text-center mt-2 text-gray-500"></p>
+    </div>
+  </div>
+
+  <script>
+    // ─── WebSocket ──────────────────────────────────────────────────
+    const PROTO = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    let ws;
+    let data = {};
+    let reconnectDelay = 1000;
+
+    function connect() {
+      ws = new WebSocket(`${PROTO}//${location.host}`);
+      ws.onopen = () => {
+        document.getElementById('wsStatus').textContent = 'WS: ●';
+        document.getElementById('wsStatus').className = 'text-xs text-green-500';
+        reconnectDelay = 1000;
+      };
+      ws.onclose = () => {
+        document.getElementById('wsStatus').textContent = 'WS: ○';
+        document.getElementById('wsStatus').className = 'text-xs text-gray-500';
+        setTimeout(connect, reconnectDelay);
+        reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+      };
+      ws.onerror = () => { ws.close(); };
+      ws.onmessage = (e) => {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'init' || msg.type === 'update') {
+          data = msg.data || msg;
+          render(data);
+        } else if (msg.type === 'market_status') {
+          updateMarketStatus(msg.data);
+        }
+      };
+    }
+
+    // ─── Render ───────────────────────────────────────────────────────
+    function render(d) {
+      // Metrics
+      const m = d.metrics || {};
+      document.getElementById('mTotalValue').textContent = '₹' + fmtNum(m.totalValue || 100000);
+      const pl = m.dayPL || 0;
+      const plEl = document.getElementById('mDayPL');
+      plEl.textContent = (pl >= 0 ? '+' : '') + '₹' + fmtNum(pl);
+      plEl.className = 'text-lg font-bold ' + (pl >= 0 ? 'green' : 'red');
+      const ret = m.totalReturn || 0;
+      const retEl = document.getElementById('mTotalReturn');
+      retEl.textContent = (ret >= 0 ? '+' : '') + ret.toFixed(2) + '%';
+      retEl.className = 'text-lg font-bold ' + (ret >= 0 ? 'green' : 'red');
+      document.getElementById('mWinRate').textContent = m.winRate ? m.winRate.toFixed(0) + '%' : '—';
+
+      // Positions
+      const posList = d.positions || [];
+      const posEl = document.getElementById('positionsList');
+      if (posList.length === 0) {
+        posEl.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">No positions yet. Waiting for signals...</p>';
+      } else {
+        posEl.innerHTML = posList.map(p => {
+          const pl = p.profit || 0;
+          const pct = p.returnPct || 0;
+          return `<div class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5">
+            <div><p class="text-sm font-medium">${p.symbol || '—'}</p><p class="text-xs text-gray-500">Qty: ${p.quantity || 0} @ ₹${fmtNum(p.entryPrice || 0)}</p></div>
+            <div class="text-right"><p class="text-sm font-bold ${pl>=0?'green':'red'}">${pl>=0?'+':''}₹${fmtNum(pl)}</p><p class="text-xs ${pct>=0?'green':'red'}">${pct>=0?'+':''}${pct.toFixed(2)}%</p></div>
+          </div>`;
+        }).join('');
+      }
+
+      // Trades
+      const trades = d.trades || [];
+      const tradesBody = document.getElementById('tradesBody');
+      const noTrades = document.getElementById('noTrades');
+      if (trades.length === 0) {
+        tradesBody.innerHTML = '';
+        noTrades.style.display = 'block';
+      } else {
+        noTrades.style.display = 'none';
+        tradesBody.innerHTML = trades.slice(0, 50).map(t => {
+          const pl = t.profit || 0;
+          const pct = t.returnPct || 0;
+          const time = t.timestamp ? new Date(t.timestamp).toLocaleTimeString('en-IN', {timeZone:'Asia/Kolkata'}) : '—';
+          return `<tr class="border-b border-white/5 text-xs">
+            <td class="py-2">${time}</td>
+            <td class="py-2 font-medium">${t.symbol||'—'}</td>
+            <td class="py-2"><span class="px-2 py-0.5 rounded text-xs ${(t.action||'').toUpperCase()==='BUY'?'bg-green-900 text-green-400':'bg-red-900 text-red-400'}">${t.action||'—'}</span></td>
+            <td class="py-2 text-right">${t.quantity||0}</td>
+            <td class="py-2 text-right">₹${fmtNum(t.entryPrice||0)}</td>
+            <td class="py-2 text-right">₹${fmtNum(t.exitPrice||t.currentPrice||0)}</td>
+            <td class="py-2 text-right font-bold ${pl>=0?'green':'red'}">${pl>=0?'+':''}₹${fmtNum(pl)}</td>
+            <td class="py-2 text-right ${pct>=0?'green':'red'}">${pct>=0?'+':''}${pct.toFixed(2)}%</td>
+          </tr>`;
+        }).join('');
+      }
+
+      // Signals
+      const sigs = d.signals || [];
+      const sigsEl = document.getElementById('signalsList');
+      if (sigs.length === 0) {
+        sigsEl.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">No signals generated yet.</p>';
+      } else {
+        sigsEl.innerHTML = sigs.map(s => {
+          const strength = s.strength || 0;
+          const color = s.action === 'BUY' ? 'green' : 'red';
+          return `<div class="card p-4">
+            <div class="flex items-center justify-between mb-2">
+              <div><span class="text-lg font-bold">${s.symbol||'—'}</span> <span class="text-xs px-2 py-0.5 rounded bg-${color}-900 text-${color}-400 ml-2">${s.action||'—'}</span></div>
+              <div class="text-right"><span class="text-xs text-gray-500">Conf: ${(strength*100).toFixed(0)}%</span></div>
+            </div>
+            <p class="text-xs text-gray-400">${s.reason||'—'}</p>
+            <div class="mt-2 bg-white/5 rounded-full h-1.5"><div class="bg-${color}-500 rounded-full h-1.5" style="width:${(strength*100).toFixed(0)}%"></div></div>
+          </div>`;
+        }).join('');
+      }
+
+      // Sentiment
+      const sent = d.sentiment || {};
+      const sentMap = {bullish: ['📈','Bullish','green'], bearish: ['📉','Bearish','red'], neutral: ['➡️','Neutral','yellow']};
+      const [emo, text, color] = sentMap[sent.overall] || sentMap.neutral;
+      document.getElementById('sentimentEmoji').textContent = emo;
+      document.getElementById('sentimentText').textContent = text;
+      document.getElementById('sentimentText').className = `text-lg font-bold sentiment-${sent.overall || 'neutral'}`;
+      document.getElementById('sentimentTime').textContent = d.lastUpdate ? new Date(d.lastUpdate).toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata'}) : '—';
+
+      // AI Summary
+      if (d.aiSummary && d.aiSummary.text) {
+        document.getElementById('aiSummaryContent').innerHTML = `<div class="text-sm leading-relaxed whitespace-pre-wrap">${d.aiSummary.text}</div>
+          <p class="text-xs text-gray-600 mt-3">Provider: ${d.aiSummary.provider || '—'} · Latency: ${d.aiSummary.latency || 0}ms</p>`;
+      }
+    }
+
+    function updateMarketStatus(s) {
+      const el = document.getElementById('marketStatus');
+      if (s.isOpen) {
+        el.innerHTML = '<div class="w-2 h-2 rounded-full bg-green-500 pulse"></div><span class="text-green-400 text-xs">Market OPEN · ' + s.timeIST + ' IST</span>';
+      } else {
+        el.innerHTML = '<div class="w-2 h-2 rounded-full bg-yellow-500"></div><span class="text-yellow-400 text-xs">Market CLOSED · ' + s.timeIST + ' IST</span>';
+      }
+    }
+
+    function fmtNum(n) { return Number(n||0).toLocaleString('en-IN', {minimumFractionDigits:0, maximumFractionDigits:2}); }
+
+    // ─── Tabs ─────────────────────────────────────────────────────────
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.classList.add('text-gray-500'); });
+        btn.classList.add('tab-active');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById('tab-' + btn.dataset.tab)?.classList.remove('hidden');
+      });
+    });
+
+    // ─── Settings Modal ────────────────────────────────────────────────
+    let selectedSpeed = 'NORMAL';
+    let keysLoaded = false;
+
+    function toggleSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      const isOpen = modal.classList.contains('open');
+      if (isOpen) {
+        modal.classList.remove('open');
+      } else {
+        modal.classList.add('open');
+        if (!keysLoaded) loadKeys();
+        loadSpeedModes();
+      }
+    }
+
+    async function loadKeys() {
+      try {
+        const res = await fetch('/api/keys');
+        const data = await res.json();
+        document.getElementById('keyStatus').textContent = `${data.configured} API key(s) configured`;
+      } catch(e) { document.getElementById('keyStatus').textContent = 'Could not load keys'; }
+      keysLoaded = true;
+    }
+
+    async function loadSpeedModes() {
+      try {
+        const res = await fetch('/api/speed-modes');
+        const data = await res.json();
+        selectedSpeed = data.current;
+        document.querySelectorAll('.speed-radio').forEach(el => {
+          el.classList.toggle('selected', el.dataset.mode === data.current);
+          const radio = el.querySelector('input[type=radio]');
+          if (radio) radio.checked = el.dataset.mode === data.current;
+        });
+      } catch(e) {}
+    }
+
+    function selectSpeedMode(mode) {
+      selectedSpeed = mode;
+      document.querySelectorAll('.speed-radio').forEach(el => {
+        el.classList.toggle('selected', el.dataset.mode === mode);
+        const radio = el.querySelector('input[type=radio]');
+        if (radio) radio.checked = el.dataset.mode === mode;
+      });
+    }
+
+    async function testKey(provider) {
+      const map = {groq:'keyGroq', openrouter:'keyOpenrouter', gemini:'keyGemini', huggingface:'keyHuggingface'};
+      const val = document.getElementById(map[provider])?.value;
+      if (!val) return;
+      document.getElementById('keyStatus').textContent = `Testing ${provider}...`;
+      try {
+        const res = await fetch('/api/keys', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({[provider]: val})});
+        const result = await res.json();
+        // Quick test via /api/summary
+        const sres = await fetch('/api/summary');
+        const sdata = await sres.json();
+        if (sdata.summary?.provider === provider || sdata.summary?.provider === 'none') {
+          document.getElementById('keyStatus').textContent = `✅ ${provider} key OK! Provider used: ${sdata.summary.provider}`;
+        } else {
+          document.getElementById('keyStatus').textContent = `⚠️ ${provider} key saved. Provider: ${sdata.summary?.provider}`;
+        }
+      } catch(e) {
+        document.getElementById('keyStatus').textContent = `❌ Error testing ${provider}: ${e.message}`;
+      }
+    }
+
+    async function saveSettings() {
+      const btn = document.getElementById('saveBtn');
+      const status = document.getElementById('saveStatus');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+      status.textContent = '';
+      try {
+        const keys = {
+          groq: document.getElementById('keyGroq').value,
+          openrouter: document.getElementById('keyOpenrouter').value,
+          gemini: document.getElementById('keyGemini').value,
+          huggingface: document.getElementById('keyHuggingface').value,
+        };
+        // Only send non-empty keys
+        const toSend = {};
+        for (const [k,v] of Object.entries(keys)) { if (v) toSend[k] = v; }
+        await fetch('/api/keys', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(toSend)});
+        await fetch('/api/speed-mode', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({mode: selectedSpeed})});
+        status.textContent = '✅ Settings saved! Restart the bot to apply speed mode changes.';
+        status.className = 'text-xs text-center mt-2 text-green-500';
+        keysLoaded = false;
+      } catch(e) {
+        status.textContent = '❌ Error: ' + e.message;
+        status.className = 'text-xs text-center mt-2 text-red-500';
+      }
+      btn.disabled = false;
+      btn.textContent = '💾 Save Settings';
+    }
+
+    async function generateSummary() {
+      const btn = document.getElementById('genSummaryBtn');
+      const status = document.getElementById('summaryStatus');
+      btn.disabled = true;
+      btn.textContent = 'Generating...';
+      status.textContent = '';
+      try {
+        const res = await fetch('/api/summary');
+        const data = await res.json();
+        status.textContent = data.cached ? `Cached · ${data.summary.provider}` : `Fresh · ${data.summary.provider}`;
+        status.className = 'text-xs text-green-500 mt-2';
+        document.getElementById('tab-ai').classList.remove('hidden');
+        document.getElementById('tab-ai').querySelector('.text-xs.text-gray-500.text-center.py-6') ?
+          document.getElementById('aiSummaryContent').innerHTML = `<div class="text-sm leading-relaxed whitespace-pre-wrap">${data.summary.text}</div><p class="text-xs text-gray-600 mt-3">Provider: ${data.summary.provider || '—'} · Latency: ${data.summary.latency || 0}ms</p>` : null;
+      } catch(e) {
+        status.textContent = '❌ ' + e.message;
+        status.className = 'text-xs text-red-500 mt-2';
+      }
+      btn.disabled = false;
+      btn.textContent = 'Generate Daily Summary';
+    }
+
+    function regenerateSummary() { generateSummary(); }
+
+    // ─── Boot ─────────────────────────────────────────────────────────
+    connect();
+    loadSpeedModes();
+  </script>
+</body>
+</html>

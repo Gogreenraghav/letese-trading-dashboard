@@ -2,7 +2,7 @@
 import React from "react";
 import clsx from "clsx";
 
-const PLAN_FEATURES: Record<string, { label: string; basic?: boolean; professional?: boolean; elite?: boolean; enterprise?: boolean }[]> = {
+const PLAN_FEATURES: Record<string, { label: string; basic?: boolean | string; professional?: boolean | string; elite?: boolean | string; enterprise?: boolean | string }[]> = {
   "Case Management": [
     { label: "Active cases", basic: "30", professional: "100", elite: "300", enterprise: "Unlimited" },
     { label: "Team members", basic: "3", professional: "10", elite: "30", enterprise: "Unlimited" },
@@ -133,7 +133,7 @@ export default function PlanCard({ currentPlan, subscription, onUpgrade, loading
               ["Voice AI Calls", currentPlan === "enterprise"],
               ["API Access", currentPlan === "enterprise"],
             ].map(([feat, enabled]) => (
-              <div key={feat} className="flex items-center gap-2 text-xs">
+              <div key={String(feat)} className="flex items-center gap-2 text-xs">
                 {enabled ? (
                   <svg className="w-3.5 h-3.5 text-neon-green shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />

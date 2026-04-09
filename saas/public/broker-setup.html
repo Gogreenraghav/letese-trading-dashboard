@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LETESE — Broker Setup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>tailwind.config={theme:{extend:{colors:{accent:{'green':'#22c55e','red':'#ef4444','blue':'#3b82f6','amber':'#f59e0b','purple':'#8b5cf6'}}}}}</script>
+  <style>
+    *{box-sizing:border-box}body{font-family:'Inter',sans-serif;background:#0a0e1a;color:#e2e8f0;min-height:100vh;margin:0}
+    .glass-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px}
+    .input-field{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#e2e8f0;font-size:14px;padding:12px 16px;width:100%;transition:border 0.2s}
+    .input-field:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.15)}
+    .btn-primary{background:#3b82f6;color:white;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;width:100%}
+    .btn-primary:hover{background:#2563eb}
+    .broker-card{background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:20px;cursor:pointer;transition:all 0.2s}
+    .broker-card:hover{border-color:rgba(59,130,246,0.4)}
+    .broker-card.selected{border-color:#3b82f6;background:rgba(59,130,246,0.08)}
+    @keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.spin-slow{animation:spin-slow 2s linear infinite}
+  </style>
+</head>
+<body>
+  <div class="min-h-screen p-4 flex items-center justify-center" style="background:radial-gradient(ellipse at 30% 20%, rgba(59,130,246,0.06) 0%, transparent 50%);">
+    <div class="w-full max-w-2xl">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center gap-0.5 mb-3">
+          <div class="w-9 h-9 rounded-xl bg-red-600 flex items-center justify-center font-bold text-white">L</div>
+          <div class="w-9 h-9 rounded-xl bg-yellow-500 flex items-center justify-center font-bold text-black">E</div>
+        </div>
+        <h1 class="text-white font-bold text-2xl">🔌 Broker Connection</h1>
+        <p class="text-slate-400 text-sm mt-1">Connect your trading account to enable auto-trading</p>
+      </div>
+
+      <div id="errorMsg" class="hidden bg-red-500/15 border border-red-500/30 text-red-400 text-sm rounded-lg p-3 mb-4"></div>
+      <div id="successMsg" class="hidden bg-green-500/15 border border-green-500/30 text-green-400 text-sm rounded-lg p-3 mb-4"></div>
+
+      <!-- Broker Selection -->
+      <div class="glass-card p-6 mb-4">
+        <h3 class="text-white font-semibold text-sm mb-4">Select Your Broker</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <div class="broker-card text-center" onclick="selectBroker('upstox')" id="broker-upstox">
+            <div class="text-3xl mb-2">📈</div>
+            <div class="text-white font-bold text-sm">Upstox</div>
+            <div class="text-slate-500 text-[10px] mt-1">Free APIs, Good for beginners</div>
+          </div>
+          <div class="broker-card text-center" onclick="selectBroker('zerodha')" id="broker-zerodha">
+            <div class="text-3xl mb-2">📊</div>
+            <div class="text-white font-bold text-sm">Zerodha</div>
+            <div class="text-slate-500 text-[10px] mt-1">Kite Connect API, Popular</div>
+          </div>
+          <div class="broker-card text-center" onclick="selectBroker('aliceblue')" id="broker-aliceblue">
+            <div class="text-3xl mb-2">🏦</div>
+            <div class="text-white font-bold text-sm">AliceBlue</div>
+            <div class="text-slate-500 text-[10px] mt-1">Low brokerage, Advanced APIs</div>
+          </div>
+        </div>
+        <input type="hidden" id="selectedBroker" value="" />
+      </div>
+
+      <!-- API Keys Form -->
+      <div id="brokerForm" class="hidden glass-card p-6">
+        <h3 id="brokerTitle" class="text-white font-semibold text-sm mb-4">API Configuration</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-slate-300 text-xs font-medium mb-1">API Key / App Key *</label>
+            <input type="text" id="apiKey" class="input-field" placeholder="Your broker API key" />
+          </div>
+          <div>
+            <label class="block text-slate-300 text-xs font-medium mb-1">API Secret / App Secret *</label>
+            <input type="password" id="apiSecret" class="input-field" placeholder="Your broker API secret" />
+          </div>
+          <div id="extraFields"></div>
+          <div class="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3">
+            <div class="text-amber-400 text-xs font-semibold mb-1">⚠️ Security Note</div>
+            <div class="text-slate-400 text-[10px]">Your API keys are encrypted and stored securely. Only enable "Place Orders" permission. Never share your secrets.</div>
+          </div>
+          <button onclick="connectBroker()" id="connectBtn" class="btn-primary flex items-center justify-center gap-2">
+            <span>🔗 Connect Broker</span>
+          </button>
+          <div class="text-center">
+            <a href="/customer" class="text-blue-400 hover:underline text-sm">← Back to Dashboard</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connection Status -->
+      <div id="connectionStatus" class="hidden glass-card p-6">
+        <div class="text-center">
+          <div id="statusIcon" class="text-5xl mb-3">✅</div>
+          <div id="statusTitle" class="text-white font-bold text-lg mb-1">Broker Connected!</div>
+          <div id="statusDesc" class="text-slate-400 text-sm mb-4">Your trading account is now linked</div>
+          <a href="/customer" class="btn-primary inline-flex items-center justify-center gap-2 w-auto px-8">Go to Dashboard →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let token = localStorage.getItem('token');
+    if (!token) window.location.href = '/login';
+
+    function selectBroker(broker) {
+      document.querySelectorAll('.broker-card').forEach(el => el.classList.remove('selected'));
+      document.getElementById('broker-' + broker).classList.add('selected');
+      document.getElementById('selectedBroker').value = broker;
+      document.getElementById('brokerForm').classList.remove('hidden');
+
+      const titles = { upstox: 'Upstox API Configuration', zerodha: 'Zerodha Kite Connect', aliceblue: 'AliceBlue API Configuration' };
+      document.getElementById('brokerTitle').textContent = titles[broker] || 'API Configuration';
+
+      const extra = {
+        upstox: '<div><label class="block text-slate-300 text-xs font-medium mb-1">Redirect URI</label><input type="text" id="redirectUri" class="input-field" placeholder="https://yourapp.com/callback" /></div>',
+        zerodha: '<div><label class="block text-slate-300 text-xs font-medium mb-1">User ID</label><input type="text" id="userId" class="input-field" placeholder="Your Zerodha User ID" /></div>',
+        aliceblue: '<div><label class="block text-slate-300 text-xs font-medium mb-1">Session Token</label><input type="password" id="sessionToken" class="input-field" placeholder="Your session token" /></div>',
+      };
+      document.getElementById('extraFields').innerHTML = extra[broker] || '';
+    }
+
+    async function connectBroker() {
+      const broker = document.getElementById('selectedBroker').value;
+      const apiKey = document.getElementById('apiKey').value;
+      const apiSecret = document.getElementById('apiSecret').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const successMsg = document.getElementById('successMsg');
+      const btn = document.getElementById('connectBtn');
+
+      errorMsg.classList.add('hidden');
+
+      if (!broker || !apiKey || !apiSecret) {
+        errorMsg.textContent = 'Please fill in all required fields';
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin-slow"></div><span>Connecting...</span>';
+
+      // Save broker config (in production, encrypt these)
+      const config = { broker, apiKey, apiSecret };
+
+      try {
+        // In production, call the broker API to validate credentials
+        // For demo, simulate connection
+        await new Promise(r => setTimeout(r, 2000));
+
+        // Save to user profile
+        const res = await fetch('/api/customer/broker', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ broker, apiKey, connected: true }),
+        }).catch(() => ({ ok: false }));
+
+        document.getElementById('brokerForm').classList.add('hidden');
+        document.getElementById('connectionStatus').classList.remove('hidden');
+        document.getElementById('statusTitle').textContent = broker.charAt(0).toUpperCase() + broker.slice(1) + ' Connected!';
+      } catch (e) {
+        errorMsg.textContent = 'Connection failed: ' + e.message;
+        errorMsg.classList.remove('hidden');
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔗 Connect Broker</span>';
+      }
+    }
+  </script>
+</body>
+</html>

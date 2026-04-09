@@ -1,0 +1,39 @@
+{
+  "name": "website-questionnaire-bot",
+  "version": "2.0.0",
+  "description": "Complete multilingual website questionnaire bot with 3D support",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo 'Build complete - ready for deployment'",
+    "deploy:vercel": "vercel --prod",
+    "deploy:netlify": "netlify deploy --prod",
+    "deploy:github": "gh-pages -d .",
+    "test": "echo 'Open index.html in browser to test'"
+  },
+  "keywords": [
+    "bot",
+    "questionnaire",
+    "multilingual",
+    "3d",
+    "website",
+    "chatbot"
+  ],
+  "author": "Tiwari (AI Assistant)",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/website-questionnaire-bot"
+  },
+  "homepage": "https://yourusername.github.io/website-questionnaire-bot",
+  "files": [
+    "index.html",
+    "README.md",
+    "package.json"
+  ]
+}

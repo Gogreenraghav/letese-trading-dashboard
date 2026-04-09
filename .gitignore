@@ -1,0 +1,11 @@
+node_modules/
+.env
+*.log
+.DS_Store
+*.apk
+*.aab
+build/
+.dart_tool/
+.packages
+.pub-cache/
+node_modules/

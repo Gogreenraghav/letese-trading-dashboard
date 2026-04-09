@@ -1,0 +1,48 @@
+{
+  "name": "website-questionnaire-bot",
+  "version": "1.0.0",
+  "description": "Complete multilingual website questionnaire bot with 3D support",
+  "main": "test-server.js",
+  "scripts": {
+    "start": "node test-server.js",
+    "test": "node test-server.js & sleep 2 && curl http://localhost:3000/api/test-all",
+    "dev": "nodemon test-server.js",
+    "build": "echo 'Build complete'",
+    "deploy": "echo 'Deployment script would run here'"
+  },
+  "keywords": [
+    "bot",
+    "questionnaire",
+    "3d",
+    "multilingual",
+    "website",
+    "chatbot"
+  ],
+  "author": "Tiwari (AI Assistant)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/website-questionnaire-bot"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/website-questionnaire-bot/issues"
+  },
+  "homepage": "https://github.com/yourusername/website-questionnaire-bot#readme",
+  "files": [
+    "*.html",
+    "*.js",
+    "*.txt",
+    "*.md",
+    "package.json"
+  ]
+}

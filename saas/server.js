@@ -11,6 +11,39 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const axios = require('axios');
+
+// Redis client
+const redis = require('redis');
+const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
+let redisClient = null;
+
+async function initRedis() {
+  try {
+    redisClient = redis.createClient({ url: REDIS_URL, legacyMode: false });
+    redisClient.on('error', () => {});
+    redisClient.on('connect', () => console.log('✅ Redis connected'));
+    await redisClient.connect();
+  } catch (e) {
+    console.log('⚠️ Redis not available, using memory cache');
+    redisClient = null;
+  }
+}
+
+async function cacheGet(key) {
+  if (!redisClient) return null;
+  try {
+    const val = await redisClient.get(key);
+    return val ? JSON.parse(val) : null;
+  } catch (e) { return null; }
+}
+
+async function cacheSet(key, value, ttl = 300) {
+  if (!redisClient) return;
+  try {
+    await redisClient.setEx(key, ttl, JSON.stringify(value));
+  } catch (e) {}
+}
 
 const app = express();
 const PORT = 3010;
@@ -44,6 +77,7 @@ if (!fs.existsSync(DB_FILE)) {
     trades: [],
     settings: {},
     activities: [],
+    notifications: [],
     kyc_requests: [],
     plans: [
       { id: 'basic', name: 'Basic', price: 999, features: ['30 cases/month', 'Basic dashboard', 'Email support'], tradeLimit: 10, apiAccess: false },
@@ -349,10 +383,171 @@ app.get('/api/admin/overview', requireAuth, requireAdmin, (req, res) => {
   });
 });
 
-// Get all plans
+// Get all plans (with Redis caching)
 app.get('/api/plans', (req, res) => {
+  cacheGet('plans').then(cached => {
+    if (cached) return res.json({ plans: cached });
+    const db = getDB();
+    cacheSet('plans', db.plans, 3600);
+    res.json({ plans: db.plans });
+  });
+});
+
+// ── User KYC Update ──────────────────────────────────────────
+app.post('/api/customer/kyc', requireAuth, (req, res) => {
+  if (req.user.role !== 'customer') return res.status(403).json({ error: 'Customer only' });
   const db = getDB();
-  res.json({ plans: db.plans });
+  const user = db.users.find(u => u.id === req.user.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+
+  const { pan, aadhaar, address, city, state, pincode, occupation, incomeRange } = req.body;
+  user.profile = {
+    ...user.profile,
+    pan: pan || user.profile?.pan,
+    aadhaar: aadhaar || user.profile?.aadhaar,
+    address: address || user.profile?.address,
+    city: city || user.profile?.city,
+    state: state || user.profile?.state,
+    pincode: pincode || user.profile?.pincode,
+    occupation: occupation || user.profile?.occupation,
+    incomeRange: incomeRange || user.profile?.incomeRange,
+    kycSubmittedAt: new Date().toISOString(),
+  };
+  if (user.kycStatus === 'pending') {
+    user.kycStatus = 'pending';
+  }
+  saveDB(db);
+  res.json({ success: true, message: 'KYC details saved' });
+});
+
+// ── WhatsApp Notifications ────────────────────────────────────
+app.post('/api/notifications/whatsapp', (req, res) => {
+  const { phone, message } = req.body;
+  if (!phone || !message) return res.status(400).json({ error: 'Phone and message required' });
+
+  const WA_API_URL = process.env.WA_API_URL || '';
+  const WA_TOKEN = process.env.WA_TOKEN || '';
+
+  if (WA_API_URL && WA_TOKEN) {
+    axios.post(WA_API_URL, {
+      messaging_product: 'whatsapp',
+      to: phone.replace('+', ''),
+      type: 'text',
+      text: { body: message },
+    }, {
+      headers: { 'Authorization': `Bearer ${WA_TOKEN}`, 'Content-Type': 'application/json' },
+      timeout: 10000,
+    }).then(() => res.json({ success: true, sent: true }))
+      .catch(e => res.status(500).json({ error: e.message, sent: false }));
+  } else {
+    console.log(`📱 WhatsApp [DEMO] → ${phone}: ${message}`);
+    res.json({ success: true, sent: false, demo: true, message: 'WhatsApp API not configured. Set WA_API_URL and WA_TOKEN in .env' });
+  }
+});
+
+// ── Customer Notifications ────────────────────────────────────
+app.get('/api/customer/notifications', requireAuth, (req, res) => {
+  const db = getDB();
+  const notifications = db.notifications || [];
+  const userNotifs = notifications.filter(n => n.userId === req.user.id).slice(-30).reverse();
+  res.json({ notifications: userNotifs });
+});
+
+// ── Admin: Send notification to customer ─────────────────────
+app.post('/api/admin/notify/:id', requireAuth, requireAdmin, (req, res) => {
+  const db = getDB();
+  const user = db.users.find(u => u.id === req.params.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+
+  const { message, type } = req.body;
+  if (!message) return res.status(400).json({ error: 'Message required' });
+
+  if (!db.notifications) db.notifications = [];
+  db.notifications.push({
+    id: uuidv4(),
+    userId: user.id,
+    message,
+    type: type || 'admin',
+    read: false,
+    createdAt: new Date().toISOString(),
+  });
+  saveDB(db);
+
+  if (user.phone) {
+    const notifText = `🔔 LETESE: ${message}`;
+    axios.post('http://localhost:' + PORT + '/api/notifications/whatsapp', {
+      phone: user.phone,
+      message: notifText,
+    }).catch(() => {});
+  }
+
+  res.json({ success: true });
+});
+
+// ── Admin: Activity Log ───────────────────────────────────────
+app.get('/api/admin/activities', requireAuth, requireAdmin, (req, res) => {
+  const db = getDB();
+  const activities = (db.activities || []).slice(-50).reverse();
+  res.json({ activities });
+});
+
+// ── Admin: Update user limits ─────────────────────────────────
+app.post('/api/admin/limits/:id', requireAuth, requireAdmin, (req, res) => {
+  const db = getDB();
+  const user = db.users.find(u => u.id === req.params.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+
+  const { tradeLimit, apiAccess, features } = req.body;
+  if (tradeLimit !== undefined) user.tradeLimit = parseInt(tradeLimit);
+  if (apiAccess !== undefined) user.apiAccess = apiAccess;
+  if (features) user.features = features;
+  saveDB(db);
+  res.json({ success: true });
+});
+
+// ── Customer: Get limits ──────────────────────────────────────
+app.get('/api/customer/limits', requireAuth, (req, res) => {
+  const db = getDB();
+  const user = db.users.find(u => u.id === req.user.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  const plan = db.plans.find(p => p.id === (user.plan || 'basic')) || {};
+  res.json({
+    tradeLimit: user.tradeLimit || plan.tradeLimit || 10,
+    apiAccess: user.apiAccess || plan.apiAccess || false,
+    features: user.features || plan.features || [],
+    plan: user.plan,
+  });
+});
+
+// ── Broker Connection ────────────────────────────────────────
+app.post('/api/customer/broker', requireAuth, (req, res) => {
+  if (req.user.role !== 'customer') return res.status(403).json({ error: 'Customer only' });
+  const db = getDB();
+  const user = db.users.find(u => u.id === req.user.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+
+  const { broker, apiKey, connected } = req.body;
+  user.brokerConfig = { broker, apiKey: apiKey ? '****' + apiKey.slice(-4) : '', connected: connected || false };
+  user.brokerConnectedAt = connected ? new Date().toISOString() : null;
+  saveDB(db);
+  res.json({ success: true });
+});
+
+app.get('/api/customer/broker', requireAuth, (req, res) => {
+  const db = getDB();
+  const user = db.users.find(u => u.id === req.user.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  res.json({ config: user.brokerConfig || null });
+});
+
+// ── Admin: Delete customer ───────────────────────────────────
+app.delete('/api/admin/customers/:id', requireAuth, requireAdmin, (req, res) => {
+  const db = getDB();
+  const idx = db.users.findIndex(u => u.id === req.params.id && u.role === 'customer');
+  if (idx < 0) return res.status(404).json({ error: 'Customer not found' });
+  db.users.splice(idx, 1);
+  saveDB(db);
+  res.json({ success: true });
 });
 
 // ── HELPERS ────────────────────────────────────────────────────
@@ -457,6 +652,10 @@ app.get('/customer', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/customer.html'));
 });
 
+app.get('/broker-setup', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/broker-setup.html'));
+});
+
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/login.html'));
 });
@@ -471,11 +670,13 @@ app.get('/', (req, res) => {
 });
 
 // ── START ───────────────────────────────────────────────────────
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🏛️  LETESE SaaS Platform`);
-  console.log(`   Admin:   http://139.59.65.82:3010/admin`);
-  console.log(`   Login:   http://139.59.65.82:3010/login`);
-  console.log(`   Register: http://139.59.65.82:3010/register`);
-  console.log(`   Customer: http://139.59.65.82:3010/customer`);
-  console.log(`\n   Admin credentials: admin@letese.com / admin123\n`);
+initRedis().then(() => {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n🏛️  LETESE SaaS Platform`);
+    console.log(`   Admin:   http://139.59.65.82:3010/admin`);
+    console.log(`   Login:   http://139.59.65.82:3010/login`);
+    console.log(`   Register: http://139.59.65.82:3010/register`);
+    console.log(`   Customer: http://139.59.65.82:3010/customer`);
+    console.log(`\n   Admin credentials: admin@letese.com / admin123\n`);
+  });
 });

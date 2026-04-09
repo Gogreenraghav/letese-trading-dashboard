@@ -231,7 +231,7 @@ export default function PoliceFeed({
           </div>
 
           {/* Feed items */}
-          <div ref={feedRef} className="max-h-80 overflow-y-auto divide-y" style={{ divideColor: "rgba(255,255,255,0.03)" }}>
+          <div ref={feedRef} className="max-h-80 overflow-y-auto divide-y divide-white/10">
             {filteredFeed.length === 0 ? (
               <div className="p-6 text-center text-xs" style={{ color: "#475569" }}>
                 No audit events yet
@@ -289,7 +289,7 @@ export default function PoliceFeed({
               <AlertTriangle size={13} style={{ color: "#F59E0B" }} />
               <span className="text-sm font-semibold text-white">ALERT QUEUE</span>
             </div>
-            <div className="divide-y" style={{ divideColor: "rgba(255,255,255,0.03)" }}>
+            <div className="divide-y divide-white/10">
               {alerts.length === 0 ? (
                 <div className="p-4 text-center text-xs" style={{ color: "#475569" }}>
                   No open alerts
@@ -316,7 +316,7 @@ export default function PoliceFeed({
               <Inbox size={13} style={{ color: "#EF4444" }} />
               <span className="text-sm font-semibold text-white">DLQ MONITOR</span>
             </div>
-            <div className="divide-y" style={{ divideColor: "rgba(255,255,255,0.03)" }}>
+            <div className="divide-y divide-white/10">
               {Object.keys(dlq).length === 0 ? (
                 <div className="p-4 text-center text-xs" style={{ color: "#475569" }}>
                   No DLQ messages
@@ -345,7 +345,7 @@ export default function PoliceFeed({
               <CheckCircle size={13} style={{ color: "#22C55E" }} />
               <span className="text-sm font-semibold text-white">AUTO-REMEDIATION LOG</span>
             </div>
-            <div className="divide-y max-h-48 overflow-y-auto" style={{ divideColor: "rgba(255,255,255,0.03)" }}>
+            <div className="divide-y divide-white/10 max-h-48 overflow-y-auto">
               {autoFixes.length === 0 ? (
                 <div className="p-4 text-center text-xs" style={{ color: "#475569" }}>
                   No auto-fixes applied

@@ -24,6 +24,19 @@
     body::-webkit-scrollbar{width:5px}body::-webkit-scrollbar-track{background:#0f1424}body::-webkit-scrollbar-thumb{background:#1e293b;border-radius:3px}
     .conf-bar{height:6px;border-radius:3px;background:rgba(255,255,255,0.08);overflow:hidden}
     .conf-fill{height:100%;border-radius:3px;transition:width 0.6s ease}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:1000;display:none;align-items:center;justify-content:center}
+    .modal-overlay.active{display:flex}
+    .modal-overlay.active>div{margin:16px}
+    textarea.input-field{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#e2e8f0;font-size:13px;padding:8px 12px;width:100%;transition:border 0.2s}
+    textarea.input-field:focus{outline:none;border-color:#3b82f6}
+    textarea.input-field::placeholder{color:#475569}
+    select.input-field{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#e2e8f0;font-size:13px;padding:8px 12px;width:100%;transition:border 0.2s}
+    select.input-field:focus{outline:none;border-color:#3b82f6}
+    .btn-primary{background:#3b82f6;color:white;border:none;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s}
+    .btn-primary:hover{background:#2563eb}
+    .input-field{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#e2e8f0;font-size:13px;padding:8px 12px;width:100%;transition:border 0.2s}
+    .input-field:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.15)}
+    .input-field::placeholder{color:#475569}
   </style>
 </head>
 <body>
@@ -182,15 +195,18 @@
       </div>
     </div>
 
-    <!-- Profile Section -->
+    <!-- Profile + KYC Section -->
     <div class="glass-card p-4">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-white font-semibold text-sm">👤 My Profile</h2>
-        <button onclick="loadPortfolio()" class="text-[10px] text-blue-400 hover:text-blue-300">↻ Refresh</button>
+        <h2 class="text-white font-semibold text-sm">👤 My Profile & KYC</h2>
+        <div class="flex gap-2">
+          <button onclick="loadNotifications()" class="text-[10px] bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 rounded-lg px-3 py-1.5 transition">🔔 Notifications <span id="notifBadge" class="hidden bg-red-500 text-white rounded-full w-4 h-4 inline-flex items-center justify-center text-[9px] font-bold">0</span></button>
+          <button onclick="openKYCModal()" class="text-[10px] bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 border border-blue-500/30 rounded-lg px-3 py-1.5 transition font-semibold">📋 Complete KYC</button>
+        </div>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
         <div>
-          <div class="text-[10px] text-slate-500 mb-1">Name</div>
+          <div class="text-[10px] text-slate-500 mb-1">Full Name</div>
           <div id="profileName" class="text-white font-medium text-sm">—</div>
         </div>
         <div>
@@ -206,14 +222,149 @@
           <div id="profileJoined" class="text-white font-medium text-sm">—</div>
         </div>
       </div>
+      <!-- KYC Status -->
+      <div id="kycStatusCard" class="mb-4 p-3 rounded-lg border border-white/5">
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-slate-300 text-xs font-medium">KYC Status</div>
+          <span id="kycStatusBadge" class="text-[11px] font-bold">—</span>
+        </div>
+        <div id="kycFields" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] text-slate-400"></div>
+      </div>
+      <!-- Broker Status -->
+      <div id="brokerStatus" class="p-3 bg-white/5 rounded-lg mb-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-[10px] text-slate-500">Broker Connection</div>
+            <div id="brokerName" class="text-white font-semibold text-sm">Not Connected</div>
+          </div>
+          <a href="/broker-setup" class="text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-lg px-3 py-1.5 font-semibold hover:bg-blue-500/30 transition">🔌 Connect</a>
+        </div>
+      </div>
+
       <!-- Plan Info -->
-      <div id="planDetails" class="mt-4 p-3 bg-white/5 rounded-lg">
-        <div class="text-[10px] text-slate-500 mb-2">My Plan Features</div>
-        <div id="planFeatures" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+      <div id="planDetails" class="p-3 bg-white/5 rounded-lg">
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-[10px] text-slate-500">My Plan</div>
+          <div id="planName" class="text-blue-400 font-bold text-sm">—</div>
+        </div>
+        <div class="flex items-center gap-3 text-[10px] text-slate-400 mb-2">
+          <span>Trades: <span id="planTradeLimit" class="text-white font-mono">—</span></span>
+          <span>API: <span id="planAPI" class="text-white font-mono">—</span></span>
+        </div>
+        <div id="planFeatures" class="grid grid-cols-2 sm:grid-cols-3 gap-1.5"></div>
       </div>
     </div>
 
   </main>
+
+  <!-- KYC Modal -->
+  <div id="kycModal" class="modal-overlay">
+    <div class="bg-[#0f1424] border border-white/10 rounded-xl w-full max-w-xl overflow-hidden" style="max-height:90vh;">
+      <div class="flex items-center justify-between p-4 border-b border-white/5">
+        <div>
+          <h2 class="text-white font-bold text-lg">📋 KYC Verification</h2>
+          <p class="text-slate-500 text-xs mt-0.5">Complete your account verification</p>
+        </div>
+        <button onclick="closeKYCModal()" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div class="p-4 overflow-y-auto" style="max-height:calc(90vh - 140px);">
+        <div id="kycError" class="hidden bg-red-500/15 border border-red-500/30 text-red-400 text-sm rounded-lg p-3 mb-4"></div>
+        <div id="kycSuccess" class="hidden bg-green-500/15 border border-green-500/30 text-green-400 text-sm rounded-lg p-3 mb-4"></div>
+
+        <div class="space-y-4">
+          <!-- Personal Info -->
+          <div>
+            <h4 class="text-white font-semibold text-xs mb-3 flex items-center gap-2">👤 Personal Information</h4>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-slate-400 text-[10px] mb-1">PAN Number *</label>
+                <input type="text" id="kycPan" class="input-field text-[11px] py-2 uppercase" placeholder="ABCDE1234F" maxlength="10" />
+              </div>
+              <div>
+                <label class="block text-slate-400 text-[10px] mb-1">Aadhaar Number *</label>
+                <input type="text" id="kycAadhaar" class="input-field text-[11px] py-2" placeholder="XXXX XXXX XXXX" maxlength="14" />
+              </div>
+              <div>
+                <label class="block text-slate-400 text-[10px] mb-1">Occupation</label>
+                <select id="kycOccupation" class="input-field text-[11px] py-2">
+                  <option value="">Select</option>
+                  <option value="Salaried">Salaried</option>
+                  <option value="Business">Business</option>
+                  <option value="Professional">Professional</option>
+                  <option value="Trading">Trading/Investment</option>
+                  <option value="Retired">Retired</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-slate-400 text-[10px] mb-1">Annual Income</label>
+                <select id="kycIncome" class="input-field text-[11px] py-2">
+                  <option value="">Select</option>
+                  <option value="<5L">Below ₹5 Lakh</option>
+                  <option value="5-10L">₹5 - 10 Lakh</option>
+                  <option value="10-25L">₹10 - 25 Lakh</option>
+                  <option value="25-50L">₹25 - 50 Lakh</option>
+                  <option value=">50L">Above ₹50 Lakh</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div>
+            <h4 class="text-white font-semibold text-xs mb-3 flex items-center gap-2">🏠 Address</h4>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-slate-400 text-[10px] mb-1">Full Address</label>
+                <textarea id="kycAddress" class="input-field text-[11px] py-2 resize-none" rows="2" placeholder="Flat/Building, Street, Area"></textarea>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-slate-400 text-[10px] mb-1">City</label>
+                  <input type="text" id="kycCity" class="input-field text-[11px] py-2" placeholder="City" />
+                </div>
+                <div>
+                  <label class="block text-slate-400 text-[10px] mb-1">State</label>
+                  <input type="text" id="kycState" class="input-field text-[11px] py-2" placeholder="State" />
+                </div>
+                <div class="col-span-2">
+                  <label class="block text-slate-400 text-[10px] mb-1">Pincode</label>
+                  <input type="text" id="kycPincode" class="input-field text-[11px] py-2" placeholder="110001" maxlength="6" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WhatsApp -->
+          <div class="bg-green-500/5 border border-green-500/20 rounded-lg p-3">
+            <h4 class="text-green-400 font-semibold text-xs mb-2">📱 WhatsApp Notifications</h4>
+            <p class="text-slate-400 text-[10px] mb-2">Get trade alerts and P&L updates on WhatsApp</p>
+            <div class="flex gap-2">
+              <input type="tel" id="kycWhatsApp" class="input-field text-[11px] py-2 flex-1" placeholder="+91 98765 43210" />
+              <button onclick="testWhatsApp()" id="waTestBtn" class="btn-primary text-[11px] py-2 px-3">Test</button>
+            </div>
+            <div id="waTestResult" class="mt-2 text-[10px] hidden"></div>
+          </div>
+
+          <button onclick="submitKYC()" id="kycSubmitBtn" class="btn-primary w-full flex items-center justify-center gap-2">
+            <span>Submit KYC</span>
+          </button>
+          <p class="text-center text-slate-600 text-[10px]">Your data is encrypted and stored securely as per SEBI guidelines</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications Modal -->
+  <div id="notifModal" class="modal-overlay">
+    <div class="bg-[#0f1424] border border-white/10 rounded-xl w-full max-w-md overflow-hidden" style="max-height:90vh;">
+      <div class="flex items-center justify-between p-4 border-b border-white/5">
+        <h2 class="text-white font-bold">🔔 Notifications</h2>
+        <button onclick="closeNotifModal()" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400">✕</button>
+      </div>
+      <div id="notifList" class="p-4 space-y-2 overflow-y-auto" style="max-height:calc(90vh - 100px);"></div>
+    </div>
+  </div>
 
   <script>
     // ── State ─────────────────────────────────────────────────
@@ -421,6 +572,225 @@
 
     // ── Init ─────────────────────────────────────────────────
     loadPortfolio();
+
+    // ── KYC Modal ────────────────────────────────────────────────
+    function openKYCModal() {
+      const modal = document.getElementById('kycModal');
+      modal.classList.add('active');
+      document.getElementById('kycError').classList.add('hidden');
+      document.getElementById('kycSuccess').classList.add('hidden');
+
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const profile = user.profile || {};
+
+      document.getElementById('kycPan').value = profile.pan || '';
+      document.getElementById('kycAadhaar').value = profile.aadhaar || '';
+      document.getElementById('kycOccupation').value = profile.occupation || '';
+      document.getElementById('kycIncome').value = profile.incomeRange || '';
+      document.getElementById('kycAddress').value = profile.address || '';
+      document.getElementById('kycCity').value = profile.city || '';
+      document.getElementById('kycState').value = profile.state || '';
+      document.getElementById('kycPincode').value = profile.pincode || '';
+      document.getElementById('kycWhatsApp').value = profile.whatsapp || user.phone || '';
+    }
+
+    function closeKYCModal() {
+      document.getElementById('kycModal').classList.remove('active');
+    }
+
+    async function submitKYC() {
+      const errorEl = document.getElementById('kycError');
+      const successEl = document.getElementById('kycSuccess');
+      const btn = document.getElementById('kycSubmitBtn');
+
+      errorEl.classList.add('hidden');
+      successEl.classList.add('hidden');
+
+      const pan = document.getElementById('kycPan').value.trim().toUpperCase();
+      const aadhaar = document.getElementById('kycAadhaar').value.trim();
+
+      if (!pan || pan.length < 10) {
+        errorEl.textContent = 'Please enter a valid 10-character PAN number';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin-slow"></div><span>Submitting...</span>';
+
+      try {
+        const res = await fetch('/api/customer/kyc', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+          body: JSON.stringify({
+            pan,
+            aadhaar,
+            occupation: document.getElementById('kycOccupation').value,
+            incomeRange: document.getElementById('kycIncome').value,
+            address: document.getElementById('kycAddress').value,
+            city: document.getElementById('kycCity').value,
+            state: document.getElementById('kycState').value,
+            pincode: document.getElementById('kycPincode').value,
+            whatsapp: document.getElementById('kycWhatsApp').value,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'Submission failed');
+
+        successEl.textContent = '✅ KYC submitted! Admin will review and approve within 24 hours.';
+        successEl.classList.remove('hidden');
+
+        setTimeout(() => {
+          closeKYCModal();
+          loadPortfolio();
+        }, 2000);
+      } catch (e) {
+        errorEl.textContent = e.message;
+        errorEl.classList.remove('hidden');
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '<span>Submit KYC</span>';
+    }
+
+    async function testWhatsApp() {
+      const btn = document.getElementById('waTestBtn');
+      const result = document.getElementById('waTestResult');
+      const phone = document.getElementById('kycWhatsApp').value;
+
+      if (!phone) { result.textContent = 'Please enter a phone number first'; result.classList.remove('hidden'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      try {
+        const res = await fetch('/api/notifications/whatsapp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, message: '🔔 LETESE Trading: WhatsApp notifications connected! You will receive trade alerts here.' }),
+        });
+        const data = await res.json();
+
+        if (data.sent) {
+          result.textContent = '✅ Message sent to WhatsApp!';
+          result.className = 'mt-2 text-[10px] text-green-400';
+        } else if (data.demo) {
+          result.textContent = '📱 Demo mode — WhatsApp API not configured. Set WA_API_URL + WA_TOKEN in .env';
+          result.className = 'mt-2 text-[10px] text-amber-400';
+        } else {
+          result.textContent = '❌ Failed: ' + data.error;
+          result.className = 'mt-2 text-[10px] text-red-400';
+        }
+        result.classList.remove('hidden');
+      } catch(e) {
+        result.textContent = '❌ Error: ' + e.message;
+        result.className = 'mt-2 text-[10px] text-red-400';
+        result.classList.remove('hidden');
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Test';
+    }
+
+    // ── Notifications ─────────────────────────────────────────────
+    async function loadNotifications() {
+      const modal = document.getElementById('notifModal');
+      modal.classList.add('active');
+
+      const data = await fetch('/api/customer/notifications', {
+        headers: { 'Authorization': 'Bearer ' + token },
+      }).then(r => r.json()).catch(() => ({ notifications: [] }));
+
+      const container = document.getElementById('notifList');
+
+      if (!data.notifications || data.notifications.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-slate-500 text-sm">No notifications yet</div>';
+        return;
+      }
+
+      container.innerHTML = data.notifications.map(n => `
+        <div class="p-3 bg-white/5 rounded-lg ${n.read ? 'opacity-60' : ''}">
+          <div class="text-[11px] ${n.read ? 'text-slate-400' : 'text-white'}">${n.message}</div>
+          <div class="text-[10px] text-slate-600 mt-1">${new Date(n.createdAt).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    function closeNotifModal() {
+      document.getElementById('notifModal').classList.remove('active');
+    }
+
+    // ── Enhance loadPortfolio with KYC + Limits ─────────────────────
+    const _origLoadPortfolio = loadPortfolio;
+    loadPortfolio = async function() {
+      await _origLoadPortfolio();
+
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const profile = user.profile || {};
+      const kycStatus = document.getElementById('kycStatusBadge');
+      const kycFields = document.getElementById('kycFields');
+
+      if (user.kycStatus === 'approved') {
+        kycStatus.textContent = '✅ Verified';
+        kycStatus.className = 'text-[11px] font-bold text-green-400';
+      } else if (profile.kycSubmittedAt) {
+        kycStatus.textContent = '⏳ Under Review';
+        kycStatus.className = 'text-[11px] font-bold text-amber-400';
+      } else {
+        kycStatus.textContent = '⚠️ Not Submitted';
+        kycStatus.className = 'text-[11px] font-bold text-red-400';
+      }
+
+      kycFields.innerHTML = `
+        <div>PAN: <span class="text-white">${profile.pan || '—'}</span></div>
+        <div>Aadhaar: <span class="text-white">${profile.aadhaar ? '****' + profile.aadhaar.slice(-4) : '—'}</span></div>
+        <div>City: <span class="text-white">${profile.city || '—'}</span></div>
+        <div>Pincode: <span class="text-white">${profile.pincode || '—'}</span></div>
+      `;
+
+      // Load limits
+      try {
+        const limitsRes = await fetch('/api/customer/limits', {
+          headers: { 'Authorization': 'Bearer ' + token },
+        });
+        const limits = await limitsRes.json();
+        if (limits.plan) {
+          document.getElementById('planName').textContent = (limits.plan || 'basic').toUpperCase();
+          document.getElementById('planTradeLimit').textContent = limits.tradeLimit === -1 ? 'Unlimited' : limits.tradeLimit;
+          document.getElementById('planAPI').textContent = limits.apiAccess ? 'Yes ✅' : 'No ❌';
+          const features = limits.features || [];
+          document.getElementById('planFeatures').innerHTML = features.map(f => `
+            <div class="flex items-center gap-1.5 text-[10px] text-slate-300">
+              <span class="text-green-400">✓</span> ${f}
+            </div>
+          `).join('') || '<div class="text-slate-600 text-[10px]">Basic features</div>';
+        }
+        // Check broker status
+        try {
+          const brokerRes = await fetch('/api/customer/broker', {
+            headers: { 'Authorization': 'Bearer ' + token },
+          });
+          const brokerData = await brokerRes.json();
+          if (brokerData.config?.connected) {
+            document.getElementById('brokerName').textContent = '✅ ' + (brokerData.config.broker || 'Connected').charAt(0).toUpperCase() + (brokerData.config.broker || '').slice(1);
+            document.getElementById('brokerName').className = 'text-green-400 font-semibold text-sm';
+          }
+        } catch(e) {}
+      } catch(e) {}
+    };
+
+    // Close modals on ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeKYCModal();
+        closeNotifModal();
+      }
+    });
   </script>
 </body>
 </html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D/Interactive Website - Questionnaire</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #9C27B0;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #9C27B0;
+            margin-top: 30px;
+        }
+        .question {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #9C27B0;
+            border-radius: 5px;
+        }
+        .required {
+            color: red;
+        }
+        .note {
+            background: #f3e5f5;
+            padding: 10px;
+            border-left: 4px solid #9C27B0;
+            margin: 15px 0;
+        }
+        .tech-list {
+            background: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .complexity {
+            background: #ffebee;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 3D/Interactive Website Questionnaire</h1>
+        <p class="note"><strong>Note:</strong> This questionnaire is for advanced 3D websites, WebGL experiences, interactive visualizations, and immersive web experiences.</p>
+        
+        <h2>📋 Project Vision</h2>
+        <div class="question">
+            <strong>1. What is your project/organization name? <span class="required">*</span></strong>
+        </div>
+        
+        <div class="question">
+            <strong>2. What type of 3D/interactive experience do you need? <span class="required">*</span></strong>
+            <div class="tech-list">
+                <p>Options: 3D Product visualization, Virtual tour, Game-like experience, Data visualization, Architectural visualization, Interactive storytelling, AR/VR experience, Interactive art</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>3. Describe the user experience you want to create: <span class="required">*</span></strong>
+            <p>How should users interact with the 3D environment?</p>
+        </div>
+        
+        <h2>🎨 Visual & Interactive Design</h2>
+        <div class="question">
+            <strong>4. What is the visual style? <span class="required">*</span></strong>
+            <div class="tech-list">
+                <p>Options: Realistic 3D, Stylized/cartoon, Low-poly, Abstract, Futuristic, Minimalistic, Photorealistic</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>5. Share reference examples (websites, games, videos):</strong>
+            <p>Please provide links to similar 3D/interactive experiences you admire.</p>
+        </div>
+        
+        <div class="question">
+            <strong>6. Do you have 3D models/assets? <span class="required">*</span></strong>
+            <p>Options: Have ready 3D models, Need 3D modeling, Have 2D assets to convert, Need complete asset creation</p>
+        </div>
+        
+        <h2>⚙️ Technical Requirements</h2>
+        <div class="question">
+            <strong>7. Preferred 3D technology: <span class="required">*</span></strong>
+            <div class="tech-list">
+                <p>Options: Three.js, Babylon.js, WebGL, Unity WebGL, PlayCanvas, A-Frame (WebVR), Custom WebGL</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>8. Required interactivity features:</strong>
+            <div class="tech-list">
+                <p>✓ Camera controls (orbit, pan, zoom)<br>
+                ✓ Object selection/interaction<br>
+                ✓ Animation sequences<br>
+                ✓ Physics simulation<br>
+                ✓ Lighting effects<br>
+                ✓ Particle systems<br>
+                ✓ Sound effects/audio<br>
+                ✓ User input (mouse, keyboard, touch)<br>
+                ✓ VR/AR compatibility</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>9. Performance requirements: <span class="required">*</span></strong>
+            <div class="complexity">
+                <p>Target devices: Desktop only, Desktop + high-end mobile, All mobile devices<br>
+                Frame rate target: 30 FPS, 60 FPS<br>
+                Load time constraints: Fast loading essential, Can have loading screen</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>10. Do you need backend integration?</strong>
+            <p>Options: Standalone 3D experience, Integrated with CMS, User data storage, Real-time updates</p>
+        </div>
+        
+        <h2>🏆 Competitor & Market Analysis</h2>
+        <div class="question">
+            <strong>11. Are there similar 3D experiences in your industry? <span class="required">*</span></strong>
+        </div>
+        
+        <div class="question">
+            <strong>12. Please share competitor/industry 3D website links:</strong>
+            <p>This is crucial for understanding technical feasibility and market standards.</p>
+        </div>
+        
+        <div class="question">
+            <strong>13. What makes your 3D experience unique/different?</strong>
+        </div>
+        
+        <h2>📄 Assets & Content</h2>
+        <div class="question">
+            <strong>14. Asset specifications:</strong>
+            <div class="tech-list">
+                <p>3D model formats: .glb, .gltf, .fbx, .obj<br>
+                Texture requirements: 4K textures, PBR materials, Custom shaders<br>
+                Animation requirements: Rigged models, Skeletal animation, Morph targets</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>15. Do you have any technical documents, specifications, or tax/legal documents related to this project? <span class="required">*</span></strong>
+            <p>Options: Technical specifications, Legal requirements, Compliance documents, Brand guidelines</p>
+        </div>
+        
+        <div class="question">
+            <strong>16. Content delivery method:</strong>
+            <p>Options: Pre-loaded assets, Dynamic loading, CDN delivery, Asset streaming</p>
+        </div>
+        
+        <h2>📱 Platform & Compatibility</h2>
+        <div class="question">
+            <strong>17. Target platforms: <span class="required">*</span></strong>
+            <div class="tech-list">
+                <p>✓ Desktop Chrome/Firefox/Safari/Edge<br>
+                ✓ Mobile Chrome/Safari<br>
+                ✓ Tablet devices<br>
+                ✓ VR headsets (Oculus, Vive)<br>
+                ✓ AR (mobile AR, WebAR)</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>18. Browser compatibility requirements:</strong>
+            <p>Options: Latest browsers only, Support older browsers, Progressive enhancement</p>
+        </div>
+        
+        <h2>🔧 Development & Production</h2>
+        <div class="question">
+            <strong>19. Development approach:</strong>
+            <div class="tech-list">
+                <p>Options: Custom Three.js development, Game engine export, Template modification, From scratch</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>20. Testing requirements:</strong>
+            <p>Options: Performance testing, Cross-browser testing, Device testing, User testing</p>
+        </div>
+        
+        <h2>📅 Timeline & Resources</h2>
+        <div class="question">
+            <strong>21. Project timeline: <span class="required">*</span></strong>
+            <div class="complexity">
+                <p>Options: 1-2 months (simple), 3-4 months (medium), 4-6 months (complex), 6+ months (enterprise)</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>22. Budget range: <span class="required">*</span></strong>
+            <div class="complexity">
+                <p>Options: ₹1,00,000-₹3,00,000, ₹3,00,000-₹6,00,000, ₹6,00,000-₹10,00,000, ₹10,00,000+</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>23. Team/resources available:</strong>
+            <p>Options: We have 3D artists, We have developers, Need complete team, Have project manager</p>
+        </div>
+        
+        <h2>🚀 Advanced Features</h2>
+        <div class="question">
+            <strong>24. Advanced technical requirements:</strong>
+            <div class="tech-list">
+                <p>✓ Real-time rendering<br>
+                ✓ Post-processing effects<br>
+                ✓ Custom shaders<br>
+                ✓ Physics engine<br>
+                ✓ Multi-user interaction<br>
+                ✓ WebSocket communication<br>
+                ✓ WebXR (VR/AR)<br>
+                ✓ AI integration</p>
+            </div>
+        </div>
+        
+        <div class="question">
+            <strong>25. Maintenance & updates:</strong>
+            <p>Options: Regular updates, Content updates, Performance optimization, Bug fixes</p>
+        </div>
+        
+        <div class="question">
+            <strong>26. Any other specific technical constraints or requirements?</strong>
+        </div>
+        
+        <div class="note">
+            <strong>Total Questions: 26</strong><br>
+            <strong>Estimated Development Time: 3-8 months</strong><br>
+            <strong>Complexity: Very High</strong><br>
+            <strong>Key Technologies: Three.js/WebGL, 3D modeling, Real-time rendering</strong><br>
+            <strong>Special Requirements: 3D artists, Performance optimization, Advanced graphics</strong>
+        </div>
+    </div>
+</body>
+</html>

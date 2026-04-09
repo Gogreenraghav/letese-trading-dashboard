@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LETESE Super Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#191c20",
+                        "background": "#f8f9fe",
+                        "surface-container-highest": "#e1e2e7",
+                        "on-secondary-fixed": "#0b1843",
+                        "surface-container-low": "#f2f3f9",
+                        "on-primary-container": "#c9d2ff",
+                        "primary-fixed-dim": "#b7c4ff",
+                        "on-surface-variant": "#444654",
+                        "primary-container": "#2b51c7",
+                        "secondary-container": "#becafe",
+                        "on-tertiary-container": "#45efa0",
+                        "on-tertiary-fixed": "#002111",
+                        "on-secondary-container": "#485481",
+                        "secondary-fixed": "#dce1ff",
+                        "tertiary-container": "#006941",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e6e8ed",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#2e3135",
+                        "outline-variant": "#c4c5d6",
+                        "inverse-on-surface": "#eff1f6",
+                        "secondary-fixed-dim": "#b9c4f8",
+                        "outline": "#747685",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#001551",
+                        "on-tertiary-fixed-variant": "#005231",
+                        "on-primary-fixed-variant": "#053ab2",
+                        "surface": "#f8f9fe",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b7c4ff",
+                        "surface-tint": "#2f54ca",
+                        "surface-bright": "#f8f9fe",
+                        "secondary": "#515c8a",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d8dadf",
+                        "surface-container": "#eceef3",
+                        "on-secondary-fixed-variant": "#394471",
+                        "primary-fixed": "#dce1ff",
+                        "tertiary-fixed-dim": "#30e194",
+                        "tertiary-fixed": "#59feae",
+                        "primary": "#0037ad",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "tertiary": "#004e2f",
+                        "on-surface": "#191c20",
+                        "surface-variant": "#e1e2e7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0px 8px 24px rgba(43, 81, 199, 0.08);
+        }
+        .canvas-gradient {
+            background: linear-gradient(135deg, #819bff 0%, #2b51c7 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface overflow-hidden">
+<!-- Browser Chrome Style Top Bar -->
+<div class="h-10 bg-[#dee1e6] flex items-center px-4 gap-4 border-b border-gray-300">
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+<div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+<div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+</div>
+<div class="flex gap-4 text-gray-600">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+<span class="material-symbols-outlined text-sm">refresh</span>
+</div>
+<div class="bg-white rounded-full px-4 py-1 flex items-center gap-2 flex-grow max-w-xl text-xs text-gray-500 shadow-sm">
+<span class="material-symbols-outlined text-xs">lock</span>
+            admin.letese.ai
+        </div>
+</div>
+<div class="flex h-[calc(100vh-40px)]">
+<!-- SideNavBar (JSON Component) -->
+<aside class="w-[240px] h-full fixed left-0 top-10 bg-white dark:bg-slate-900 flex flex-col py-8 px-4 z-50">
+<div class="mb-10 flex flex-col items-center relative">
+<img alt="LETESE logo" class="w-[160px]" data-alt="clean minimalist tech logo for LETESE with bold blue typography on a crisp white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHynCh-Yg-yxwc0hjl2bMGHP3rWwZ23EK_seY5icDdl2CnSn-H8j5UsqmO2MFKBXCTIj5ysAio3ykhzh5QoihKp6wgArkc7a7JSXN8uhc5OK9jaWKRQjs8w5BfamXKvH3sHEaCGKdmiGtrj4H25CUnsRlt92-pXaCSiTxum9frTc41PXETtc1POdUCHX0dl8FmEsFeaF1RmWIc3lU_wWkdKfHWR4DjeDD_FvA9DU9dzzOcvKSN92yO7MLusABjlVjRyWk1UEdlQ7I"/>
+<div class="absolute top-2 right-4 w-2 h-2 rounded-full bg-tertiary-fixed shadow-[0_0_8px_#59feae]"></div>
+<p class="text-[10px] tracking-widest text-slate-400 font-headline font-bold mt-2 uppercase">Legal Tech Solutions</p>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full text-blue-700 font-bold border-r-4 border-tertiary-fixed bg-slate-50 dark:bg-slate-800 transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-headline text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="corporate_fare">corporate_fare</span>
+<span class="font-headline text-sm">Tenants</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="api">api</span>
+<span class="font-headline text-sm">API Vendors</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-headline text-sm">All Users</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+<span class="font-headline text-sm">System Health</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-headline text-sm">Security</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-headline text-sm">Notifications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-headline text-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-slate-100 pt-6 px-4">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="User profile" class="w-10 h-10 rounded-full object-cover" data-alt="professional portrait of a senior executive male with a kind expression and sharp business attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt_-IPiPGQmLrEOQ7wBvmFObknm_XgnODyH18YRy9D901mpcuOHogBMFOikgRNlYupzrYiVCzi9FWUnJu5gJK3KOViRwm3QVt0myPtybvHwOXpBIgLbp1xvaM7I2IYJW4b1GjwpyASkkMpLLlfT3BKViYZ3_GjcRGHDHcOcREVuHEeSckZi-EJo1B7VCEhF3_LoEgG0zCInMntRUQ9z_w2-5506u7KRv-PsIrB6RmnSJH4IGbDOBkip4iLQgYE9omIRCtCzxdoQR4"/>
+<div class="absolute -top-1 -right-1 bg-yellow-400 text-[10px] p-0.5 rounded-full shadow-sm material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">workspace_premium</div>
+</div>
+<div>
+<p class="text-sm font-bold font-headline">Super Admin</p>
+<p class="text-[10px] text-slate-400 font-medium">Session: 4h 12m</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] w-[calc(100%-240px)] h-full overflow-y-auto canvas-gradient p-8 pb-20">
+<!-- TopNavBar (JSON Component) -->
+<header class="flex justify-between items-center mb-10 w-full">
+<div>
+<h1 class="text-white text-3xl font-extrabold font-headline tracking-tight">Super Admin Dashboard</h1>
+<p class="text-white/70 text-sm mt-1">Global infrastructure overview and tenant management.</p>
+</div>
+<div class="flex items-center gap-6">
+<div class="bg-tertiary/20 backdrop-blur-md px-4 py-2 rounded-full border border-tertiary-fixed/30 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed animate-pulse"></span>
+<span class="text-tertiary-fixed text-xs font-bold uppercase tracking-wider">All Systems Operational ✓</span>
+</div>
+<div class="flex gap-4 text-white/80">
+<button class="material-symbols-outlined p-2 hover:bg-white/10 rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined p-2 hover:bg-white/10 rounded-full transition-colors">help_outline</button>
+</div>
+</div>
+</header>
+<!-- Row 1: Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div class="glass-card p-6 rounded-lg">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-primary-container/10 text-primary-container rounded-lg material-symbols-outlined">corporate_fare</span>
+<span class="text-xs text-green-600 font-bold bg-green-100 px-2 py-0.5 rounded-full">+4.2%</span>
+</div>
+<h3 class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Active Tenants</h3>
+<p class="text-3xl font-extrabold font-headline text-primary mt-1">247</p>
+</div>
+<div class="glass-card p-6 rounded-lg">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-primary-container/10 text-primary-container rounded-lg material-symbols-outlined">group</span>
+<span class="text-xs text-green-600 font-bold bg-green-100 px-2 py-0.5 rounded-full">+12k</span>
+</div>
+<h3 class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Total Users</h3>
+<p class="text-3xl font-extrabold font-headline text-primary mt-1">12,480</p>
+</div>
+<div class="glass-card p-6 rounded-lg">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-primary-container/10 text-primary-container rounded-lg material-symbols-outlined">bolt</span>
+<span class="text-xs text-green-600 font-bold bg-green-100 px-2 py-0.5 rounded-full">Peak</span>
+</div>
+<h3 class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">API Calls (24h)</h3>
+<p class="text-3xl font-extrabold font-headline text-primary mt-1">8.4M</p>
+</div>
+<div class="glass-card p-6 rounded-lg">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-primary-container/10 text-primary-container rounded-lg material-symbols-outlined">payments</span>
+<span class="text-xs text-green-600 font-bold bg-green-100 px-2 py-0.5 rounded-full">+18%</span>
+</div>
+<h3 class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Revenue (Monthly)</h3>
+<p class="text-3xl font-extrabold font-headline text-primary mt-1">₹4.2L</p>
+</div>
+</div>
+<!-- Row 2: Panels -->
+<div class="grid grid-cols-1 lg:grid-cols-10 gap-8 mb-8">
+<!-- System Health -->
+<div class="lg:col-span-6 glass-card p-8 rounded-lg">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-xl font-bold font-headline">System Health</h2>
+<button class="text-primary text-sm font-bold flex items-center gap-1">Full Report <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+</div>
+<div class="flex gap-4 mb-10">
+<div class="flex-1 text-center">
+<div class="text-[10px] font-bold text-slate-400 mb-2">API SERVER</div>
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed mx-auto shadow-[0_0_10px_#59feae]"></div>
+</div>
+<div class="flex-1 text-center">
+<div class="text-[10px] font-bold text-slate-400 mb-2">DATABASE</div>
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed mx-auto shadow-[0_0_10px_#59feae]"></div>
+</div>
+<div class="flex-1 text-center">
+<div class="text-[10px] font-bold text-slate-400 mb-2">KAFKA</div>
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed mx-auto shadow-[0_0_10px_#59feae]"></div>
+</div>
+<div class="flex-1 text-center">
+<div class="text-[10px] font-bold text-slate-400 mb-2">AI MODELS</div>
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed mx-auto shadow-[0_0_10px_#59feae]"></div>
+</div>
+<div class="flex-1 text-center">
+<div class="text-[10px] font-bold text-slate-400 mb-2">CDN</div>
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed mx-auto shadow-[0_0_10px_#59feae]"></div>
+</div>
+</div>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="font-bold">CPU Usage</span>
+<span class="text-slate-500">34%</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 34%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="font-bold">RAM Consumption</span>
+<span class="text-slate-500">58%</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 58%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="font-bold">Disk Space</span>
+<span class="text-slate-500">42%</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 42%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity -->
+<div class="lg:col-span-4 glass-card p-8 rounded-lg">
+<h2 class="text-xl font-bold font-headline mb-6">Recent Activity</h2>
+<div class="space-y-6 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[1px] before:bg-slate-200">
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-2 border-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-primary-container">person_add</span>
+</div>
+<p class="text-sm font-bold">New tenant: Sharma Law Firm</p>
+<p class="text-[10px] text-slate-400 uppercase tracking-tighter">2 minutes ago • Mumbai Office</p>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-2 border-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-tertiary">receipt_long</span>
+</div>
+<p class="text-sm font-bold">Payment received: ₹12,000</p>
+<p class="text-[10px] text-slate-400 uppercase tracking-tighter">14 minutes ago • Invoice #LE-992</p>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-2 border-error flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-error">warning</span>
+</div>
+<p class="text-sm font-bold">API Latency Spike</p>
+<p class="text-[10px] text-slate-400 uppercase tracking-tighter">1 hour ago • Region: AP-South-1</p>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-2 border-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-primary-container">update</span>
+</div>
+<p class="text-sm font-bold">System Patch Deployed</p>
+<p class="text-[10px] text-slate-400 uppercase tracking-tighter">3 hours ago • Version 2.4.1</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 3: All Tenants Table -->
+<div class="glass-card overflow-hidden rounded-lg mb-8">
+<div class="bg-gradient-to-r from-primary to-primary-container px-8 py-4 flex justify-between items-center">
+<h2 class="text-white font-bold font-headline">All Active Tenants</h2>
+<div class="flex items-center gap-4">
+<div class="bg-white/20 rounded-full px-3 py-1 flex items-center gap-2 text-xs text-white">
+<span class="material-symbols-outlined text-sm">search</span>
+<span>Filter Tenants</span>
+</div>
+<button class="bg-tertiary-fixed text-on-tertiary-fixed font-bold text-xs px-4 py-2 rounded-full">Add Tenant</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-[10px] uppercase tracking-widest text-slate-400 border-b border-slate-100">
+<th class="px-8 py-4">Tenant Name</th>
+<th class="px-8 py-4">Status</th>
+<th class="px-8 py-4">Users</th>
+<th class="px-8 py-4">Billing Cycle</th>
+<th class="px-8 py-4">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-primary font-bold">SL</div>
+<span class="font-bold text-sm">Sharma Law Partners</span>
+</div>
+</td>
+<td class="px-8 py-4"><span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">ACTIVE</span></td>
+<td class="px-8 py-4 text-sm font-medium">1,240</td>
+<td class="px-8 py-4 text-sm">Monthly</td>
+<td class="px-8 py-4"><span class="material-symbols-outlined text-slate-400 cursor-pointer">more_horiz</span></td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-primary font-bold">AA</div>
+<span class="font-bold text-sm">Advocate Associates</span>
+</div>
+</td>
+<td class="px-8 py-4"><span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">ACTIVE</span></td>
+<td class="px-8 py-4 text-sm font-medium">850</td>
+<td class="px-8 py-4 text-sm">Yearly</td>
+<td class="px-8 py-4"><span class="material-symbols-outlined text-slate-400 cursor-pointer">more_horiz</span></td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-primary font-bold">LE</div>
+<span class="font-bold text-sm">Legal Eagles</span>
+</div>
+</td>
+<td class="px-8 py-4"><span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-[10px] font-bold">PENDING</span></td>
+<td class="px-8 py-4 text-sm font-medium">12</td>
+<td class="px-8 py-4 text-sm">Trial</td>
+<td class="px-8 py-4"><span class="material-symbols-outlined text-slate-400 cursor-pointer">more_horiz</span></td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-primary font-bold">JF</div>
+<span class="font-bold text-sm">Justice First</span>
+</div>
+</td>
+<td class="px-8 py-4"><span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">ACTIVE</span></td>
+<td class="px-8 py-4 text-sm font-medium">2,100</td>
+<td class="px-8 py-4 text-sm">Enterprise</td>
+<td class="px-8 py-4"><span class="material-symbols-outlined text-slate-400 cursor-pointer">more_horiz</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Row 4: API Vendors & Alerts -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- API Vendors -->
+<div class="glass-card p-8 rounded-lg">
+<h2 class="text-xl font-bold font-headline mb-6">API Vendors</h2>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 bg-slate-50 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-black rounded flex items-center justify-center text-white text-[8px] font-bold">OPENAI</div>
+<div>
+<p class="text-sm font-bold">OpenAI</p>
+<p class="text-[10px] text-green-500 font-bold uppercase tracking-widest">Active</p>
+</div>
+</div>
+<div class="p-4 bg-slate-50 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-orange-600 rounded flex items-center justify-center text-white text-[8px] font-bold">ANTHROPIC</div>
+<div>
+<p class="text-sm font-bold">Anthropic</p>
+<p class="text-[10px] text-green-500 font-bold uppercase tracking-widest">Active</p>
+</div>
+</div>
+<div class="p-4 bg-slate-50 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center text-white text-[8px] font-bold">RAZORPAY</div>
+<div>
+<p class="text-sm font-bold">Razorpay</p>
+<p class="text-[10px] text-green-500 font-bold uppercase tracking-widest">Active</p>
+</div>
+</div>
+<div class="p-4 bg-slate-50 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-green-600 rounded flex items-center justify-center text-white text-[8px] font-bold">WHATSAPP</div>
+<div>
+<p class="text-sm font-bold">WhatsApp</p>
+<p class="text-[10px] text-green-500 font-bold uppercase tracking-widest">Active</p>
+</div>
+</div>
+</div>
+</div>
+<!-- System Alerts -->
+<div class="glass-card p-8 rounded-lg">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-xl font-bold font-headline">System Alerts</h2>
+<span class="bg-error text-white text-[10px] font-bold px-2 py-0.5 rounded">3 ACTIVE</span>
+</div>
+<div class="space-y-4">
+<div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-lg flex gap-4">
+<span class="material-symbols-outlined text-red-500">priority_high</span>
+<div>
+<p class="text-sm font-bold text-red-800">Critical: SSL Certificate Expiry</p>
+<p class="text-xs text-red-600">Primary domain SSL expires in 48 hours. Renewal required.</p>
+</div>
+</div>
+<div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg flex gap-4">
+<span class="material-symbols-outlined text-yellow-600">warning</span>
+<div>
+<p class="text-sm font-bold text-yellow-800">Warning: API Rate Limiting</p>
+<p class="text-xs text-yellow-600">Sharma Law Partners approaching OpenAI quota limits.</p>
+</div>
+</div>
+<div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg flex gap-4">
+<span class="material-symbols-outlined text-yellow-600">schedule</span>
+<div>
+<p class="text-sm font-bold text-yellow-800">Update: Scheduled Maintenance</p>
+<p class="text-xs text-yellow-600">Database optimization scheduled for Sunday, 02:00 IST.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

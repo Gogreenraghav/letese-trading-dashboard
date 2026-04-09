@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Bot Templates - Copy & Paste</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #4CAF50;
+            margin-top: 40px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        .template-box {
+            background: #f9f9f9;
+            border: 2px dashed #4CAF50;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        .preview {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 15px 0;
+            min-height: 100px;
+        }
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            display: block;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .usage-note {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .language-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        .template-tags {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Quick Bot Templates - Copy & Paste Ready</h1>
+        
+        <div class="usage-note">
+            <strong>How to use:</strong> Copy any template below and paste into your bot. Replace variables like {{user_name}} with actual data.
+        </div>
+        
+        <h2>1. Language Selection Template</h2>
+        <div class="template-tags">
+            <span class="language-badge">Hindi</span>
+            <span class="language-badge">English</span>
+            <span class="language-badge">Tamil</span>
+            <span class="language-badge">Telugu</span>
+            <span class="language-badge">All 9 Languages</span>
+        </div>
+        
+        <div class="template-box">
+            <button class="copy-btn" onclick="copyTemplate('lang-template')">Copy</button>
+            
+            <div class="preview">
+                <h3 style="color: #333; margin-bottom: 20px; text-align: center;">🌐 Select Your Language</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <button style="padding: 12px; border: 2px solid #4CAF50; border-radius: 8px; background: white; cursor: pointer;">
+                        <span style="font-size: 20px;">🇮🇳</span><br>
+                        <strong>हिंदी</strong>
+                    </button>
+                    <button style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                        <span style="font-size: 20px;">🇺🇸</span><br>
+                        <strong>English</strong>
+                    </button>
+                    <button style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                        <span style="font-size: 20px;">🇮🇳</span><br>
+                        <strong>தமிழ்</strong>
+                    </button>
+                </div>
+            </div>
+            
+            <code id="lang-template">
+&lt;div class="language-selector"&gt;
+    &lt;h3&gt;🌐 Select Your Language&lt;/h3&gt;
+    &lt;div class="language-grid"&gt;
+        &lt;button class="lang-btn" data-lang="hi"&gt;
+            &lt;span class="flag"&gt;🇮🇳&lt;/span&gt;&lt;br&gt;
+            &lt;strong&gt;हिंदी&lt;/strong&gt;
+        &lt;/button&gt;
+        &lt;button class="lang-btn" data-lang="en"&gt;
+            &lt;span class="flag"&gt;🇺🇸&lt;/span&gt;&lt;br&gt;
+            &lt;strong&gt;English&lt;/strong&gt;
+        &lt;/button&gt;
+        &lt;button class="lang-btn" data-lang="ta"&gt;
+            &lt;span class="flag"&gt;🇮🇳&lt;/span&gt;&lt;br&gt;
+            &lt;strong&gt;தமிழ்&lt;/strong&gt;
+        &lt;/button&gt;
+        &lt;!-- Add more languages --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.language-selector { max-width: 500px; margin: 0 auto; }
+.language-selector h3 { text-align: center; color: #333; margin-bottom: 20px; }
+.language-grid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px; 
+}
+.lang-btn { 
+    padding: 12px; 
+    border: 2px solid #ddd; 
+    border-radius: 8px; 
+    background: white; 
+    cursor: pointer; 
+    transition: all 0.3s; 
+}
+.lang-btn:hover, .lang-btn.active { 
+    border-color: #4CAF50; 
+    background: #f1f8e9; 
+}
+.lang-btn .flag { font-size: 20px; }
+&lt;/style&gt;
+
+&lt;script&gt;
+document.querySelectorAll('.lang-btn').forEach(btn =&gt; {
+    btn.addEventListener('click', function() {
+        const lang = this.getAttribute('data-lang');
+        // Store language preference
+        localStorage.setItem('preferred_language', lang);
+        // Update UI
+        document.querySelectorAll('.lang-btn').forEach(b =&gt; b.classList.remove('active'));
+        this.classList.add('active');
+        // Load questions in selected language
+        loadQuestions(lang);
+    });
+});
+&lt;/script&gt;
+            </code>
+        </div>
+        
+        <h2>2. Question Template (Dynamic)</h2>
+        <div class="template-tags">
+            <span class="language-badge">Basic Website</span>
+            <span class="language-badge">Dynamic Website</span>
+            <span class="language-badge">3D Website</span>
+            <span class="language-badge">Progress Bar</span>
+        </div>
+        
+        <div class="template-box">
+            <button class="copy-btn" onclick="copyTemplate('question-template')">Copy</button>
+            
+            <div class="preview">
+                <div style="margin-bottom: 15px;">
+                    <div style="background: #e0e0e0; height: 6px; border-radius: 3px;">
+                        <div style="width: 33%; background: #4CAF50; height: 100%; border-radius: 3px;"></div>
+                    </div>
+                    <div style="text-align: right; font-size: 14px; color: #666; margin-top: 5px;">Question 1 of 3</div>
+                </div>
+                
+                <h4 style="color: #333; margin-bottom: 15px;">What type of website do you need?</h4>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button style="padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; background: white; text-align: left; cursor: pointer;">
+                        📄 Basic Static Website (5-10 pages)
+                    </button>
+                    <button style="padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; background: white; text-align: left; cursor: pointer;">
+                        ⚡ Dynamic Website (CMS, Database)
+                    </button>
+                    <button style="padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; background: white; text-align: left; cursor: pointer;">
+                        🎮 3D Interactive Website (WebGL)
+                    </button>
+                </div>
+            </div>
+            
+            <code id="question-template">
+&lt;div class="question-container"&gt;
+    &lt;div class="progress-section"&gt;
+        &lt;div class="progress-bar"&gt;
+            &lt;div class="progress-fill" style="width: {{progress}}%"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="progress-text"&gt;Question {{current}} of {{total}}&lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="question"&gt;
+        &lt;h4&gt;{{question_text}}&lt;/h4&gt;
+        
+        &lt;div class="options"&gt;
+            {{#each options}}
+            &lt;button class="option-btn" data-value="{{value}}"&gt;
+                {{text}}
+            &lt;/button&gt;
+            {{/each}}
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.question-container { max-width: 600px; margin: 0 auto; }
+.progress-section { margin-bottom: 20px; }
+.progress-bar { 
+    height: 6px; 
+    background: #e0e0e0; 
+    border-radius: 3px; 
+    overflow: hidden; 
+}
+.progress-fill { 
+    height: 100%; 
+    background: #4CAF50; 
+    border-radius: 3px; 
+    transition: width 0.3s; 
+}
+.progress-text { 
+    text-align: right; 
+    font-size: 14px; 
+    color: #666; 
+    margin-top: 5px; 
+}
+.question h4 { 
+    color: #333; 
+    margin-bottom: 20px; 
+    font-size: 18px; 
+}
+.options { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+}
+.option-btn { 
+    padding: 12px 15px; 
+    border: 2px solid #ddd; 
+    border-radius: 8px; 
+    background: white; 
+    text-align: left; 
+    cursor: pointer; 
+    font-size: 16px; 
+    transition: all 0.3s; 
+}
+.option-btn:hover { 
+    border-color: #4CAF50; 
+    background: #f1f8e9; 
+}
+&lt;/style&gt;
+
+&lt;script&gt;
+// Dynamic question rendering
+function renderQuestion(questionData) {
+    const template = document.getElementById('question-template').innerHTML;
+    const rendered = template
+        .replace('{{progress}}', questionData.progress)
+        .replace('{{current}}', questionData.current)
+        .replace('{{total}}', questionData.total)
+        .replace('{{question_text}}', questionData.text);
+    
+    document.getElementById('question-container').innerHTML = rendered;
+    
+    // Add event listeners
+    document.querySelectorAll('.option-btn').forEach(btn =&gt; {
+        btn.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            saveAnswer(questionData.id, value);
+            loadNextQuestion();
+        });
+    });
+}
+&lt;/script&gt;
+            </code>
+        </div>
+        
+        <h2>3. Chat Message Template</h2>
+        <div class="template-tags">
+            <span class="language-badge">User Message</span>
+            <span class="language-badge">Bot Message</span>
+            <span class="language-badge">Timestamp</span>
+            <span class="language-badge">Responsive</span>
+        </div>
+        
+        <div class="template-box">
+            <button class="copy-btn" onclick="copyTemplate('chat-template')">Copy</button>
+            
+            <div class="preview">
+                <div style="display: flex; margin-bottom: 15px;">
+                    <div style="background: #4CAF50; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                        🤖
+                    </div>
+                    <div>
+                        <div style="background: #f0f0f0; padding: 10px 15px; border-radius: 18px; border-top-left-radius: 0; max-width: 300px;">
+                            Hello! How can I help you today?
+                        </div>
+                        <div style="font-size: 12px; color: #999; margin-top: 5px; margin-left: 5px;">
+                            20:33
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                    <div style="max-width: 300px;">
+                        <div style="background: #4CAF50; color: white; padding: 10px 15px; border-radius: 18px; border-top-right-radius: 0;">
+                            I need a website for my business
+                        </div>
+                        <div style="font-size: 12px; color: #999; margin-top: 5px; text-align: right; margin-right: 5px;">
+                            20:34
+                        </div>
+                    </div>
+                    <div style="background: #2196F3; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-left: 10px;">
+                        👤
+                    </div>
+                </div>
+            </div>
+            
+            <code id="chat-template">
+&lt;!-- Bot Message --&gt;
+&lt;div class="message bot-message"&gt;
+    &lt;div class="avatar"&gt;🤖&lt;/div&gt;
+    &lt;div class="message-content"&gt;
+        &lt;div class="text"&gt;{{bot_message}}&lt;/div&gt;
+        &lt;div class="time"&gt;{{timestamp}}&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- User Message --&gt;
+&lt;div class="message user-message"&gt;
+    &lt;div class="message-content"&gt;
+        &lt;div class="text"&gt;{{user_message}}&lt;/div&gt;
+        &lt;div class="time"&gt;{{timestamp}}&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="avatar"&gt;👤&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.message { 
+    display: flex; 
+    margin-bottom: 15px; 
+    align-items: flex-start; 
+}
+.bot-message { flex-direction: row; }
+.user-message { 
+    flex-direction: row-reverse; 
+    justify-content: flex-end; 
+}
+.avatar { 
+    width: 36px; 
+    height: 36px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 18px; 
+    flex-shrink: 0; 
+    margin: 0 10px; 
+}
+.bot-message .avatar { background: #4CAF50; color: white; }
+.user-message .avatar { background: #2196F3; color: white; }
+.message-content { max-width: 300px; }
+.text { 
+    padding: 10px 15px; 
+    border-radius: 18px; 
+    word-wrap: break-word; 
+}
+.bot-message .text { 
+    background: #f0f0f0; 
+    border-top-left-radius: 0; 
+}
+.user-message .text { 
+    background: #4CAF50; 
+    color: white; 
+    border-top-right-radius: 0; 
+}
+.time { 
+    font-size: 12px; 
+    color: #999; 
+    margin-top: 5px; 
+}
+.bot-message .time { margin-left: 5px; }
+.user-message .time { text-align: right; margin-right: 5px; }
+&lt;/style&gt;
+
+&lt;script&gt;
+// Function to add new message
+function addMessage(text, isUser = false) {
+    const chatContainer = document.getElementById('chat-container');
+    const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    
+    const messageHTML = isUser ? 
+        `&lt;div class="message user-message"&gt;
+            &lt;div class="message-content"&gt;
+                &lt;div class="text"&gt;${text}&lt;/div&gt;
+                &lt;div class="time"&gt;${timestamp}&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class="avatar"&gt;👤&lt;/div&gt;
+        &lt;/div&gt;` :
+        `&lt;div class="message bot-message"&gt;
+            &lt;div class="avatar"&gt;🤖&lt;/div&gt;
+            &lt;div class="message-content"&gt;
+                &lt;div class="text"&gt;${text}&lt;/div&gt;
+                &lt;div class="time"&gt;${timestamp}&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;`;
+    
+    chatContainer.innerHTML += messageHTML;
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+&lt;/script&gt;
+            </code>
+        </div>
+        
+        <h2>4. Summary Report Template</h2>
+        <div class="template-tags">
+            <span class="language-badge">PDF Ready</span>
+            <span class="language-badge">Print Friendly</span>
+            <span class="language-badge">Branding</span>
+            <span class="language-badge">Export</span>
+        </div>
+        
+        <div class="template-box">
+            <button class="copy-btn" onclick="copyTemplate('summary-template')">Copy</button>
+            
+            <div class="preview">
+                <div style="border: 2px solid #4CAF50; border-radius: 10px; padding: 20px;">
+                    <h3 style="color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; margin-bottom: 20px;">
+                        📊 Website Questionnaire Summary
+                    </h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div>
+                            <strong>Business Name:</strong><br>
+                            <span>Radha Krishna Jewelers</span>
+                        </div>
+                        <div>
+                            <strong>Website Type:</strong><br>
+                            <span>Basic Static Website</span>
+                        </div>
+                        <div>
+                            <strong>Budget Range:</strong><br>
+                            <span>₹25,000 - ₹50,000</span>
+                        </div>
+                        <div>
+                            <strong>Timeline:</strong><br>
+                            <span>1 month</span>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong>Pages Required:</strong> Home, About, Services, Contact, Testimonials
+                    </div>
+                    
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong>Languages:</strong> Hindi + English
+                    </div>
+                    
+                    <button style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        Download PDF Report
+                    </button>
+                </div>
+            </div>
+            
+            <code id="summary-template">
+&lt;div class="summary-report"&gt;
+    &lt;h3&gt;📊 Website Questionnaire Summary&lt;/h3&gt;
+    
+    &lt;div class="summary-grid"&gt;
+        &lt;div class="summary-item"&gt;
+            &lt;strong&gt;Business Name:&lt;/strong&gt;&lt;br&gt;
+            &lt;span&gt;{{business_name}}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="summary-item"&gt;
+            &lt;strong&gt;Website Type:&lt;/strong&gt;&lt;br&gt;
+            &lt;span&gt;{{website_type}}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="summary-item"&gt;
+            &lt;strong&gt;Budget Range:&lt;/strong&gt;&lt;br&gt;
+            &lt;span&gt;{{budget_range}}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="summary-item"&gt;
+            &lt;strong&gt;Timeline:&lt;/strong&gt;&lt;br&gt;
+            &lt;span&gt;{{timeline}}&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="summary-section"&gt;
+        &lt;strong&gt;Pages Required:&lt;/strong&gt; {{pages}}
+    &lt;/div&gt;
+    
+    &lt;div class="summary-section"&gt;
+        &lt;strong&gt;Languages:&lt;/strong&gt; {{languages}}
+    &lt;/div&gt;
+    
+    &lt;div class="summary-section"&gt;
+        &lt;strong&gt;Features:&lt;/strong&gt; {{features}}
+    &lt;/div&gt;
+    
+    &lt;div class="summary-section"&gt;
+        &lt;strong&gt;Competitors Analyzed:&lt;/strong&gt; {{competitors_count}}
+    &lt;/div&gt;
+    
+    &lt;button class="download-btn" onclick="generatePDF()"&gt;
+        Download PDF Report
+    &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.summary-report { 
+    max-width: 800px; 
+    margin: 0 auto; 
+    border: 2px solid #4CAF50; 
+    border-radius: 10px; 
+    padding: 20px; 
+}
+.summary-report h3 { 
+    color: #333; 
+    border-bottom: 2px solid #4CAF50; 
+    padding-bottom: 10px; 
+    margin-bottom: 20px; 
+}
+.summary-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 15px; 
+    margin-bottom: 20px; 
+}
+.summary-item { 
+    padding: 10px; 
+    background: #f9f9f9; 
+    border-radius: 5px; 
+}
+.summary-section { 
+    background: #f9f9f9; 
+    padding: 15px; 
+    border-radius: 8px; 
+    margin-bottom: 15px; 
+}
+.download-btn { 
+    background: #4CAF50; 
+    color: white; 
+    border: none; 
+    padding: 12px 25px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    margin-top: 20px; 
+}
+.download-btn:hover { 
+    background: #45a049; 
+}
+&lt;/style&gt;
+
+&lt;script&gt;
+function generatePDF() {
+    // Using jsPDF library
+    const doc = new jsPDF();
+    
+    doc.setFontSize(20);
+    doc.text('Website Questionnaire Summary', 20, 20);
+    
+    doc.setFontSize(12);
+    doc.text(`Business Name: {{business_name}}`, 20, 40);
+    doc.text(`Website Type: {{website_type}}`, 20, 50);
+    doc.text(`Budget: {{budget_range}}`, 20, 60);
+    doc.text(`Timeline: {{timeline}}`, 20, 70);
+    
+    doc.save('website-questionnaire-summary.pdf');
+}
+&lt;/script&gt;
+            </code>
+        </div>
+        
+        <h2>5. Quick Integration CDN Links</h2>
+        <div class="template-box">
+            <button class="copy-btn" onclick="copyTemplate('cdn-template')">Copy</button>
+            
+            <code id="cdn-template">
+&lt;!-- Add these to your HTML head for quick setup --&gt;
+
+&lt;!-- Bootstrap 5 for responsive design --&gt;
+&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Font Awesome for icons --&gt;
+&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"&gt;
+
+&lt;!-- Chart.js for reports --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;
+
+&lt;!-- jsPDF for PDF generation --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Anime.js for animations --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Mustache.js for templates --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.2.0/mustache.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- How to use Mustache templates --&gt;
+&lt;script&gt;
+// Template
+const template = `
+&lt;div class="question"&gt;
+    &lt;h4&gt;{{question}}&lt;/h4&gt;
+    {{#options}}
+    &lt;button class="option" data-value="{{value}}"&gt;{{text}}&lt;/button&gt;
+    {{/options}}
+&lt;/div&gt;
+`;
+
+// Data
+const data = {
+    question: "What type of website?",
+    options: [
+        {value: "basic", text: "Basic Website"},
+        {value: "dynamic", text: "Dynamic Website"},
+        {value: "3d", text: "3D Website"}
+    ]
+};
+
+// Render
+const html = Mustache.render(template, data);
+document.getElementById('container').innerHTML = html;
+&lt;/script&gt;
+            </code>
+        </div>
+        
+        <div class="usage-note">
+            <strong>🚀 Quick Start Guide:</strong>
+            <ol>
+                <li>Copy any template above</li>
+                <li>Paste into your bot's HTML file</li>
+                <li>Replace {{variables}} with actual data</li>
+                <li>Add CDN links for extra features</li>
+                <li>Test with different scenarios</li>
+            </ol>
+        </div>
+        
+        <h2>6. Dynamic Template Generator (JavaScript)</h2>
+        <div class="template-box">
+            <button class="copy-btn" onclick="copyTemplate('generator-template')">Copy</button>
+            
+            <code id="generator-template">
+// Template Generator Function
+function generateTemplate(type, data) {
+    const templates = {
+        'language': `
+            &lt;div class="language-selector"&gt;
+                &lt;h3&gt;${data.title || 'Select Language'}&lt;/h3&gt;
+                &lt;div class="languages"&gt;
+                    ${data.languages.map(lang =&gt; `
+                        &lt;button class="lang-btn" data-lang="${lang.code}"&gt;
+                            ${lang.flag} ${lang.name}
+                        &lt;/button&gt;
+                    `).join('')}
+                &lt;/div&gt;
+            &lt;/div&gt;
+        `,
+        
+        'question': `
+            &lt;div class="question-step" data-id="${data.id}"&gt;
+                &lt;div class="progress"&gt;${data.current}/${data.total}&lt;/div&gt;
+                &lt;h4&gt;${data.question}&lt;/h4&gt;
+                &lt;div class="options"&gt;
+                    ${data.options.map(opt =&gt; `
+                        &lt;button class="option" data-value="${opt.value}"&gt;
+                            ${opt.text}
+                        &lt;/button&gt;
+                    `).join('')}
+                &lt;/div&gt;
+            &lt;/div&gt;
+        `,
+        
+        'summary': `
+            &lt;div class="summary"&gt;
+                &lt;h3&gt;${data.title}&lt;/h3&gt;
+                &lt;div class="details"&gt;
+                    ${Object.entries(data.details).map(([key, value]) =&gt; `
+                        &lt;div class="detail-item"&gt;
+                            &lt;strong&gt;${key}:&lt;/strong&gt; ${value}
+                        &lt;/div&gt;
+                    `).join('')}
+                &lt;/div&gt;
+            &lt;/div&gt;
+        `
+    };
+    
+    return templates[type] || '';
+}
+
+// Example Usage
+const languageData = {
+    title: 'Choose Your Language',
+    languages: [
+        {code: 'hi', name: 'हिंदी', flag: '🇮🇳'},
+        {code: 'en', name: 'English', flag: '🇺🇸'},
+        {code: 'ta', name: 'தமிழ்', flag: '🇮🇳'}
+    ]
+};
+
+const questionData = {
+    id: 'website_type',
+    current: 1,
+    total: 5,
+    question: 'What type of website do you need?',
+    options: [
+        {value: 'basic', text: 'Basic Static Website'},
+        {value: 'dynamic', text: 'Dynamic Website'},
+        {value: '3d', text: '3D Interactive Website'}
+    ]
+};
+
+// Generate and insert
+document.getElementById('container').innerHTML = 
+    generateTemplate('language', languageData) +
+    generateTemplate('question', questionData);
+            </code>
+        </div>
+        
+        <div class="usage-note" style="background: #d4edda; border-left-color: #28a745;">
+            <strong>✅ Ready to Use:</strong> All templates are production-ready. Just copy, paste, and customize!
+        </div>
+    </div>
+    
+    <script>
+        function copyTemplate(templateId) {
+            const code = document.getElementById(templateId).textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Template copied to clipboard!');
+            });
+        }
+        
+        // Auto-copy on page load for easy access
+        window.addEventListener('load', function() {
+            console.log('Bot templates loaded. Copy any template with the Copy button.');
+        });
+    </script>
+</body>
+</html>
