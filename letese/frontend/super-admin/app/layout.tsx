@@ -1,4 +1,8 @@
+"use client";
+
 import type { Metadata } from "next";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import "./globals.css";
 import { Toaster } from "sonner";
 
@@ -12,6 +16,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("sa_token");
+    if (!token) {
+      router.push("/login");
+    }
+  }, [router]);
+
   return (
     <html lang="en">
       <head>

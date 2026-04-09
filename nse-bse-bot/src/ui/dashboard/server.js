@@ -667,6 +667,65 @@ class DashboardServer {
       }
     });
 
+    // ── User Management APIs ──────────────────────────────────────────
+    const UserDB = require('../../data/userDB');
+
+    // Admin: List all users
+    this.app.get('/api/admin/users', (req, res) => {
+      const users = UserDB.getAll();
+      res.json({ users, count: users.length });
+    });
+
+    // Admin: Get single user (with balance)
+    this.app.get('/api/admin/users/:userId', (req, res) => {
+      const user = UserDB.getAdminByUserId(req.params.userId);
+      if (!user) return res.status(404).json({ error: 'User not found' });
+      const referrals = UserDB.getReferralStats(user.referralCode);
+      res.json({ ...user, referrals });
+    });
+
+    // Admin: Add balance to user
+    this.app.post('/api/admin/users/:userId/add-balance', (req, res) => {
+      const { amount, note } = req.body;
+      const parsed = parseFloat(amount);
+      if (!parsed || parsed <= 0) return res.status(400).json({ error: 'Invalid amount' });
+      const user = UserDB.getAdminByUserId(req.params.userId);
+      if (!user) return res.status(404).json({ error: 'User not found' });
+      const updated = UserDB.addBalance(user.username, parsed);
+      res.json({ success: true, userId: updated.userId, username: updated.username, balance: updated.balance, added: parsed, note: note || '' });
+    });
+
+    // Public: Register new user
+    this.app.post('/api/register', (req, res) => {
+      const { username, email, referredBy } = req.body;
+      if (!username) return res.status(400).json({ error: 'Username required' });
+      if (username.length < 3) return res.status(400).json({ error: 'Username must be at least 3 characters' });
+      if (!/^[a-zA-Z0-9_]+$/.test(username)) return res.status(400).json({ error: 'Username can only contain letters, numbers, underscore' });
+      try {
+        const user = UserDB.create({ username, email, referredBy });
+        res.json({ success: true, userId: user.userId, username: user.username, referralCode: user.referralCode });
+      } catch(e) {
+        res.status(400).json({ error: e.message });
+      }
+    });
+
+    // Public: Lookup user by username or email
+    this.app.get('/api/user/lookup/:identifier', (req, res) => {
+      const id = req.params.identifier;
+      const byUsername = UserDB.getByUsername(id);
+      if (byUsername) return res.json({ found: true, type: 'username', userId: byUsername.userId, username: byUsername.username, plan: byUsername.plan, createdAt: byUsername.createdAt });
+      const byEmail = UserDB.getByEmail(id);
+      if (byEmail) return res.json({ found: true, type: 'email', userId: byEmail.userId, username: byEmail.username, plan: byEmail.plan, createdAt: byEmail.createdAt });
+      res.json({ found: false });
+    });
+
+    // Public: Get user public profile
+    this.app.get('/api/user/:username', (req, res) => {
+      const user = UserDB.getByUsername(req.params.username);
+      if (!user) return res.status(404).json({ error: 'User not found' });
+      res.json({ userId: user.userId, username: user.username, plan: user.plan, status: user.status, joinedAt: user.createdAt });
+    });
+
     const dashboardPath = path.join(__dirname, 'dashboard.html');
     this.app.get('/dashboard', (req, res) => {
       res.sendFile(dashboardPath);

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,6 +13,7 @@ import {
   Bell,
   Search,
   Scale,
+  LifeBuoy,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -21,6 +22,7 @@ const NAV_ITEMS = [
   { href: "/admin/team", icon: Users, label: "Team" },
   { href: "/admin/billing", icon: CreditCard, label: "Billing" },
   { href: "/admin/analytics", icon: BarChart3, label: "Analytics" },
+  { href: "/admin/tickets", icon: LifeBuoy, label: "Support Tickets" },
   { href: "/admin/settings", icon: Settings, label: "Settings" },
 ];
 
@@ -39,6 +41,14 @@ export default function AdminShell({
 }: AdminShellProps) {
   const pathname = usePathname();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Auth check — redirect to login if not authenticated
+  useEffect(() => {
+    const token = localStorage.getItem("ca_token");
+    if (!token) {
+      window.location.href = "/login";
+    }
+  }, []);
 
   return (
     <div className="flex h-screen bg-dark-gradient overflow-hidden">
@@ -114,8 +124,10 @@ export default function AdminShell({
           <button
             className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white hover:bg-glass-hover transition-all border border-transparent"
             onClick={() => {
-              localStorage.removeItem("letese_token");
-              window.location.href = "/auth";
+              localStorage.removeItem("ca_token");
+              localStorage.removeItem("ca_user");
+              localStorage.removeItem("ca_tenant");
+              window.location.href = "/login";
             }}
           >
             <LogOut className="w-4 h-4 shrink-0" />

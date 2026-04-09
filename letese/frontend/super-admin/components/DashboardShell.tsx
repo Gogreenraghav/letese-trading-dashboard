@@ -13,12 +13,14 @@ import {
   LogOut,
   ChevronRight,
   Scale,
+  TrendingUp,
 } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/health", label: "System Health", icon: Activity },
   { href: "/tenants", label: "Tenants", icon: Building2 },
+  { href: "/users", label: "AI24X7 Users", icon: TrendingUp },
   { href: "/api-vendors", label: "API Vendors", icon: Plug },
   { href: "/police", label: "Police Console", icon: ShieldAlert },
   { href: "/audit", label: "Audit Logs", icon: FileText },
@@ -27,6 +29,7 @@ const NAV_ITEMS = [
 interface DashboardShellProps {
   children: React.ReactNode;
   title?: string;
+  active?: string;
   actions?: React.ReactNode;
 }
 
