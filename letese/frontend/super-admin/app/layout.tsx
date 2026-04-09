@@ -1,10 +1,7 @@
-"use client";
-
 import type { Metadata } from "next";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import "./globals.css";
 import { Toaster } from "sonner";
+import ClientLayout from "./ClientLayout";
 
 export const metadata: Metadata = {
   title: "LETESE● Super Admin",
@@ -16,15 +13,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem("sa_token");
-    if (!token) {
-      router.push("/login");
-    }
-  }, [router]);
-
   return (
     <html lang="en">
       <head>
@@ -32,7 +20,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
-        {children}
+        <ClientLayout>{children}</ClientLayout>
         <Toaster
           position="top-right"
           theme="dark"
