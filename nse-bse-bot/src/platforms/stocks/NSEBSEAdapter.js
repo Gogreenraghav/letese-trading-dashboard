@@ -21,21 +21,35 @@ class NSEBSEAdapter {
     // Default tracked symbols (NSE stocks with Yahoo Finance suffix)
     // Note: HUL=HINDUNILVR (NSE symbol), HDFC merged into HDFC Bank
     this.trackedSymbols = [
-      'RELIANCE.NS', 'TCS.NS', 'HDFCBANK.NS', 'INFY.NS', 'ICICIBANK.NS',
-      'SBIN.NS', 'BHARTIARTL.NS', 'ITC.NS', 'KOTAKBANK.NS', 'LT.NS',
-      'HINDUNILVR.NS', 'SUNPHARMA.NS', 'ASIANPAINT.NS', 'NESTLEIND.NS', 'MARUTI.NS',
-      'AXISBANK.NS', 'BAJFINANCE.NS', 'ADANIPORTS.NS', 'ONGC.NS',
-      'COALINDIA.NS', 'NTPC.NS', 'POWERGRID.NS', 'GRASIM.NS',
-      'TITAN.NS', 'ULTRACEMCO.NS', 'TECHM.NS', 'WIPRO.NS', 'M&M.NS',
-      'DRREDDY.NS', 'CIPLA.NS', 'APOLLOHOSP.NS', 'SBILIFE.NS',
+      // ── Finance & Banking ────────────────────────────
+      'RELIANCE.NS', 'HDFCBANK.NS', 'ICICIBANK.NS', 'SBIN.NS',
+      'KOTAKBANK.NS', 'AXISBANK.NS', 'BAJFINANCE.NS', 'BAJAJFINSV.NS',
+      'HDFCLIFE.NS', 'SBILIFE.NS', 'ICICIPRULI.NS', 'SHRIRAMFIN.NS',
+      // ── IT & Technology ─────────────────────────────
+      'TCS.NS', 'INFY.NS', 'TECHM.NS', 'WIPRO.NS', 'HCLTECH.NS', 'LTIM.NS',
+      // ── FMCG & Consumer ────────────────────────────
+      'HINDUNILVR.NS', 'NESTLEIND.NS', 'ITC.NS', 'BRITANNIA.NS', 'TITAN.NS',
+      // ── Pharmaceuticals & Healthcare ──────────────
+      'SUNPHARMA.NS', 'DRREDDY.NS', 'CIPLA.NS', 'APOLLOHOSP.NS', 'DIVISLAB.NS',
+      // ── Automobile ─────────────────────────────────
+      'MARUTI.NS', 'M&M.NS', 'HEROMOTOCO.NS', 'EICHERMOT.NS', 'BAJAJ-AUTO.NS',
+      // ── Infrastructure & Industrial ───────────────
+      'LT.NS', 'ADANIPORTS.NS', 'GRASIM.NS', 'ULTRACEMCO.NS', 'DALBHARAT.NS',
+      // ── Energy & Utilities ─────────────────────────
+      'ONGC.NS', 'NTPC.NS', 'POWERGRID.NS', 'COALINDIA.NS', 'ADANIENT.NS',
+      // ── Paints & Chemicals ─────────────────────────
+      'ASIANPAINT.NS', 'BERGEPAINT.NS', 'PIDILITIND.NS',
+      // ── Telecom & Others ──────────────────────────
+      'BHARTIARTL.NS', 'JSWSTEEL.NS', 'TATASTEEL.NS',
     ];
 
-    // Index symbols (Finnifty uses NFLXFINTECH.NS or BSE index directly)
+    // Index symbols (Finnifty uses Nifty Financial Index (calculating from components) or BSE index directly)
     this.indexSymbols = {
       'NIFTY50': '^NSEI',
       'BANKNIFTY': '^NSEBANK',
       'SENSEX': '^BSESN',
-      'FINNIFTY': 'NFLXFINTECH.NS',
+      // FINNIFTY: not available on Yahoo Finance
+      //'FINNIFTY': 'NFLXFINTECH.NS',
     };
 
     this.updateInterval = null;

@@ -44,6 +44,9 @@ export default function AdminShell({
 
   // Auth check — redirect to login if not authenticated
   useEffect(() => {
+    const pathname = window.location.pathname;
+    // Don't redirect if already on login page
+    if (pathname === "/login" || pathname === "/admin/login") return;
     const token = localStorage.getItem("ca_token");
     if (!token) {
       window.location.href = "/login";

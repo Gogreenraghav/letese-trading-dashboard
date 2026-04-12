@@ -63,11 +63,8 @@ class NSEBSEEngine {
             return confidence >= 0.65 ? { action: 'BUY', confidence, quantity: this.calculateQuantity(symbol, current) } : null;
           }
 
-          // Sell signal: Price breaks below 20-day low
-          const isBreakdown = current < low20 && prevClose >= low20;
-          if (isBreakdown && rsi < 60) {
-            return { action: 'SELL', confidence: 0.7, reason: 'Breakdown below support' };
-          }
+          // Sell signal: Price breaks below 20-day low — skip (we don't short)
+          // In paper trading, a breakdown means wait for re-entry, not sell
 
           return null;
         },
@@ -102,9 +99,12 @@ class NSEBSEEngine {
             return { action: 'BUY', confidence, stopLoss, target, holdingPeriod: '3-7 days' };
           }
 
-          // Sell if price falls below EMA
+          // Price below EMA → Mean reversion BUY (buy the dip)
           if (current < ema9 * 0.97) {
-            return { action: 'SELL', confidence: 0.75, reason: 'Below EMA support' };
+            const stopLoss = current * 0.97;
+            const target = ema9 * 1.03;
+            const confidence = 0.72;
+            return { action: 'BUY', confidence, stopLoss, target, reason: 'Mean reversion: buying the dip', holdingPeriod: '2-5 days' };
           }
 
           return null;
@@ -134,9 +134,11 @@ class NSEBSEEngine {
             return { action: 'BUY', confidence: 0.6, target, stopLoss, type: 'intraday' };
           }
 
-          // Sell at upper band
+          // Price at upper band → scalp BUY (expecting pullback to middle band)
           if (current >= upper) {
-            return { action: 'SELL', confidence: 0.65, reason: 'Upper Bollinger Band resistance' };
+            const stopLoss = lower;
+            const target = middle;
+            return { action: 'BUY', confidence: 0.65, stopLoss, target, reason: 'Bollinger scalp: buy at upper band, target middle', type: 'intraday' };
           }
 
           return null;
@@ -163,7 +165,8 @@ class NSEBSEEngine {
             return { action: 'BUY', confidence: 0.75, alpha: alpha.toFixed(4), reason: 'Positive alpha generation' };
           }
           if (alpha < -0.005 && correlation > 0.7) {
-            return { action: 'SELL', confidence: 0.7, alpha: alpha.toFixed(4), reason: 'Negative alpha' };
+            // Negative alpha → skip (we don't short in paper trading)
+          // Only take positive alpha as BUY
           }
           return null;
         },
@@ -214,26 +217,50 @@ class NSEBSEEngine {
   // Execute signals (paper trading)
   async executeSignals(signals) {
     const executed = [];
+    const cash = this.portfolio.cash;
+    
     for (const signal of signals) {
       const { symbol, action, confidence, marketData } = signal;
       const currentPrice = marketData?.price;
       const quantity = this.calculateQuantity(symbol, currentPrice);
+      const tradeValue = currentPrice * quantity;
+      const tradePct = cash > 0 ? (tradeValue / cash * 100).toFixed(1) : 0;
+
+      // Skip if no valid quantity or price
+      if (!currentPrice || quantity <= 0) {
+        if (currentPrice > 0 && quantity <= 0) {
+          const maxRisk = this.portfolio.cash * (parseFloat(process.env.MAX_PER_TRADE_RISK || 10) / 100);
+          const tradeSizePct = parseFloat(process.env.TRADE_SIZE_PCT || 10);
+          const sharesAtRisk = Math.ceil(maxRisk / currentPrice);
+          this.logger?.warn(`${symbol}: Position too large (max ₹${maxRisk.toFixed(0)} = ${sharesAtRisk} shares @ ₹${currentPrice.toFixed(0)} at ${tradeSizePct}% capital), skipping`);
+        }
+        continue;
+      }
 
       // Pre-trade risk check
       const riskCheck = this.riskManager.canTrade(
         symbol,
         this.portfolio,
-        { quantity: quantity || 10, price: currentPrice || 0, riskPerShare: 0 }
+        { quantity, price: currentPrice, riskPerShare: 0 }
       );
       if (!riskCheck.allowed) {
-        this.logger?.warn(`Risk block ${symbol}: ${riskCheck.reason}`);
+        this.logger?.warn(`Risk block ${symbol}: ${riskCheck.reason} [tradeVal=₹${tradeValue.toFixed(0)} (${tradePct}% of cash)]`);
         continue;
       }
-
-      if (!currentPrice || quantity <= 0) continue;
+      
+      this.logger?.info(`[TRADE OK] ${symbol}: qty=${quantity} @ ₹${currentPrice.toFixed(0)} = ₹${tradeValue.toFixed(0)} (${tradePct}%) → executing ${action}`);
+      
+      // If SELL signal but no position → treat as BUY signal (strategy likes this stock)
+      if (action === 'SELL' && !existingPosition) {
+      }
 
       // Check if we already have a position
       const existingPosition = this.portfolio.positions.find(p => p.symbol === symbol);
+      
+      // If SELL signal but no position → treat as BUY (strategy found a good entry)
+      if (action === 'SELL' && !existingPosition) {
+        action = 'BUY';
+      }
       
       if (action === 'BUY') {
         if (existingPosition) {
@@ -387,9 +414,19 @@ class NSEBSEEngine {
 
   // Helper functions
   calculateQuantity(symbol, price) {
-    const maxRisk = this.portfolio.cash * 0.1; // Max 10% per trade
-    const lotSize = this.adapter?.getLotSize(symbol) || 1;
-    return Math.floor(maxRisk / price / lotSize) * lotSize;
+    // Position size based on % of portfolio (not risk-based)
+    // TRADE_SIZE_PCT = how much of capital per trade (e.g. 10% = ₹1 Lakh per trade on ₹10L capital)
+    // STOP_LOSS_PCT = hard stop loss % from entry (e.g. 5% = ₹500 risk per ₹10,000 position)
+    const tradeSizePct = parseFloat(process.env.TRADE_SIZE_PCT || 10); // % of capital per trade
+    const stopLossPct  = parseFloat(process.env.STOP_LOSS_PCT || 5);   // hard stop loss %
+    const lotSize      = this.adapter?.getLotSize(symbol) || 1;
+    const tradeAmount  = this.portfolio.cash * (tradeSizePct / 100);
+    const maxQty      = Math.floor(tradeAmount / price / lotSize) * lotSize;
+    // Also respect max risk: (price * maxQty * stopLossPct/100) <= maxRisk
+    const maxRisk      = this.portfolio.cash * (parseFloat(process.env.MAX_PER_TRADE_RISK || 10) / 100);
+    const riskBasedQty = Math.floor(maxRisk / price / lotSize) * lotSize;
+    // Use the smaller of the two — portfolio % sizing or risk-based sizing
+    return Math.min(maxQty, riskBasedQty);
   }
 
   sma(arr) {

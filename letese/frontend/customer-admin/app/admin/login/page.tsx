@@ -6,7 +6,6 @@ import { Scale } from "lucide-react";
 
 export default function CustomerAdminLogin() {
   const router = useRouter();
-  useEffect(() => { document.title = "LETESE● Customer Admin — Sign In"; }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
