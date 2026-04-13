@@ -41,15 +41,44 @@ class NSEBSEAdapter {
       'ASIANPAINT.NS', 'BERGEPAINT.NS', 'PIDILITIND.NS',
       // ── Telecom & Others ──────────────────────────
       'BHARTIARTL.NS', 'JSWSTEEL.NS', 'TATASTEEL.NS',
+
+      // ── BSE Stocks (.BO suffix — Bombay Stock Exchange) ──────────────
+      // These are BSE-listed companies, many with significant trading volume on BSE
+      // Use .NS for NSE listing, .BO for BSE listing (prices may differ slightly)
+      'COFORGE.BO',      // Coforge Ltd (IT services)
+      'LALPATHLAB.BO',   // Dr Lal Pathlabs (Healthcare)
+      'METROBRAND.BO',   // Metro Brands (Retail)
+      'CROMPTON.BO',     // Crompton Greaves (Consumer electricals)
+      'WHIRLPOOL.BO',    // Whirlpool India (Consumer appliances)
+      'BAJAJELEC.BO',    // Bajaj Electricals
+      'CASTROLIND.BO',   // Castrol India (Lubricants)
+      'GLAXO.BO',        // GlaxoSmithKline (Pharma)
+      'HINDZINC.BO',     // Hindustan Zinc (Metals)
+      'NMDC.BO',         // NMDC Ltd (Mining)
+      'RBLBANK.BO',      // RBL Bank (Banking)
+      'FORTIS.BO',       // Fortis Healthcare
+      'INDIACEM.BO',     // India Cements
+      'JINDALSTEL.BO',   // Jindal Steel & Power
+      'MFSL.BO',         // Max Financial Services
+      'PERSISTENT.BO',   // Persistent Systems (IT)
+      'RAMCOCEM.BO',     // Ramco Cements
+      'SBILIFE.BO',      // SBI Life Insurance (already in NSE as SBILIFE.NS)
+      'SUNTV.BO',        // Sun TV Network
+      'UPL.BO',          // UPL Ltd (Agri chemicals)
+      'VOLTAS.BO',       // Voltas (Blue Star)
+      'ZYDUSLIFE.BO',    // Zydus Lifesciences
     ];
 
-    // Index symbols (Finnifty uses Nifty Financial Index (calculating from components) or BSE index directly)
+    // Index symbols (NSE + BSE indices)
     this.indexSymbols = {
+      // NSE Indices
       'NIFTY50': '^NSEI',
       'BANKNIFTY': '^NSEBANK',
+      // BSE Indices
       'SENSEX': '^BSESN',
-      // FINNIFTY: not available on Yahoo Finance
-      //'FINNIFTY': 'NFLXFINTECH.NS',
+      'BSE100': '^BSESN',     // BSE 100 (using SENSEX as proxy)
+      'BSEBANK': '^BSEBANK',  // BSE Bankex
+      'BSESENSEX': '^BSESN',  // BSE Sensex (30 stocks)
     };
 
     this.updateInterval = null;
