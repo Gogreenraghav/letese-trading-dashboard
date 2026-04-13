@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NSE-BSE Trading Bot — AI-Powered Stock Trading Platform</title>
+  <meta name="description" content="Automate your NSE & BSE stock trading with AI. Paper trading to live trading, built-in strategies, Telegram alerts, and multi-user SaaS platform.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #0a0e1a; color: #e2e8f0; overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; }
+    
+    /* Navbar */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(10,14,26,0.9); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-size: 18px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+    .nav-logo span { color: #3b82f6; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { font-size: 14px; color: #94a3b8; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-btn {
+      padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      background: #1d4ed8; color: #fff; border: none; cursor: pointer; transition: all 0.2s;
+    }
+    .nav-btn:hover { background: #2563eb; transform: translateY(-1px); }
+    .nav-btn-outline {
+      padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      background: transparent; color: #fff; border: 1px solid #334155; cursor: pointer;
+    }
+    .nav-btn-outline:hover { background: #1e293b; }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center; padding: 120px 20px 80px;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59,130,246,0.15) 0%, transparent 60%);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 100px; padding: 6px 16px; font-size: 13px; color: #60a5fa;
+      margin-bottom: 24px;
+    }
+    .hero-badge .dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px); font-weight: 900; color: #fff;
+      line-height: 1.1; max-width: 900px; margin-bottom: 20px;
+    }
+    .hero h1 .blue { color: #3b82f6; }
+    .hero p {
+      font-size: clamp(16px, 2vw, 20px); color: #94a3b8; max-width: 640px;
+      line-height: 1.7; margin-bottom: 40px;
+    }
+    .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 60px; }
+    .btn-primary {
+      padding: 14px 32px; border-radius: 12px; font-size: 16px; font-weight: 700;
+      background: #2563eb; color: #fff; border: none; cursor: pointer;
+      box-shadow: 0 0 40px rgba(37,99,235,0.4); transition: all 0.2s;
+    }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 0 60px rgba(37,99,235,0.5); }
+    .btn-secondary {
+      padding: 14px 32px; border-radius: 12px; font-size: 16px; font-weight: 600;
+      background: transparent; color: #e2e8f0; border: 1px solid #334155; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: #1e293b; border-color: #475569; }
+    .hero-stats { display: flex; gap: 48px; justify-content: center; flex-wrap: wrap; }
+    .hero-stat { text-align: center; }
+    .hero-stat .num { font-size: 28px; font-weight: 800; color: #fff; }
+    .hero-stat .label { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+    /* How it works */
+    .section { padding: 100px 20px; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      text-align: center; font-size: 13px; font-weight: 700; color: #3b82f6;
+      text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
+    }
+    .section-title {
+      text-align: center; font-size: clamp(28px, 4vw, 42px); font-weight: 800; color: #fff;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      text-align: center; color: #64748b; font-size: 16px; max-width: 600px; margin: 0 auto 60px;
+    }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+    .step {
+      background: #111827; border: 1px solid #1f2937; border-radius: 16px;
+      padding: 32px 28px; transition: all 0.3s;
+    }
+    .step:hover { border-color: #334155; transform: translateY(-4px); }
+    .step-icon { font-size: 40px; margin-bottom: 16px; }
+    .step h3 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: #64748b; line-height: 1.6; }
+
+    /* Features */
+    .features { background: #060b14; padding: 100px 20px; }
+    .features .section-title { color: #fff; }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
+    .feature {
+      background: #111827; border: 1px solid #1f2937; border-radius: 16px;
+      padding: 28px; transition: all 0.3s;
+    }
+    .feature:hover { border-color: rgba(59,130,246,0.4); }
+    .feature-icon { font-size: 32px; margin-bottom: 14px; }
+    .feature h3 { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .feature p { font-size: 13px; color: #64748b; line-height: 1.6; }
+
+    /* Pricing */
+    .pricing { padding: 100px 20px; max-width: 1100px; margin: 0 auto; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+    .plan {
+      background: #111827; border: 2px solid #1f2937; border-radius: 20px;
+      padding: 36px 28px; position: relative; transition: all 0.3s;
+    }
+    .plan.popular { border-color: #3b82f6; box-shadow: 0 0 60px rgba(37,99,235,0.2); }
+    .plan-badge {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: #2563eb; color: #fff; font-size: 12px; font-weight: 700;
+      padding: 4px 16px; border-radius: 100px;
+    }
+    .plan h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .plan .price { font-size: 40px; font-weight: 900; color: #fff; margin: 12px 0; }
+    .plan .price span { font-size: 16px; color: #64748b; font-weight: 400; }
+    .plan .price .free { color: #22c55e; }
+    .plan ul { list-style: none; margin: 20px 0; }
+    .plan ul li { padding: 8px 0; font-size: 14px; color: #94a3b8; display: flex; gap: 10px; }
+    .plan ul li::before { content: '✓'; color: #22c55e; font-weight: 700; flex-shrink: 0; }
+    .plan-btn {
+      width: 100%; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 700;
+      cursor: pointer; border: none; transition: all 0.2s;
+    }
+    .plan .btn-outline { background: transparent; border: 1px solid #334155; color: #94a3b8; }
+    .plan .btn-outline:hover { background: #1e293b; color: #fff; }
+    .plan .btn-fill { background: #2563eb; color: #fff; }
+    .plan .btn-fill:hover { background: #1d4ed8; }
+
+    /* Bot Preview */
+    .preview { background: #060b14; padding: 100px 20px; }
+    .preview-box {
+      background: #111827; border: 1px solid #1f2937; border-radius: 20px;
+      overflow: hidden; max-width: 900px; margin: 0 auto;
+    }
+    .preview-header { background: #1e293b; padding: 12px 20px; display: flex; gap: 8px; align-items: center; }
+    .preview-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #22c55e; }
+    .preview-body { padding: 32px; }
+    .preview-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .ps { background: #1e293b; border-radius: 12px; padding: 20px; text-align: center; }
+    .ps .val { font-size: 24px; font-weight: 800; color: #fff; }
+    .ps .lbl { font-size: 12px; color: #64748b; margin-top: 4px; }
+    .ps.green .val { color: #22c55e; }
+    .ps.blue .val { color: #3b82f6; }
+    .ps.orange .val { color: #f59e0b; }
+    .preview-table { width: 100%; border-collapse: collapse; }
+    .preview-table th { padding: 10px 14px; text-align: left; font-size: 11px; color: #64748b; text-transform: uppercase; border-bottom: 1px solid #1f2937; }
+    .preview-table td { padding: 10px 14px; font-size: 13px; color: #94a3b8; border-bottom: 1px solid #0f172a; }
+    .preview-table tr:last-child td { border: none; }
+    .tag { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .tag-buy { background: rgba(34,197,94,0.15); color: #22c55e; }
+    .tag-hold { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+    /* Footer */
+    .footer { border-top: 1px solid #1f2937; padding: 40px 20px; text-align: center; color: #475569; font-size: 13px; }
+    .footer-logo { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 12px; }
+    .footer-logo span { color: #3b82f6; }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 100px 20px; text-align: center;
+      background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(37,99,235,0.2) 0%, transparent 70%);
+    }
+    .cta-section h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 900; color: #fff; margin-bottom: 16px; }
+    .cta-section p { color: #64748b; font-size: 18px; margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero-cta { flex-direction: column; align-items: center; }
+      .preview-stats { grid-template-columns: repeat(2, 1fr); }
+      .hero-stats { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="nav-logo">📈 NSE<span>BOT</span></div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#preview">Dashboard</a>
+    <a href="https://139.59.65.82/my-portfolio/" class="nav-btn-outline">Login</a>
+    <a href="https://139.59.65.82/my-portfolio/" class="nav-btn">Start Free →</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Live Trading • 49 Stocks • AI Powered
+  </div>
+  <h1>
+    Automate Your<br>
+    <span class="blue">NSE & BSE Trading</span><br>
+    With AI
+  </h1>
+  <p>
+    Paper trade for free. Go live when ready. Our bot scans 49 NSE stocks every 30 seconds, 
+    generates AI-powered signals, and executes trades — all automated.
+  </p>
+  <div class="hero-cta">
+    <a href="https://139.59.65.82/my-portfolio/"><button class="btn-primary">🚀 Start Trading Free</button></a>
+    <a href="#preview"><button class="btn-secondary">📊 See Dashboard →</button></a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num">49</div>
+      <div class="label">NSE Stocks</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">5</div>
+      <div class="label">Trading Strategies</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">30s</div>
+      <div class="label">Scan Interval</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">₹10L</div>
+      <div class="label">Paper Capital</div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="section" id="how-it-works">
+  <div class="section-label">How It Works</div>
+  <h2 class="section-title">From Signup to Auto-Trading in 5 Minutes</h2>
+  <p class="section-sub">No coding required. No complex setup. Just signup and let the AI do the work.</p>
+  
+  <div class="steps">
+    <div class="step">
+      <div class="step-icon">📝</div>
+      <h3>1. Create Free Account</h3>
+      <p>Sign up in 30 seconds. Get ₹10 Lakh paper trading capital instantly. No credit card required.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">🤖</div>
+      <h3>2. Bot Starts Scanning</h3>
+      <p>Our AI bot automatically scans 49 NSE stocks every 30 seconds using 5 different strategies.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">📲</div>
+      <h3>3. Get Telegram Alerts</h3>
+      <p>Every trade alert goes directly to your Telegram. Approve or ignore — you're always in control.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">💰</div>
+      <h3>4. Upgrade to Live Trading</h3>
+      <p>When you're confident, upgrade to Pro plan and connect your Samco account for real trades.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="section-label">Platform Features</div>
+  <h2 class="section-title">Everything You Need to Trade Smarter</h2>
+  <p class="section-sub">Built for Indian stock market traders who want automation without the complexity.</p>
+  
+  <div class="feature-grid">
+    <div class="feature">
+      <div class="feature-icon">📊</div>
+      <h3>5 Trading Strategies</h3>
+      <p>Momentum, Mean Reversion, Breakout, Scalping, and Sector Rotation — all working simultaneously.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🤖</div>
+      <h3>AI-Powered Analysis</h3>
+      <p>Uses Groq AI to analyze market sentiment from 25+ news sources every cycle.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📲</div>
+      <h3>Telegram Alerts</h3>
+      <p>Get instant notifications on every trade, signal, and portfolio update via Telegram.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📈</div>
+      <h3>Real-Time Dashboard</h3>
+      <p>Track your portfolio, positions, P&L, trade history, and signals in one unified dashboard.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🛡️</div>
+      <h3>Risk Management</h3>
+      <p>Built-in VaR/CVaR, trailing stops, position sizing, and daily loss limits built in.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔄</div>
+      <h3>Paper → Live</h3>
+      <p>Start with paper trading. Upgrade to live trading with real NSE broker when ready.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📰</div>
+      <h3>News Sentiment</h3>
+      <p>Daily market news analysis from Moneycontrol, ET Market, and NSE announcements.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <h3>30-Second Cycles</h3>
+      <p>Ultra-fast scanning every 30 seconds. Never miss a trading opportunity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Bot Preview -->
+<section class="preview" id="preview">
+  <div class="section-label">Live Dashboard</div>
+  <h2 class="section-title">See Your Portfolio in Action</h2>
+  <p class="section-sub">Real-time portfolio tracking with live positions, P&L, and trade history.</p>
+  
+  <div class="preview-box">
+    <div class="preview-header">
+      <span class="preview-dot dot-red"></span>
+      <span class="preview-dot dot-yellow"></span>
+      <span class="preview-dot dot-green"></span>
+      <span style="margin-left:12px; font-size:13px; color:#94a3b8;">Portfolio Dashboard</span>
+    </div>
+    <div class="preview-body">
+      <div class="preview-stats">
+        <div class="ps">
+          <div class="val">₹9,02,240</div>
+          <div class="lbl">Available Cash</div>
+        </div>
+        <div class="ps blue">
+          <div class="val">₹97,760</div>
+          <div class="lbl">Invested</div>
+        </div>
+        <div class="ps green">
+          <div class="val">+2.4%</div>
+          <div class="lbl">Total P&L</div>
+        </div>
+        <div class="ps orange">
+          <div class="val">4</div>
+          <div class="lbl">Open Positions</div>
+        </div>
+      </div>
+      <table class="preview-table">
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Qty</th>
+            <th>Entry Price</th>
+            <th>Current</th>
+            <th>P&L</th>
+            <th>Signal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:#fff;font-weight:600;">BAJAJ-AUTO</td>
+            <td>10</td>
+            <td>₹9,776</td>
+            <td>₹9,980</td>
+            <td style="color:#22c55e;">+₹2,040</td>
+            <td><span class="tag tag-buy">BUY 72%</span></td>
+          </tr>
+          <tr>
+            <td style="color:#fff;font-weight:600;">ADANIENT</td>
+            <td>42</td>
+            <td>₹2,139</td>
+            <td>₹2,180</td>
+            <td style="color:#22c55e;">+₹1,722</td>
+            <td><span class="tag tag-buy">BUY 68%</span></td>
+          </tr>
+          <tr>
+            <td style="color:#fff;font-weight:600;">BERGEPAINT</td>
+            <td>178</td>
+            <td>₹456</td>
+            <td>₹461</td>
+            <td style="color:#22c55e;">+₹890</td>
+            <td><span class="tag tag-hold">HOLD</span></td>
+          </tr>
+          <tr>
+            <td style="color:#fff;font-weight:600;">COALINDIA</td>
+            <td>231</td>
+            <td>₹433</td>
+            <td>₹438</td>
+            <td style="color:#22c55e;">+₹1,155</td>
+            <td><span class="tag tag-buy">BUY 70%</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+  <div class="section-label">Pricing Plans</div>
+  <h2 class="section-title">Start Free. Scale When Ready.</h2>
+  <p class="section-sub">No hidden charges. Cancel anytime.</p>
+  
+  <div class="pricing-grid">
+    <!-- Free -->
+    <div class="plan">
+      <h3>Free</h3>
+      <div class="price free">₹0 <span>/month</span></div>
+      <p style="color:#64748b;font-size:13px;margin-bottom:4px;">Perfect for learning</p>
+      <ul>
+        <li>₹10 Lakh paper capital</li>
+        <li>5 NSE stocks</li>
+        <li>1 strategy</li>
+        <li>Dashboard access</li>
+        <li>7-day free trial</li>
+      </ul>
+      <a href="https://139.59.65.82/my-portfolio/"><button class="plan-btn btn-outline">Get Started Free</button></a>
+    </div>
+
+    <!-- Basic -->
+    <div class="plan">
+      <h3>Basic</h3>
+      <div class="price">₹499 <span>/month</span></div>
+      <p style="color:#64748b;font-size:13px;margin-bottom:4px;">For active traders</p>
+      <ul>
+        <li>₹10 Lakh paper capital</li>
+        <li>20 NSE stocks</li>
+        <li>2 strategies</li>
+        <li>Telegram alerts</li>
+        <li>Trade history & signals</li>
+      </ul>
+      <button class="plan-btn btn-outline">Coming Soon</button>
+    </div>
+
+    <!-- Pro (Popular) -->
+    <div class="plan popular">
+      <div class="plan-badge">🔥 Most Popular</div>
+      <h3>Pro</h3>
+      <div class="price">₹1,999 <span>/month</span></div>
+      <p style="color:#64748b;font-size:13px;margin-bottom:4px;">For serious traders</p>
+      <ul>
+        <li>All 49 NSE stocks</li>
+        <li>5 advanced strategies</li>
+        <li>Telegram + email alerts</li>
+        <li>Backtesting access</li>
+        <li>API access for automation</li>
+      </ul>
+      <button class="plan-btn btn-fill">Coming Soon</button>
+    </div>
+
+    <!-- Enterprise -->
+    <div class="plan">
+      <h3>Enterprise</h3>
+      <div class="price">₹4,999 <span>/month</span></div>
+      <p style="color:#64748b;font-size:13px;margin-bottom:4px;">For firms & funds</p>
+      <ul>
+        <li>Unlimited stocks</li>
+        <li>Live trading (Samco API)</li>
+        <li>MCX commodities</li>
+        <li>White-label option</li>
+        <li>Priority support</li>
+      </ul>
+      <button class="plan-btn btn-outline">Contact Us</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to Automate Your Trading?</h2>
+  <p>Join now and start paper trading in 30 seconds. No credit card required.</p>
+  <a href="https://139.59.65.82/my-portfolio/"><button class="btn-primary" style="font-size:18px;padding:16px 40px;">🚀 Start Trading for Free</button></a>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-logo">📈 NSE<span>BOT</span></div>
+  <p>AI-Powered NSE & BSE Trading Platform<br>Built for Indian Stock Market Traders</p>
+  <p style="margin-top:16px;">© 2026 NSEBOT. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

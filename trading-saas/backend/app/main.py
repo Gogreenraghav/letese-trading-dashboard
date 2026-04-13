@@ -13,6 +13,7 @@ import os
 
 from app.auth.router import router as auth_router
 from app.auth.telegram import router as telegram_router
+from app.admin.backtest import router as backtest_router
 from app.users.router import router as users_router
 from app.admin.router import router as admin_router
 from app.trading.router import router as trading_router
@@ -45,6 +46,7 @@ app.add_middleware(
 # Include routers
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(telegram_router, prefix="/api/v1/telegram", tags=["Telegram"])
+app.include_router(backtest_router, prefix="/api/v1/backtest", tags=["Backtest"])
 app.include_router(users_router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(admin_router, prefix="/api/v1/admin", tags=["Admin"])
 app.include_router(trading_router, prefix="/api/v1/trading", tags=["Trading"])

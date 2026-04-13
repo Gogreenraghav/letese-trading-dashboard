@@ -1,0 +1,19 @@
+{
+  "lastChecks": {
+    "services": 1744513680,
+    "memory": 1744513680
+  },
+  "services": {
+    "nse-bse-bot": "online",
+    "trading-backend": "online",
+    "saas-superadmin": "online",
+    "saas-user-dashboard": "online",
+    "note": "nse-bse-bot orchestrator running (port 3005 dashboard NOT running - orchestrator doesn't start it)"
+  },
+  "db": {
+    "trades": 2,
+    "signals": 740,
+    "positions": 2,
+    "users": 2
+  }
+}

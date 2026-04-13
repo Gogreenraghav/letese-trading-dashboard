@@ -10,6 +10,7 @@ require('dotenv').config();
 const path = require('path');
 const fs = require('fs-extra');
 const { TradingOrchestrator } = require('./orchestrator');
+const DashboardServer = require('./ui/dashboard/server');
 
 async function main() {
   const logger = {
@@ -45,6 +46,19 @@ async function main() {
   });
 
   try {
+    // Start bot dashboard on port 3005
+    const botLogger = {
+      info: (...a) => origInfo('[Dashboard]', ...a),
+      warn: (...a) => console.warn(`[${new Date().toISOString()}] [Dashboard] WARN:`, ...a),
+      error: (...a) => console.error(`[${new Date().toISOString()}] [Dashboard] ERROR:`, ...a),
+    };
+    const dashboard = new DashboardServer({
+      logger: botLogger,
+      port: 3005,
+    });
+    await dashboard.start();
+    origInfo('Dashboard server running on port 3005');
+
     await orchestrator.initialize();
     await orchestrator.startAll();
     logger.info('✅ Orchestrator fully running!');

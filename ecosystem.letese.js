@@ -1,0 +1,53 @@
+module.exports = {
+  apps: [
+    {
+      name: 'customer-admin',
+      cwd: '/var/www/customer-admin',
+      script: 'server.js',
+      env: {
+        PORT: 3012,
+        HOSTNAME: '0.0.0.0',
+        NODE_ENV: 'production',
+        NEXT_PUBLIC_API_URL: 'https://api.letese.xyz',
+      },
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '500M',
+    },
+    {
+      name: 'super-admin',
+      cwd: '/root/clawd/letese/frontend/super-admin',
+      script: 'node_modules/.bin/next',
+      args: 'start',
+      env: {
+        PORT: 3013,
+        HOSTNAME: '0.0.0.0',
+        NODE_ENV: 'production',
+        NEXT_PUBLIC_API_URL: 'https://api.letese.xyz',
+        NEXT_PUBLIC_WS_URL: 'wss://api.letese.xyz',
+      },
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '500M',
+    },
+    {
+      name: 'letese-backend',
+      cwd: '/root/clawd/letese/backend',
+     _interpreter: '/root/clawd/letese/backend/.venv/bin/python3',
+      script: '-m',
+      args: 'uvicorn app.main:app --host 0.0.0.0 --port 8001',
+      env: {
+        DATABASE_URL: 'postgresql+asyncpg://letese:SecurePass123@localhost:5432/letese',
+        REDIS_URL: 'redis://localhost:6379',
+        PAPERCLIP_API_URL: 'http://localhost:3100',
+        NODE_ENV: 'production',
+      },
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '800M',
+    },
+  ],
+};
