@@ -9,3 +9,10 @@ build/
 .packages
 .pub-cache/
 node_modules/
+*.pyc
+__pycache__/
+venv/
+*.db
+.env
+node_modules/
+dist/
