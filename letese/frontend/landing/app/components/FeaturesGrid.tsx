@@ -5,59 +5,67 @@ import { Scale, BotMessageSquare, Zap, MessageSquare, FileText, Users, Shield, B
 const features = [
   {
     icon: Scale,
-    title: 'Case Management',
-    description: 'Manage all your court cases in one place. Track hearings, clients, documents, and deadlines effortlessly.',
+    title: 'Case Tracker',
+    description: 'Track P&H HC, Delhi HC, SC, NCDRC, and district courts from one dashboard. Auto-fetch next hearing dates and orders.',
     color: '#5070E0',
     bg: '#EFF6FF',
+    courts: ['P&H HC', 'Delhi HC', 'SC', 'NCDRC'],
   },
   {
     icon: BotMessageSquare,
     title: 'AI Legal Drafting',
-    description: 'Generate petitions, replies, and legal arguments in seconds. GPT-4 + Claude powered for accuracy.',
-    color: '#59FEAE',
-    bg: '#ECFDF5',
+    description: 'GPT-4o + Claude 3 powered drafting for petitions, bail applications, replies, and written statements.',
+    color: '#7C3AED',
+    bg: '#F5F3FF',
+    courts: null,
   },
   {
     icon: Zap,
-    title: 'AIPOT Live Feed',
-    description: '24/7 auto-scraped judgments from Supreme Court, High Courts, and Tribunals across India.',
-    color: '#FFB547',
+    title: 'Court Scraping (AIPOT)',
+    description: '24/7 auto-scraping of new orders, judgments, and case status from 47+ Indian courts. Delivered to your dashboard.',
+    color: '#F59E0B',
     bg: '#FFFBEB',
+    courts: null,
   },
   {
     icon: MessageSquare,
-    title: 'WhatsApp Alerts',
-    description: 'Send case updates, hearing reminders, and documents directly to clients via WhatsApp Business.',
+    title: 'WhatsApp Reminders',
+    description: 'Auto-send hearing reminders, order notifications, and document requests via WhatsApp Business API. Clients love it.',
     color: '#25D366',
     bg: '#F0FDF4',
+    courts: null,
   },
   {
     icon: FileText,
     title: 'Collaborative Editor',
-    description: 'Draft documents together with paralegals and co-counsel. Real-time multi-user editing.',
-    color: '#8B5CF6',
-    bg: '#F5F3FF',
+    description: 'Draft petitions with your paralegal team in real-time. Tiptap editor with Punjabi, Hindi, and English support.',
+    color: '#0EA5E9',
+    bg: '#ECFEFF',
+    courts: null,
   },
   {
     icon: Users,
-    title: 'Team RBAC',
-    description: 'Assign roles — Admin, Advocate, Paralegal, Intern. Full control over who sees what.',
+    title: 'Team Management',
+    description: 'Multi-user RBAC — Admin, Advocate, Clerk, Paralegal, Intern. Each sees what they need to see.',
     color: '#06B6D4',
     bg: '#ECFEFF',
+    courts: null,
   },
   {
     icon: Shield,
-    title: 'Enterprise Security',
-    description: 'Bank-grade encryption, 2FA, and role-based access. Your client data stays confidential.',
-    color: '#F43F5E',
-    bg: '#FFF1F2',
+    title: 'Client Data Security',
+    description: '256-bit encryption, 2FA, role-based access. Your client data never leaves Indian servers (AWS Mumbai region).',
+    color: '#10B981',
+    bg: '#F0FDFA',
+    courts: null,
   },
   {
     icon: BarChart3,
-    title: 'Analytics & Reports',
-    description: 'Track case outcomes, team performance, and revenue. Data-driven decisions for your firm.',
-    color: '#10B981',
-    bg: '#F0FDFA',
+    title: 'Billing & Invoices',
+    description: 'Generate Razorpay invoices, track payments, manage client wallet balances, and export GST-compliant reports.',
+    color: '#EC4899',
+    bg: '#FDF2F8',
+    courts: null,
   },
 ]
 
@@ -88,7 +96,7 @@ export default function FeaturesGrid() {
             lineHeight: 1.15,
             marginBottom: '16px',
           }}>
-            Everything an Advocate Needs
+            Everything an Indian Advocate Needs
           </h2>
           <p style={{
             fontFamily: "'Inter', sans-serif",
@@ -98,8 +106,37 @@ export default function FeaturesGrid() {
             margin: '0 auto',
             lineHeight: 1.7,
           }}>
-            From case management to AI drafting — LETESE automates the legal work so you can focus on winning.
+            From P&H HC to Supreme Court — LETESE automates your practice so you can focus on arguments.
           </p>
+        </div>
+
+        {/* Court coverage banner */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          gap: '12px', flexWrap: 'wrap',
+          marginBottom: '48px',
+          padding: '14px 24px',
+          background: 'rgba(80,112,224,0.06)',
+          borderRadius: '16px',
+          border: '1px solid rgba(80,112,224,0.12)',
+        }}>
+          <Globe size={16} color="#5070E0" />
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: '#5070E0' }}>
+            Live court coverage:
+          </span>
+          {['Punjab & Haryana HC', 'Delhi High Court', 'Supreme Court', 'NCDRC', 'Chandigarh Dist. Courts', 'Consumer Forums', 'NCLT/DRT'].map(c => (
+            <span key={c} style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '12px',
+              color: '#5A6070',
+              background: 'white',
+              padding: '4px 12px',
+              borderRadius: '9999px',
+              border: '1px solid rgba(80,112,224,0.15)',
+            }}>
+              {c}
+            </span>
+          ))}
         </div>
 
         {/* Grid */}
@@ -120,6 +157,7 @@ export default function FeaturesGrid() {
                 border: '1px solid rgba(255,255,255,0.8)',
                 boxShadow: '0 4px 24px rgba(80,112,224,0.08)',
                 transition: 'all 0.3s ease',
+                cursor: 'default',
               }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-4px)'
@@ -159,6 +197,25 @@ export default function FeaturesGrid() {
                 }}>
                   {feature.description}
                 </p>
+
+                {/* Court tags */}
+                {feature.courts && (
+                  <div style={{ display: 'flex', gap: '6px', marginTop: '12px', flexWrap: 'wrap' }}>
+                    {feature.courts.map(c => (
+                      <span key={c} style={{
+                        fontSize: '10px',
+                        fontFamily: "'Inter', sans-serif",
+                        fontWeight: 600,
+                        color: feature.color,
+                        background: feature.bg,
+                        padding: '2px 8px',
+                        borderRadius: '9999px',
+                      }}>
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             )
           })}
@@ -168,28 +225,27 @@ export default function FeaturesGrid() {
         <div style={{
           marginTop: '64px',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '24px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+          gap: '20px',
         }}>
           {[
             { value: '1,24,680+', label: 'Judgments Scraped' },
             { value: '247+', label: 'Active Advocates' },
+            { value: '47', label: 'Courts Live' },
             { value: '50,000+', label: 'AI Drafts Generated' },
-            { value: '99.9%', label: 'Uptime Guaranteed' },
           ].map((stat) => (
             <div key={stat.label} style={{
               background: 'rgba(255,255,255,0.88)',
               backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
               borderRadius: '20px',
-              padding: '24px',
+              padding: '22px',
               textAlign: 'center',
               border: '1px solid rgba(255,255,255,0.8)',
               boxShadow: '0 4px 24px rgba(80,112,224,0.06)',
             }}>
               <div style={{
                 fontFamily: "'Manrope', sans-serif",
-                fontSize: '28px',
+                fontSize: '26px',
                 fontWeight: 800,
                 color: '#5070E0',
                 marginBottom: '6px',
@@ -198,7 +254,7 @@ export default function FeaturesGrid() {
               </div>
               <div style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: '13px',
+                fontSize: '12px',
                 color: '#8B92A0',
                 fontWeight: 500,
               }}>

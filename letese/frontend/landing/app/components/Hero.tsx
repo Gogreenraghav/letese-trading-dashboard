@@ -1,7 +1,8 @@
 'use client'
 
-import { Scale, Play, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { Scale, Play, ArrowRight, CheckCircle2, Clock, ShieldCheck } from 'lucide-react'
 import { useState } from 'react'
+import Link from 'next/link'
 
 export default function Hero() {
   const [playing, setPlaying] = useState(false)
@@ -41,7 +42,7 @@ export default function Hero() {
             display: 'inline-block',
           }} />
           <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: '#3050B0' }}>
-            India's #1 Legal AI Platform
+            Live across 47 Courts in India 🇮🇳
           </span>
         </div>
       </div>
@@ -59,7 +60,7 @@ export default function Hero() {
                 lineHeight: 1.1,
                 letterSpacing: '-1px',
                 color: 'white',
-                marginBottom: '24px',
+                marginBottom: '4px',
               }}
             >
               LETESE
@@ -67,202 +68,200 @@ export default function Hero() {
             </h1>
             <p style={{
               fontFamily: "'Manrope', sans-serif",
-              fontSize: 'clamp(24px, 3vw, 36px)',
+              fontSize: 'clamp(22px, 3vw, 34px)',
               fontWeight: 700,
               color: 'rgba(255,255,255,0.95)',
               lineHeight: 1.3,
-              marginBottom: '16px',
+              marginBottom: '20px',
             }}>
-              Advocate Suite
-            </p>
-            <p style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: '16px',
-              color: 'rgba(255,255,255,0.85)',
-              marginBottom: '32px',
-              lineHeight: 1.7,
-            }}>
-              वकीलों के लिए AI powered legal management
-            </p>
-            <p style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: '15px',
-              color: 'rgba(255,255,255,0.75)',
-              lineHeight: 1.7,
-              maxWidth: '480px',
-              marginBottom: '40px',
-            }}>
-              AI-powered case management, instant legal drafting &amp; 24/7 court
-              judgment monitoring for Indian advocates. Win more cases with
-              intelligent automation.
+              Legal Practice Suite
             </p>
 
+            <p style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '17px',
+              color: 'rgba(255,255,255,0.85)',
+              lineHeight: 1.7,
+              marginBottom: '32px',
+              maxWidth: '480px',
+            }}>
+              Auto-track P&H HC, Delhi HC, SC orders. AI draft petitions in minutes.
+              WhatsApp hearing reminders. Built for Indian advocates.
+            </p>
+
+            {/* Trust badges */}
+            <div style={{ display: 'flex', gap: '24px', marginBottom: '36px', flexWrap: 'wrap' }}>
+              {[
+                { icon: ShieldCheck, text: 'Data encrypted at rest' },
+                { icon: Clock, text: '24/7 case monitoring' },
+                { icon: CheckCircle2, text: 'Bar Council compliant' },
+              ].map(({ icon: Icon, text }) => (
+                <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Icon size={14} color="#59FEAE" strokeWidth={2.5} />
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(255,255,255,0.75)', fontWeight: 500 }}>{text}</span>
+                </div>
+              ))}
+            </div>
+
             {/* CTA Buttons */}
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '48px' }}>
-              <button style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px',
+            <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+              <Link href="/register" style={{
+                display: 'inline-flex', alignItems: 'center', gap: '10px',
                 padding: '16px 32px',
                 background: 'white',
                 color: '#5070E0',
                 borderRadius: '9999px',
                 fontFamily: "'Manrope', sans-serif",
-                fontWeight: 700,
-                fontSize: '15px',
-                border: 'none',
-                cursor: 'pointer',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+                fontWeight: 700, fontSize: '15px',
+                textDecoration: 'none',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
               }}>
                 Start Free Trial
                 <ArrowRight size={18} />
-              </button>
-              <button
-                onClick={() => setPlaying(!playing)}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '16px 32px',
-                  background: 'rgba(255,255,255,0.15)',
-                  backdropFilter: 'blur(16px)',
-                  color: 'white',
-                  borderRadius: '9999px',
-                  fontFamily: "'Manrope', sans-serif",
-                  fontWeight: 700,
-                  fontSize: '15px',
-                  border: '1.5px solid rgba(255,255,255,0.3)',
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{
-                  width: '36px', height: '36px',
-                  background: 'rgba(255,255,255,0.2)',
-                  borderRadius: '50%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <Play size={16} fill="white" />
-                </div>
-                Watch Demo
+              </Link>
+              <button style={{
+                display: 'inline-flex', alignItems: 'center', gap: '10px',
+                padding: '16px 32px',
+                background: 'rgba(255,255,255,0.12)',
+                backdropFilter: 'blur(16px)',
+                color: 'white',
+                borderRadius: '9999px',
+                fontFamily: "'Manrope', sans-serif",
+                fontWeight: 700, fontSize: '15px',
+                border: '1.5px solid rgba(255,255,255,0.3)',
+                cursor: 'pointer',
+              }}>
+                <Play size={16} fill="white" />
+                Watch Demo (2 min)
               </button>
             </div>
 
-            {/* Trust indicators */}
-            <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
-              {[
-                'No credit card required',
-                '14-day free trial',
-                'Cancel anytime',
-              ].map((item) => (
-                <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <CheckCircle2 size={16} color="#59FEAE" />
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>
-                    {item}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <p style={{
+              marginTop: '20px',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '12px',
+              color: 'rgba(255,255,255,0.55)',
+            }}>
+              No credit card required • 14-day free trial • Setup in 5 minutes
+            </p>
           </div>
 
-          {/* Right: Phone mockup */}
-          <div className="hidden lg:flex justify-center">
+          {/* Right: Dashboard Preview */}
+          <div className="relative hidden lg:block">
+            {/* Mock dashboard */}
             <div style={{
-              position: 'relative',
-              width: '280px',
-              height: '580px',
-              background: '#0A0E1A',
-              borderRadius: '44px',
-              padding: '8px',
-              boxShadow: '0 40px 80px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,255,255,0.1)',
+              background: 'rgba(255,255,255,0.95)',
+              backdropFilter: 'blur(24px)',
+              borderRadius: '24px',
+              padding: '24px',
+              boxShadow: '0 32px 80px rgba(0,0,0,0.25)',
+              border: '1px solid rgba(255,255,255,0.8)',
             }}>
-              {/* Phone notch */}
+              {/* Mock header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#FF5F56' }} />
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#FFBD2E' }} />
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#27C93F' }} />
+                <div style={{
+                  flex: 1, height: '24px', background: 'rgba(80,112,224,0.08)',
+                  borderRadius: '8px', marginLeft: '8px',
+                  display: 'flex', alignItems: 'center', padding: '0 12px',
+                }}>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#8B92A0' }}>
+                    app.letese.xyz
+                  </span>
+                </div>
+              </div>
+
+              {/* Mock content */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                {[
+                  { label: 'Active Cases', value: '47', color: '#5070E0', bg: '#EFF6FF' },
+                  { label: 'Hearings Today', value: '3', color: '#F59E0B', bg: '#FFFBEB' },
+                ].map(card => (
+                  <div key={card.label} style={{
+                    background: card.bg, borderRadius: '14px', padding: '14px',
+                    border: `1px solid ${card.color}20`,
+                  }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: card.color, fontWeight: 600 }}>
+                      {card.label}
+                    </div>
+                    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: '22px', fontWeight: 800, color: card.color }}>
+                      {card.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Mock case list */}
+              <div style={{ background: '#F8F9FC', borderRadius: '14px', padding: '14px' }}>
+                <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: '12px', fontWeight: 700, color: '#1A1D26', marginBottom: '10px' }}>
+                  Upcoming Hearings
+                </div>
+                {[
+                  { c: 'CWP 1234/2024', ct: 'P&H HC', dt: 'Today, 10:30 AM', st: '#27C93F' },
+                  { c: 'SA 456/2023', ct: 'Delhi HC', dt: 'Tomorrow, 2:00 PM', st: '#5070E0' },
+                  { c: 'SLP 789/2024', ct: 'Supreme Court', dt: '20 Apr 2025', st: '#F59E0B' },
+                ].map(case_ => (
+                  <div key={case_.c} style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '8px 0',
+                    borderBottom: '1px solid rgba(0,0,0,0.06)',
+                  }}>
+                    <div>
+                      <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: '12px', fontWeight: 600, color: '#1A1D26' }}>{case_.c}</div>
+                      <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: '#8B92A0' }}>{case_.ct}</div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: case_.st }} />
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: '#5A6070' }}>{case_.dt}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* WhatsApp reminder mock */}
               <div style={{
-                position: 'absolute',
-                top: '8px', left: '50%', transform: 'translateX(-50%)',
-                width: '100px', height: '28px',
-                background: '#0A0E1A',
-                borderRadius: '0 0 20px 20px',
-                zIndex: 10,
-              }} />
-              {/* Screen */}
-              <div style={{
-                width: '100%', height: '100%',
-                borderRadius: '36px',
-                overflow: 'hidden',
-                background: 'linear-gradient(180deg, #B0C0F0 0%, #5070E0 100%)',
-                position: 'relative',
+                marginTop: '12px', background: '#F0FDF4',
+                border: '1px solid #25D36630', borderRadius: '14px', padding: '12px',
+                display: 'flex', alignItems: 'center', gap: '10px',
               }}>
-                {/* Mock UI */}
-                <div style={{ padding: '40px 16px 16px', height: '100%', position: 'relative' }}>
-                  {/* Logo mock */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginBottom: '20px' }}>
-                    <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '16px', fontWeight: 800, color: 'white' }}>LETESE</span>
-                    <span style={{ color: '#59FEAE', fontWeight: 800 }}>●</span>
+                <div style={{ fontSize: '20px' }}>📱</div>
+                <div>
+                  <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: '12px', fontWeight: 600, color: '#1A1D26' }}>
+                    Reminder sent to client
                   </div>
-
-                  {/* Status chips */}
-                  <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', justifyContent: 'center' }}>
-                    {[['🔴 Live', '#B41340'], ['🟡 Pending', '#FFB547'], ['🟢 Done', '#59FEAE']].map(([label, color]) => (
-                      <div key={label as string} style={{
-                        padding: '6px 12px', borderRadius: '20px',
-                        background: 'rgba(255,255,255,0.9)',
-                        fontSize: '11px', fontWeight: 700,
-                        color: color as string,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      }}>{label as string}</div>
-                    ))}
-                  </div>
-
-                  {/* Case card */}
-                  <div style={{
-                    background: 'rgba(255,255,255,0.92)',
-                    borderRadius: '16px',
-                    padding: '14px',
-                    marginBottom: '12px',
-                    borderLeft: '4px solid #5070E0',
-                  }}>
-                    <div style={{ fontSize: '10px', fontWeight: 700, color: '#5070E0', marginBottom: '4px' }}>Next Up • Court 4</div>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#1A1D26', marginBottom: '4px' }}>State of Maharashtra vs. K. Deshmukh</div>
-                    <div style={{ fontSize: '10px', color: '#5A6070', marginBottom: '8px' }}>11:30 AM</div>
-                    <div style={{ height: '4px', background: '#E8EBF5', borderRadius: '2px' }}>
-                      <div style={{ height: '100%', width: '68%', background: '#5070E0', borderRadius: '2px' }} />
-                    </div>
-                  </div>
-
-                  {/* Quick actions */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
-                    {[['📝', 'New Case', '#EFF6FF'], ['🤖', 'AI Draft', '#ECFDF5']].map(([icon, label, bg]) => (
-                      <div key={label as string} style={{
-                        background: bg as string,
-                        borderRadius: '12px', padding: '12px',
-                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-                      }}>
-                        <span style={{ fontSize: '18px' }}>{icon as string}</span>
-                        <span style={{ fontSize: '10px', fontWeight: 600, color: '#5070E0' }}>{label as string}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* AIPOT preview */}
-                  <div style={{
-                    background: 'rgba(255,255,255,0.92)',
-                    borderRadius: '16px', padding: '14px',
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                      <span style={{ fontSize: '11px', fontWeight: 700, color: '#1A1D26' }}>⚡ AIPOT Live</span>
-                      <span style={{ fontSize: '9px', fontWeight: 700, color: '#B41340', background: 'rgba(180,19,64,0.1)', padding: '2px 8px', borderRadius: '10px' }}>● LIVE</span>
-                    </div>
-                    {['🏛️ Landmark Ruling Digital Privacy', '⚖️ Amendment Corporate Insolvency', '⚖️ Tenant Protection Act 2024'].map((text, i) => (
-                      <div key={i} style={{
-                        background: '#F8FAFF', borderRadius: '8px', padding: '8px', marginBottom: '6px',
-                        fontSize: '9px', color: '#5A6070',
-                      }}>{text}</div>
-                    ))}
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: '#5A6070' }}>
+                    "Hearing tomorrow at 10:30 AM — P&H HC"
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Court logos */}
+        <div style={{
+          marginTop: '60px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '32px',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+        }}>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(255,255,255,0.45)', fontWeight: 500, letterSpacing: '0.5px' }}>
+            TRUSTED BY ADVOCATES AT
+          </span>
+          {['Punjab & Haryana HC', 'Delhi High Court', 'Supreme Court', 'NCDRC', 'District Courts'].map(court => (
+            <span key={court} style={{
+              fontFamily: "'Manrope', sans-serif",
+              fontSize: '13px',
+              fontWeight: 700,
+              color: 'rgba(255,255,255,0.6)',
+            }}>
+              {court}
+            </span>
+          ))}
         </div>
       </div>
     </section>
