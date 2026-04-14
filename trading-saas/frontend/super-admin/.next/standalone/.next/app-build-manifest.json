@@ -2,61 +2,60 @@
   "pages": {
     "/_not-found/page": [
       "static/chunks/webpack-91b2d14d0f678b80.js",
-      "static/chunks/fd9d1056-62aaf4b921c84028.js",
-      "static/chunks/23-bf450310e51a83be.js",
+      "static/chunks/fd9d1056-1f4c605cebad2e8d.js",
+      "static/chunks/23-cb1deaa457b85abb.js",
       "static/chunks/main-app-3d2c49b816702d66.js",
-      "static/chunks/app/_not-found/page-94c683a891433c6f.js"
+      "static/chunks/app/_not-found/page-a13250d2f63318ba.js"
     ],
     "/layout": [
       "static/chunks/webpack-91b2d14d0f678b80.js",
-      "static/chunks/fd9d1056-62aaf4b921c84028.js",
-      "static/chunks/23-bf450310e51a83be.js",
+      "static/chunks/fd9d1056-1f4c605cebad2e8d.js",
+      "static/chunks/23-cb1deaa457b85abb.js",
       "static/chunks/main-app-3d2c49b816702d66.js",
       "static/css/3e44ec056df2464e.css",
       "static/chunks/app/layout-146d1763767a845d.js"
     ],
-    "/dashboard/analytics/page": [
-      "static/chunks/webpack-91b2d14d0f678b80.js",
-      "static/chunks/fd9d1056-62aaf4b921c84028.js",
-      "static/chunks/23-bf450310e51a83be.js",
-      "static/chunks/main-app-3d2c49b816702d66.js",
-      "static/chunks/app/dashboard/analytics/page-e60f25612f9623c0.js"
-    ],
-    "/dashboard/logs/page": [
-      "static/chunks/webpack-91b2d14d0f678b80.js",
-      "static/chunks/fd9d1056-62aaf4b921c84028.js",
-      "static/chunks/23-bf450310e51a83be.js",
-      "static/chunks/main-app-3d2c49b816702d66.js",
-      "static/chunks/app/dashboard/logs/page-12a225655eea5b4d.js"
-    ],
     "/dashboard/page": [
       "static/chunks/webpack-91b2d14d0f678b80.js",
-      "static/chunks/fd9d1056-62aaf4b921c84028.js",
-      "static/chunks/23-bf450310e51a83be.js",
+      "static/chunks/fd9d1056-1f4c605cebad2e8d.js",
+      "static/chunks/23-cb1deaa457b85abb.js",
       "static/chunks/main-app-3d2c49b816702d66.js",
-      "static/chunks/718-679c89ed18390c20.js",
-      "static/chunks/app/dashboard/page-84cf08a9aafcfb1e.js"
+      "static/chunks/app/dashboard/page-f153adc32ebf9f53.js"
     ],
-    "/dashboard/plans/page": [
+    "/dashboard/analytics/page": [
       "static/chunks/webpack-91b2d14d0f678b80.js",
-      "static/chunks/fd9d1056-62aaf4b921c84028.js",
-      "static/chunks/23-bf450310e51a83be.js",
+      "static/chunks/fd9d1056-1f4c605cebad2e8d.js",
+      "static/chunks/23-cb1deaa457b85abb.js",
       "static/chunks/main-app-3d2c49b816702d66.js",
-      "static/chunks/app/dashboard/plans/page-5c587c7c17093822.js"
+      "static/chunks/app/dashboard/analytics/page-fa02253a6e7aeefd.js"
     ],
     "/dashboard/users/page": [
       "static/chunks/webpack-91b2d14d0f678b80.js",
-      "static/chunks/fd9d1056-62aaf4b921c84028.js",
-      "static/chunks/23-bf450310e51a83be.js",
+      "static/chunks/fd9d1056-1f4c605cebad2e8d.js",
+      "static/chunks/23-cb1deaa457b85abb.js",
       "static/chunks/main-app-3d2c49b816702d66.js",
-      "static/chunks/app/dashboard/users/page-4b08658e9ad8ed9b.js"
+      "static/chunks/app/dashboard/users/page-58b1f22b88418a96.js"
     ],
     "/page": [
       "static/chunks/webpack-91b2d14d0f678b80.js",
-      "static/chunks/fd9d1056-62aaf4b921c84028.js",
-      "static/chunks/23-bf450310e51a83be.js",
+      "static/chunks/fd9d1056-1f4c605cebad2e8d.js",
+      "static/chunks/23-cb1deaa457b85abb.js",
       "static/chunks/main-app-3d2c49b816702d66.js",
-      "static/chunks/app/page-3837315aade789bb.js"
+      "static/chunks/app/page-eb26089f28cf8ce9.js"
+    ],
+    "/dashboard/plans/page": [
+      "static/chunks/webpack-91b2d14d0f678b80.js",
+      "static/chunks/fd9d1056-1f4c605cebad2e8d.js",
+      "static/chunks/23-cb1deaa457b85abb.js",
+      "static/chunks/main-app-3d2c49b816702d66.js",
+      "static/chunks/app/dashboard/plans/page-29947ad4efa7cb1c.js"
+    ],
+    "/dashboard/logs/page": [
+      "static/chunks/webpack-91b2d14d0f678b80.js",
+      "static/chunks/fd9d1056-1f4c605cebad2e8d.js",
+      "static/chunks/23-cb1deaa457b85abb.js",
+      "static/chunks/main-app-3d2c49b816702d66.js",
+      "static/chunks/app/dashboard/logs/page-59d6f9c065c8e12d.js"
     ]
   }
 }

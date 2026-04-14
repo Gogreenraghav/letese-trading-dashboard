@@ -1,7 +1,23 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api } from '../lib/api';
+
+const API = process.env.NEXT_PUBLIC_API_URL || '';
+
+async function callApi(endpoint, options = {}) {
+  const token = localStorage.getItem('saas_token');
+  const res = await fetch(`${API}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,17 +31,17 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      const data = await api('/api/v1/auth/login', {
+      const data = await callApi('/api/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
-      if (data.role !== 'super_admin' && data.role !== 'admin') {
+      if (!data.user?.is_admin) {
         setError('Access denied. Admin only.');
         setLoading(false);
         return;
       }
-      localStorage.setItem('saas_token', data.access_token);
-      localStorage.setItem('saas_user', JSON.stringify(data));
+      localStorage.setItem('saas_token', data.token);
+      localStorage.setItem('saas_user', JSON.stringify(data.user));
       router.push('/dashboard');
     } catch (err) {
       setError(err.message || 'Login failed');
@@ -34,41 +50,42 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f172a' }}>
-      <div style={{ background: '#1e293b', borderRadius: 16, padding: 40, width: '100%', maxWidth: 420, border: '1px solid #334155' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0e1a', fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ background: '#111827', borderRadius: 20, padding: 40, width: '100%', maxWidth: 440, border: '1px solid #1f2937', boxShadow: '0 25px 60px rgba(0,0,0,0.5)' }}>
+        {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ fontSize: 32, marginBottom: 8 }}>📊</div>
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#fff' }}>NSE-BSE Trading</h1>
-          <p style={{ color: '#94a3b8', marginTop: 4 }}>Super Admin Portal</p>
+          <div style={{ fontSize: 36, marginBottom: 8 }}>📊</div>
+          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#fff', marginBottom: 4 }}>NSE-BSE Trading</h1>
+          <p style={{ color: '#6b7280', fontSize: 14 }}>Super Admin Portal</p>
         </div>
 
         <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', color: '#94a3b8', fontSize: 13, marginBottom: 6 }}>Email</label>
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ display: 'block', color: '#9ca3af', fontSize: 13, marginBottom: 8, fontWeight: 500 }}>Email Address</label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="admin@trading.com"
+              placeholder="admin@nsebse.com"
               required
-              style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #334155', background: '#0f172a', color: '#fff', fontSize: 14, boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1px solid #374151', background: '#0d1117', color: '#fff', fontSize: 14, boxSizing: 'border-box', outline: 'none' }}
             />
           </div>
 
-          <div style={{ marginBottom: 24 }}>
-            <label style={{ display: 'block', color: '#94a3b8', fontSize: 13, marginBottom: 6 }}>Password</label>
+          <div style={{ marginBottom: 28 }}>
+            <label style={{ display: 'block', color: '#9ca3af', fontSize: 13, marginBottom: 8, fontWeight: 500 }}>Password</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #334155', background: '#0f172a', color: '#fff', fontSize: 14, boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1px solid #374151', background: '#0d1117', color: '#fff', fontSize: 14, boxSizing: 'border-box', outline: 'none' }}
             />
           </div>
 
           {error && (
-            <div style={{ background: '#7f1d1d', border: '1px solid #b91c1c', borderRadius: 8, padding: '10px 14px', color: '#fca5a5', fontSize: 13, marginBottom: 16 }}>
+            <div style={{ background: '#7f1d1d', border: '1px solid #b91c1c', borderRadius: 10, padding: '12px 14px', color: '#fca5a5', fontSize: 13, marginBottom: 20 }}>
               {error}
             </div>
           )}
@@ -76,14 +93,19 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            style={{ width: '100%', padding: '12px', borderRadius: 8, border: 'none', background: loading ? '#1d4ed8' : '#2563eb', color: '#fff', fontSize: 15, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer' }}
+            style={{
+              width: '100%', padding: '13px', borderRadius: 10, border: 'none',
+              background: loading ? '#1d4ed8' : '#2563eb', color: '#fff',
+              fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'background 0.2s',
+            }}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Signing in...' : 'Sign In →'}
           </button>
         </form>
 
-        <div style={{ marginTop: 20, textAlign: 'center', color: '#475569', fontSize: 12 }}>
-          Demo: admin@trading.com / Admin@123
+        <div style={{ marginTop: 24, textAlign: 'center', color: '#4b5563', fontSize: 12 }}>
+          Demo: admin@nsebse.com / Admin@123
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://139.59.65.82/saas';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 export async function api(endpoint, options = {}) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('saas_token') : null;
