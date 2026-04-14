@@ -206,3 +206,44 @@ export interface VendorUpdateResponse {
   verification_status?: string;
   latency_ms?: number;
 }
+
+// ── Wallet Admin ────────────────────────────────────────────────────
+export interface AdminTopupRequest {
+  request_id: string;
+  tenant_id: string;
+  requested_by_user_id: string;
+  requested_by_name: string | null;
+  amount_inr: string;
+  payment_method: string;
+  transaction_ref: string | null;
+  remarks: string | null;
+  status: "pending" | "approved" | "rejected" | "cancelled";
+  admin_notes: string | null;
+  approved_by_user_id: string | null;
+  approved_at: string | null;
+  created_at: string;
+}
+
+export interface AdminTopupList {
+  items: AdminTopupRequest[];
+  total: number;
+  pending_count: number;
+}
+
+export const walletAdminApi = {
+  listTopups: (statusFilter?: string): Promise<AdminTopupList> =>
+    request<AdminTopupList>(
+      "GET",
+      statusFilter ? `/api/v1/wallet/admin/topup?status_filter=${statusFilter}` : "/api/v1/wallet/admin/topup"
+    ),
+
+  approveTopup: (requestId: string, adminNotes?: string): Promise<AdminTopupRequest> =>
+    request<AdminTopupRequest>("POST", `/api/v1/wallet/admin/topup/${requestId}/approve`, {
+      admin_notes: adminNotes || undefined,
+    }),
+
+  rejectTopup: (requestId: string, adminNotes?: string): Promise<AdminTopupRequest> =>
+    request<AdminTopupRequest>("POST", `/api/v1/wallet/admin/topup/${requestId}/reject`, {
+      admin_notes: adminNotes || undefined,
+    }),
+};

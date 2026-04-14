@@ -4,6 +4,7 @@ import AdminShell from "@/components/AdminShell";
 import PlanCard from "@/components/PlanCard";
 import BillingForm from "@/components/BillingForm";
 import InvoiceTable from "@/components/InvoiceTable";
+import WalletSection from "@/components/WalletSection";
 import { billingApi, Invoice } from "@/lib/api";
 import { CreditCard } from "lucide-react";
 
@@ -130,6 +131,9 @@ export default function BillingPage() {
             </div>
           </div>
         )}
+
+        {/* Wallet / Top-up */}
+        <WalletSection />
 
         {/* Invoice history */}
         <div>

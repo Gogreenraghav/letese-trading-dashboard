@@ -312,3 +312,50 @@ class CommunicationSchedule(Base):
         Index("idx_comm_schedule_case", "case_id"),
         Index("idx_comm_schedule_pending", "scheduled_at", postgresql_where=text("sent = FALSE AND deleted_at IS NULL")),
     )
+
+
+# ── WALLET MODELS ────────────────────────────────────────────────────────────
+
+class Wallet(Base):
+    __tablename__ = "wallets"
+
+    wallet_id        = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id        = Column(UUID(as_uuid=True), ForeignKey("tenants.tenant_id", ondelete="CASCADE"), unique=True, nullable=False)
+    balance_inr      = Column(Numeric(12, 2), nullable=False, default=0.00)
+    total_loaded_inr = Column(Numeric(12, 2), nullable=False, default=0.00)
+    created_at       = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at       = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class WalletTopupRequest(Base):
+    __tablename__ = "wallet_topup_requests"
+
+    request_id          = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id           = Column(UUID(as_uuid=True), ForeignKey("tenants.tenant_id", ondelete="CASCADE"), nullable=False)
+    requested_by_user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), nullable=False)
+    amount_inr          = Column(Numeric(12, 2), nullable=False)
+    payment_method      = Column(String(30), nullable=False)
+    transaction_ref     = Column(String(200))
+    remarks             = Column(Text)
+    status              = Column(String(20), nullable=False, default="pending")
+    admin_notes         = Column(Text)
+    approved_by_user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"))
+    approved_at         = Column(DateTime(timezone=True))
+    created_at          = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at          = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class WalletTransaction(Base):
+    __tablename__ = "wallet_transactions"
+
+    transaction_id      = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id           = Column(UUID(as_uuid=True), ForeignKey("tenants.tenant_id", ondelete="CASCADE"), nullable=False)
+    amount_inr          = Column(Numeric(12, 2), nullable=False)
+    type                = Column(String(20), nullable=False)  # credit | debit
+    source              = Column(String(30), nullable=False)  # topup | purchase | refund | correction | ai_draft | whatsapp | storage
+    reference_id        = Column(UUID(as_uuid=True))
+    reference_type      = Column(String(50))
+    description         = Column(Text)
+    balance_before_inr = Column(Numeric(12, 2), nullable=False)
+    balance_after_inr  = Column(Numeric(12, 2), nullable=False)
+    created_at          = Column(DateTime(timezone=True), nullable=False, server_default=func.now())

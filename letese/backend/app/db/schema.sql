@@ -357,3 +357,77 @@ BEGIN
              FOR EACH ROW EXECUTE FUNCTION update_updated_at()', t);
     END LOOP;
 END $$;
+
+-- ── WALLETS ─────────────────────────────────────────────────────
+CREATE TABLE wallets (
+    wallet_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id       UUID NOT NULL UNIQUE REFERENCES tenants(tenant_id) ON DELETE CASCADE,
+    balance_inr     DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    total_loaded_inr DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE wallet_topup_requests (
+    request_id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id           UUID NOT NULL REFERENCES tenants(tenant_id) ON DELETE CASCADE,
+    requested_by_user_id UUID NOT NULL REFERENCES users(user_id),
+    amount_inr          DECIMAL(12,2) NOT NULL CHECK (amount_inr > 0),
+    payment_method      VARCHAR(30) NOT NULL
+        CHECK (payment_method IN ('cash','upi','bank_transfer','cheque','other')),
+    transaction_ref     VARCHAR(200),
+    remarks             TEXT,
+    status              VARCHAR(20) NOT NULL DEFAULT 'pending'
+        CHECK (status IN ('pending','approved','rejected','cancelled')),
+    admin_notes         TEXT,
+    approved_by_user_id UUID REFERENCES users(user_id),
+    approved_at         TIMESTAMPTZ,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE wallet_transactions (
+    transaction_id     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id          UUID NOT NULL REFERENCES tenants(tenant_id) ON DELETE CASCADE,
+    amount_inr         DECIMAL(12,2) NOT NULL,
+    type               VARCHAR(20) NOT NULL
+        CHECK (type IN ('credit','debit')),
+    source             VARCHAR(30) NOT NULL
+        CHECK (source IN ('topup','purchase','refund','correction','ai_draft','whatsapp','storage')),
+    reference_id       UUID,
+    reference_type     VARCHAR(50),
+    description        TEXT,
+    balance_before_inr DECIMAL(12,2) NOT NULL,
+    balance_after_inr  DECIMAL(12,2) NOT NULL,
+    created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE wallets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE wallet_topup_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE wallet_transactions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY tenant_iso_wallets ON wallets
+    USING (tenant_id = current_setting('app.current_tenant_id', true)::UUID);
+CREATE POLICY tenant_iso_topup_req ON wallet_topup_requests
+    USING (tenant_id = current_setting('app.current_tenant_id', true)::UUID);
+CREATE POLICY tenant_iso_wallet_txn ON wallet_transactions
+    USING (tenant_id = current_setting('app.current_tenant_id', true)::UUID);
+
+CREATE POLICY super_admin_rw_wallets ON wallets
+    USING (current_setting('app.role', true) = 'super_admin')
+    WITH CHECK (current_setting('app.role', true) = 'super_admin');
+CREATE POLICY super_admin_rw_topup_req ON wallet_topup_requests
+    USING (current_setting('app.role', true) = 'super_admin')
+    WITH CHECK (current_setting('app.role', true) = 'super_admin');
+CREATE POLICY super_admin_rw_wallet_txn ON wallet_transactions
+    USING (current_setting('app.role', true) = 'super_admin')
+    WITH CHECK (current_setting('app.role', true) = 'super_admin');
+
+CREATE TRIGGER trg_wallet_updated_at BEFORE UPDATE ON wallets
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER trg_topup_updated_at BEFORE UPDATE ON wallet_topup_requests
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+CREATE INDEX idx_topup_tenant ON wallet_topup_requests(tenant_id, created_at DESC);
+CREATE INDEX idx_topup_status  ON wallet_topup_requests(status, created_at DESC);
+CREATE INDEX idx_wtxn_tenant   ON wallet_transactions(tenant_id, created_at DESC);

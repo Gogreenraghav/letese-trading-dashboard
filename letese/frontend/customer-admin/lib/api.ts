@@ -200,3 +200,63 @@ export const settingsApi = {
   exportData: () =>
     `${API_BASE}/api/v1/admin/export`,
 };
+
+// ── Wallet / Topup ───────────────────────────────────────────────────
+export interface Wallet {
+  wallet_id: string;
+  tenant_id: string;
+  balance_inr: string;
+  total_loaded_inr: string;
+}
+
+export interface TopupRequest {
+  request_id: string;
+  tenant_id: string;
+  requested_by_user_id: string;
+  requested_by_name: string | null;
+  amount_inr: string;
+  payment_method: string;
+  transaction_ref: string | null;
+  remarks: string | null;
+  status: "pending" | "approved" | "rejected" | "cancelled";
+  admin_notes: string | null;
+  approved_by_user_id: string | null;
+  approved_at: string | null;
+  created_at: string;
+}
+
+export interface WalletTransaction {
+  transaction_id: string;
+  tenant_id: string;
+  amount_inr: string;
+  type: "credit" | "debit";
+  source: string;
+  reference_id: string | null;
+  reference_type: string | null;
+  description: string | null;
+  balance_before_inr: string;
+  balance_after_inr: string;
+  created_at: string;
+}
+
+export const walletApi = {
+  getWallet: (): Promise<Wallet> =>
+    apiRequest<Wallet>("/api/v1/wallet/me"),
+
+  getMyTopups: (): Promise<TopupRequest[]> =>
+    apiRequest<TopupRequest[]>("/api/v1/wallet/topup/me"),
+
+  requestTopup: (data: {
+    amount_inr: number;
+    payment_method: string;
+    transaction_ref?: string;
+    remarks?: string;
+  }): Promise<TopupRequest> =>
+    apiRequest<TopupRequest>("/api/v1/wallet/topup/request", {
+      method: "POST",
+      body: data,
+    }),
+
+  getTransactions: (limit = 50): Promise<WalletTransaction[]> =>
+    apiRequest<WalletTransaction[]>("/api/v1/wallet/transactions/me"),
+};
