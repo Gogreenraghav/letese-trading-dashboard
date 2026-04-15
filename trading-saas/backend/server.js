@@ -27,6 +27,7 @@ app.use('/api/broker', require('./routes/broker'));
 app.use('/api/trades', require('./routes/trades'));
 app.use('/api/plans', require('./routes/plans'));
 app.use('/api/payments', require('./routes/payments'));
+app.use('/api/analytics', require('./routes/analytics'));
 
 // ── Health ───────────────────────────────────────────────────────
 // Root endpoint — info page
