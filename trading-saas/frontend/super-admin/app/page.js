@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-const API = process.env.NEXT_PUBLIC_API_URL || '';
+const API = 'http://139.59.65.82:3021';
 
 async function callApi(endpoint, options = {}) {
   const token = localStorage.getItem('saas_token');

@@ -153,6 +153,20 @@ router.get('/users/:id', async (req, res) => {
   }
 });
 
+// ── GET /api/admin/users/email/:email ────────────────────────────
+router.get('/users/email/:email', async (req, res) => {
+  try {
+    const user = await db.query(
+      'SELECT id, email, full_name, plan, is_admin, is_active, created_at FROM users WHERE email = $1',
+      [req.params.email]
+    );
+    if (!user.rows[0]) return res.status(404).json({ error: 'User not found' });
+    res.json({ user: user.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to find user' });
+  }
+});
+
 // ── PUT /api/admin/users/:id/plan ────────────────────────────────
 router.put('/users/:id/plan', [
   body('plan').isIn(['free', 'basic', 'pro', 'enterprise']),

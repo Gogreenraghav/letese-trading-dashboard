@@ -16,3 +16,6 @@ venv/
 .env
 node_modules/
 dist/
+.next/
+landing/.next/
+build/

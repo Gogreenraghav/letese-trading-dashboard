@@ -28,6 +28,8 @@ app.use('/api/trades', require('./routes/trades'));
 app.use('/api/plans', require('./routes/plans'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/analytics', require('./routes/analytics'));
+app.use('/api/admin/brokers', require('./routes/adminBroker'));
+app.use('/api/admin/reseller', require('./routes/adminReseller'));
 
 // ── Health ───────────────────────────────────────────────────────
 // Root endpoint — info page

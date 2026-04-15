@@ -1,9 +1,14 @@
-const API = process.env.NEXT_PUBLIC_API_URL || 'https://139.59.65.82/saas';
+// Direct SaaS backend — no nginx proxy needed
+const API = 'http://139.59.65.82:3021';
 
 export async function api(endpoint, options = {}) {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('saas_token');
-    const headers = { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options.headers };
+    const token = localStorage.getItem('user_token');
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    };
     const res = await fetch(`${API}${endpoint}`, { ...options, headers });
     if (!res.ok) {
       const err = await res.json().catch(() => ({ detail: 'Error' }));
