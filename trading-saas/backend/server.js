@@ -30,6 +30,7 @@ app.use('/api/payments', require('./routes/payments'));
 app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/admin/brokers', require('./routes/adminBroker'));
 app.use('/api/admin/reseller', require('./routes/adminReseller'));
+app.use('/api/admin/wallet', require('./routes/adminWallet'));
 
 // ── Health ───────────────────────────────────────────────────────
 // Root endpoint — info page

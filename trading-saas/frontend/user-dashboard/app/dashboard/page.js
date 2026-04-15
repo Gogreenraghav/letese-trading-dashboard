@@ -165,12 +165,13 @@ export default function DashboardPage() {
           </div>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: '8px 16px', textAlign: 'center' }}>
-              <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 2 }}>Credits</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: credits.balance < 10 ? '#f87171' : '#60a5fa' }}>{credits.balance}</div>
+              <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 2 }}>Balance</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: credits.balance < 10 ? '#f87171' : '#34d393', fontFamily: 'monospace' }}>₹{credits.balance}</div>
+              <div style={{ fontSize: 10, color: '#4b5563', marginTop: 2 }}>{credits.balance} credits</div>
             </div>
             <button onClick={() => router.push('/dashboard/credits')}
               style={{ background: '#1e40ff', border: 'none', borderRadius: 12, padding: '10px 20px', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-              🪙 Buy Credits
+              🪙 Top-Up
             </button>
           </div>
         </div>
