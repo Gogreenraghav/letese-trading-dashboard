@@ -79,11 +79,15 @@ router.post('/login', [
 
   try {
     const result = await db.query(
-      `SELECT id, email, phone, full_name, plan, is_admin, is_active,
-              razorpay_customer_id, subscription_status, subscription_end,
-              telegram_chat_id, max_stocks, max_strategies, live_trading,
-              password_hash, created_at
-       FROM users WHERE email = $1`,
+      `SELECT u.id, u.email, u.phone, u.full_name, u.plan, u.is_admin, u.is_active,
+              u.razorpay_customer_id, u.subscription_status, u.subscription_end,
+              u.telegram_chat_id, u.max_stocks, u.max_strategies, u.live_trading,
+              u.password_hash, u.created_at,
+              p.plan_mode, p.auto_trade_enabled, p.max_trades_per_day,
+              p.features, p.limits
+       FROM users u
+       LEFT JOIN plans p ON p.name = u.plan
+       WHERE u.email = $1`,
       [email]
     );
 
@@ -108,9 +112,28 @@ router.post('/login', [
     // Remove password_hash from response
     delete user.password_hash;
 
+    // Add plan mode info to response
+    const features = Array.isArray(user.features) ? user.features : [];
+    const limits = typeof user.limits === 'object' ? user.limits : {};
+    const plan_info = {
+      plan_mode: user.plan_mode || 'signal_only',
+      auto_trade_enabled: user.auto_trade_enabled || false,
+      max_trades_per_day: user.max_trades_per_day || 0,
+      mode_label: user.plan_mode === 'signal_only' ? '📊 Signals Only'
+                : user.plan_mode === 'auto_trade' ? '🤖 Auto Trade'
+                : '📊 + 🤖 Both',
+    };
+
+    delete user.password_hash;
+    delete user.features;
+    delete user.limits;
+    delete user.plan_mode;
+    delete user.auto_trade_enabled;
+    delete user.max_trades_per_day;
+
     res.json({
       message: 'Login successful',
-      user,
+      user: { ...user, plan_info },
       token,
       refreshToken,
     });
