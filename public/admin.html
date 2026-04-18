@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="tb"><div class="tb-l"><div class="tb-logo">Zummp<span class="r">Trade</span></div><div class="tb-sub">Super Admin</div></div><div class="tb-r"><button class="tb-btn" id="themeBtn" title="Dark">&#127763;</button><button class="tb-btn" style="color:var(--r)" id="logoutBtn">&#128682; Logout</button></div></div><div class="mn"><div class="sb"><div class="sb-i ac" id="nav-overview" onclick="switchView('overview')">&#128202; Overview</div><div class="sb-i" id="nav-customers" onclick="switchView('customers')">&#128101; All Customers</div><div class="sb-i" id="nav-plans" onclick="switchView('plans')">&#128230; Plans</div><div class="sb-i" id="nav-trading" onclick="switchView('trading')">&#128640; Trading APIs</div><div class="sb-i" id="nav-news" onclick="switchView('news')">&#128240; News APIs</div><div class="sb-i" id="nav-notif" onclick="switchView('notif')">&#128241; Notifications</div><div class="sb-i" id="nav-reports" onclick="switchView('reports')">&#128200; Reports</div><div class="sb-i" id="nav-settings" onclick="switchView('settings')">&#9881; Settings</div></div><div class="mc"><div class="tab on" id="tab-overview"><div class="sh">&#128202; Platform Overview <button class="b bp" onclick="switchView('customers')" style="float:right;font-size:0.8rem;padding:4px 10px">View All Customers &rarr;</button></div><div class="al" id="ovAlert" style="display:none"></div><div class="skw" id="ovStats"></div><div class="sh" style="margin-top:24px">Recent Customers</div><div id="ovCusts"></div></div><div class="tab" id="tab-customers"><div class="sh">&#128101; All Customers <span class="m" id="custCount">(0)</span></div><div class="al" id="custAlert" style="display:none"></div><div class="ff"><input type="text" id="custSearch" placeholder="Search name or email..." oninput="loadAllCustomers()"><select id="custPlanFilter" onchange="loadAllCustomers()"><option value="">All Plans</option><option value="signal_basic">Signal Basic</option><option value="signal_pro">Signal Pro</option><option value="signal_enterprise">Signal Enterprise</option><option value="algo_basic">Algo Basic</option><option value="algo_pro">Algo Pro</option><option value="algo_enterprise">Algo Enterprise</option></select><select id="custStatusFilter" onchange="loadAllCustomers()"><option value="">All Status</option><option value="active">Active</option><option value="suspended">Suspended</option></select></div><div id="custList"></div></div><div class="tab" id="tab-plans"><div class="sh">&#128230; Subscription Plans</div><div class="al" id="planAlert" style="display:none"></div><div class="bx" style="margin-bottom:16px"><input type="text" id="planName" placeholder="Plan Name"><input type="text" id="planSlug" placeholder="slug_name"><input type="number" id="planPrice" placeholder="Price USDT" style="width:140px"><input type="text" id="planFeatures" placeholder='{"signals":999}' style="flex:2"><button class="b bp" onclick="addPackage()">+ Add Plan</button></div><div id="planList"></div></div><div class="tab" id="tab-trading"><div class="sh">&#128640; Trading APIs</div><div class="al" id="tapiAlert" style="display:none"></div><div class="bx" style="margin-bottom:16px"><input type="text" id="tapiName" placeholder="API Name"><select id="tapiType"><option value="binance">Binance</option><option value="bybit">Bybit</option><option value="okx">OKX</option><option value="coinDCX">CoinDCX</option></select><input type="text" id="tapiUrl" placeholder="Base URL"><input type="number" id="tapiPriority" value="1" style="width:80px"><button class="b bp" onclick="addTradingAPI()">+ Add API</button></div><div class="bx" style="margin-bottom:16px"><input type="text" id="tapiKey" placeholder="API Key"><input type="password" id="tapiSecret" placeholder="API Secret"></div><div id="tapiList"></div></div><div class="tab" id="tab-news"><div class="sh">&#128240; News APIs</div><div class="al" id="napiAlert" style="display:none"></div><div class="bx" style="margin-bottom:16px"><input type="text" id="napiName" placeholder="Source Name"><select id="napiType"><option value="newsapi">NewsAPI</option><option value="coingecko">CoinGecko</option><option value="cryptopanic">CryptoPanic</option><option value="custom">Custom</option></select><input type="text" id="napiUrl" placeholder="Base URL"><input type="text" id="napiKey" placeholder="API Key (optional)"><button class="b bp" onclick="addNewsAPI()">+ Add</button></div><div id="napiList"></div></div><div class="tab" id="tab-notif"><div class="sh">&#128241; Notification Channels</div><div class="al" id="notifAlert" style="display:none"></div><div class="bx" style="margin-bottom:16px"><input type="text" id="notifName" placeholder="Channel Name"><select id="notifType"><option value="telegram">Telegram</option><option value="whatsapp">WhatsApp</option><option value="email">Email</option><option value="discord">Discord</option><option value="slack">Slack</option></select><input type="text" id="notifConfig" placeholder='{"token":"...","chat_id":"..."}' style="flex:2"><button class="b bp" onclick="addNotificationAPI()">+ Add</button></div><div id="notifList"></div></div><div class="tab" id="tab-reports"><div class="sh">&#128200; Trading Reports</div><div class="al" id="reportAlert" style="display:none"></div><div class="skw" id="reportStats"></div><div id="tradesList" style="margin-top:16px"></div></div><div class="tab" id="tab-settings"><div class="sh">&#9881; Settings</div><div class="al" id="setAlertS" style="display:none"></div><div class="sc"><div class="sc-t">Crypto Wallets</div><div class="sf"><label>USDT (TRC-20)</label><input type="text" id="wUsdt" placeholder="TRC-20 address"></div><div class="sf"><label>Bitcoin (BTC)</label><input type="text" id="wBtc" placeholder="BTC address"></div><div class="sf"><label>Ethereum (ETH)</label><input type="text" id="wEth" placeholder="ETH address"></div><button class="b bp" onclick="saveWallets()">Save Wallets</button></div><div class="sc" style="margin-top:24px"><div class="sc-t">Email / SMTP</div><div class="sf"><label>SMTP Host</label><input type="text" id="smtpHost" placeholder="smtp.gmail.com"></div><div class="sf"><label>Port</label><input type="number" id="smtpPort" value="587" style="width:100px"></div><div class="sf"><label>Username</label><input type="text" id="smtpUser" placeholder="your@email.com"></div><div class="sf"><label>Password</label><input type="password" id="smtpPass" placeholder="App password"></div><button class="b bp" onclick="saveSMTP()">Save SMTP</button></div></div></div></div><div id="custModal"><div class="md"><div class="mh">&#128101; Customer Details <button class="mcx" onclick="closeModal()">&#10005;</button></div><div class="mb" id="modalBody"></div></div></div>
-<script>
+<script>window.ADMIN_VER="18";
 var API = "/api";
 (function () {
   var tok = localStorage.getItem("tiwari_token") || localStorage.getItem("token");
@@ -90,6 +90,7 @@ function api(url, opts) {
 }
 
 function switchView(name) {
+  console.log("switchView called:", name);
   var allTabs = document.querySelectorAll(".tab");
   for (var i = 0; i < allTabs.length; i++) {
     allTabs[i].style.display = "none";
@@ -116,8 +117,7 @@ function switchView(name) {
     "reports": loadReports,
     "settings": loadSettings
   };
-  var fn = fns[name];
-  if (typeof fn === "function") fn();
+  if (fns[name]) fns[name]();
 }
 
 function closeModal() {
@@ -410,13 +410,7 @@ function saveSMTP() {
 
 
 function updateNotif(id) {
-  var ch = prompt("Select signal delivery channel:
-1 = Telegram
-2 = WhatsApp
-3 = Email
-4 = Discord
-
-Enter number (1-4):", "1");
+  var ch = prompt("Signal channel:\n1 = Telegram\n2 = WhatsApp\n3 = Email\n4 = Discord\n\nEnter number (1-4):", "1");
   var chMap = { "1": "telegram", "2": "whatsapp", "3": "email", "4": "discord" };
   var channel = chMap[ch];
   if (!channel) { showA("custAlert", "Invalid selection"); return; }
