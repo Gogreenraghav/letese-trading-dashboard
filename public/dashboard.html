@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — ZummpTrade</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117; --surface: #161b22; --surface2: #1c2128;
+      --border: #30363d; --primary: #58a6ff; --primary-hover: #79b8ff;
+      --accent-green: #3fb950; --accent-red: #f85149;
+      --text: #e6edf3; --text-muted: #8b949e;
+      --sidebar-w: 250px; --header-h: 56px;
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc; --surface: #ffffff; --surface2: #f1f5f9;
+      --border: #e2e8f0; --primary: #1d4ed8; --primary-hover: #2563eb;
+      --accent-green: #16a34a; --accent-red: #dc2626;
+      --text: #0f172a; --text-muted: #64748b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+    a { color: var(--primary); text-decoration: none; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border);
+      position: fixed; top: 0; left: 0; height: 100vh; display: flex; flex-direction: column;
+      z-index: 50; transition: transform 0.2s;
+    }
+    .sidebar-logo {
+      padding: 20px 20px 16px; border-bottom: 1px solid var(--border);
+      font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 6px;
+    }
+    .sidebar-logo span { color: var(--primary); }
+    .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 20px; color: var(--text-muted); font-size: 0.88rem; font-weight: 500;
+      cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent;
+    }
+    .nav-item:hover { color: var(--text); background: var(--surface2); }
+    .nav-item.active { color: var(--primary); background: rgba(88,166,255,0.08); border-left-color: var(--primary); }
+    .nav-item .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+    .nav-section { padding: 8px 20px 4px; font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 12px; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); }
+    .user-info { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #fff; }
+    .user-name { font-size: 0.85rem; font-weight: 600; }
+    .user-plan { font-size: 0.72rem; color: var(--primary); background: rgba(88,166,255,0.1); padding: 2px 8px; border-radius: 4px; display: inline-block; }
+    .logout-btn { width: 100%; padding: 9px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text-muted); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .logout-btn:hover { border-color: var(--accent-red); color: var(--accent-red); }
+
+    /* Main */
+    .main {
+      margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh;
+    }
+    .topbar {
+      height: var(--header-h); background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+      position: sticky; top: 0; z-index: 40;
+    }
+    .topbar-title { font-size: 1rem; font-weight: 700; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .theme-toggle { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 11px; cursor: pointer; font-size: 1rem; color: var(--text); transition: all 0.2s; }
+    .theme-toggle:hover { transform: scale(1.05); }
+    .content { padding: 24px; flex: 1; }
+
+    /* Views */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* Stat cards */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px; transition: all 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .stat-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .stat-value { font-size: 1.6rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+    .stat-value.green { color: var(--accent-green); }
+    .stat-value.red { color: var(--accent-red); }
+    .stat-change { font-size: 0.75rem; margin-top: 4px; color: var(--accent-green); }
+
+    /* Section card */
+    .section-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px; margin-bottom: 20px;
+    }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .section-title { font-size: 0.95rem; font-weight: 700; }
+    .section-link { font-size: 0.8rem; color: var(--primary); }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 10px 12px; color: var(--text-muted); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
+    td { padding: 11px 12px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface2); }
+    .badge { padding: 3px 9px; border-radius: 5px; font-size: 0.72rem; font-weight: 700; }
+    .badge.buy { background: rgba(63,185,80,0.12); color: var(--accent-green); }
+    .badge.sell { background: rgba(248,81,73,0.12); color: var(--accent-red); }
+    .badge.active { background: rgba(63,185,80,0.12); color: var(--accent-green); }
+    .badge.pending { background: rgba(240,192,64,0.12); color: #f0c040; }
+    .badge.basic { background: rgba(88,166,255,0.12); color: var(--primary); }
+    .badge.pro { background: rgba(63,185,80,0.12); color: var(--accent-green); }
+    .badge.enterprise { background: rgba(200,100,255,0.12); color: #c864ff; }
+
+    /* Filters */
+    .filters { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+    .filter-select, .filter-input {
+      padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-size: 0.85rem; font-family: inherit; outline: none;
+    }
+    .filter-select:focus, .filter-input:focus { border-color: var(--primary); }
+
+    /* Auto-trade */
+    .auto-trade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .setting-group { margin-bottom: 20px; }
+    .setting-label { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .setting-label span { color: var(--primary); font-family: 'JetBrains Mono', monospace; }
+    .toggle-switch { display: flex; align-items: center; gap: 12px; }
+    .toggle { width: 52px; height: 28px; background: var(--border); border-radius: 14px; position: relative; cursor: pointer; transition: background 0.2s; }
+    .toggle.on { background: var(--accent-green); }
+    .toggle::after { content: ''; width: 22px; height: 22px; background: #fff; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: transform 0.2s; }
+    .toggle.on::after { transform: translateX(24px); }
+    .slider-container { padding: 16px 0; }
+    .slider-labels { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .slider-labels span { font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: all 0.15s; }
+    .slider-labels span.active { background: var(--primary); color: #fff; }
+    input[type="range"] { width: 100%; accent-color: var(--primary); }
+    .btn { padding: 11px 24px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-success { background: var(--accent-green); color: #fff; }
+    .btn-success:hover { filter: brightness(1.1); }
+    .btn-danger { background: var(--accent-red); color: #fff; }
+
+    /* Chart canvas */
+    #portfolioChart { width: 100%; height: 200px; }
+
+    /* API key form */
+    .api-form { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-size: 0.88rem; font-family: inherit; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-muted); }
+
+    /* Alert */
+    .alert { padding: 12px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 14px; display: none; }
+    .alert.error { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.3); color: var(--accent-red); }
+    .alert.success { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); color: var(--accent-green); }
+
+    /* Profile card */
+    .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .auto-trade-grid { grid-template-columns: 1fr; }
+      .profile-grid { grid-template-columns: 1fr; }
+      :root { --sidebar-w: 0px; }
+      .sidebar { transform: translateX(-250px); }
+      .sidebar.open { transform: translateX(0); }
+    }
+    .mobile-menu { display: none; }
+    @media (max-width: 900px) { .mobile-menu { display: flex; align-items: center; gap: 8px; font-size: 1.2rem; cursor: pointer; } }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Zummp<span>Trade</span> ⚡</div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Menu</div>
+      <div class="nav-item active" data-view="dashboard"><span class="icon">📊</span> Dashboard</div>
+      <div class="nav-item" data-view="signals"><span class="icon">📡</span> Signals</div>
+      <div class="nav-item" data-view="autotrade"><span class="icon">🤖</span> Auto-Trade</div>
+      <div class="nav-item" data-view="portfolio"><span class="icon">💼</span> Portfolio</div>
+      <div class="nav-item" data-view="reports"><span class="icon">📈</span> Reports</div>
+      <div class="nav-section">Account</div>
+      <div class="nav-item" data-view="settings"><span class="icon">⚙️</span> Settings</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div>
+          <div class="user-name" id="userName">User</div>
+          <span class="user-plan" id="userPlan">basic</span>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="mobile-menu" onclick="toggleSidebar()">☰</div>
+        <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- Dashboard View -->
+      <div class="view active" id="view-dashboard">
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card"><div class="stat-label">Total Balance</div><div class="stat-value" id="statBalance">$0.00</div></div>
+          <div class="stat-card"><div class="stat-label">Today's P&L</div><div class="stat-value green" id="statPnl">$0.00</div></div>
+          <div class="stat-card"><div class="stat-label">Active Signals</div><div class="stat-value" id="statSignals">0</div></div>
+          <div class="stat-card"><div class="stat-label">Win Rate</div><div class="stat-value green" id="statWinRate">0%</div></div>
+        </div>
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">📡 Recent Signals</span>
+            <span class="section-link" onclick="switchView('signals')">View All →</span>
+          </div>
+          <table>
+            <thead><tr><th>Symbol</th><th>Direction</th><th>Confidence</th><th>Exchange</th><th>Time</th><th>Status</th></tr></thead>
+            <tbody id="signalsTable"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">Loading signals...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">📋 Recent Trades</span>
+            <span class="section-link" onclick="switchView('reports')">View All →</span>
+          </div>
+          <table>
+            <thead><tr><th>Symbol</th><th>Side</th><th>Qty</th><th>Price</th><th>P&L</th><th>Time</th></tr></thead>
+            <tbody id="tradesTable"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">Loading trades...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Signals View -->
+      <div class="view" id="view-signals">
+        <div class="section-card">
+          <div class="section-header"><span class="section-title">📡 Signal Feed</span></div>
+          <div class="filters">
+            <select class="filter-select" id="signalExchange" onchange="loadSignals()">
+              <option value="">All Exchanges</option>
+              <option value="Binance">Binance</option>
+              <option value="Kraken">Kraken</option>
+            </select>
+            <select class="filter-select" id="signalDirection" onchange="loadSignals()">
+              <option value="">All Directions</option>
+              <option value="BUY">BUY</option>
+              <option value="SELL">SELL</option>
+            </select>
+          </div>
+          <table>
+            <thead><tr><th>Symbol</th><th>Direction</th><th>Confidence</th><th>Exchange</th><th>News%</th><th>Chart Score</th><th>Status</th><th>Time</th></tr></thead>
+            <tbody id="signalsFullTable"><tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Auto-Trade View -->
+      <div class="view" id="view-autotrade">
+        <div class="section-card">
+          <div class="section-header"><span class="section-title">🤖 Auto-Trade Settings</span></div>
+          <div class="alert" id="autoTradeAlert"></div>
+          <div class="auto-trade-grid">
+            <div>
+              <div class="setting-group">
+                <div class="setting-label">Auto-Trade Engine</div>
+                <div class="toggle-switch">
+                  <div class="toggle" id="autoToggle" onclick="toggleAutoTrade()"></div>
+                  <span id="autoToggleLabel" style="font-size:0.88rem;color:var(--text-muted);">OFF</span>
+                </div>
+              </div>
+              <div class="setting-group">
+                <div class="setting-label">Confidence Threshold</div>
+                <div class="slider-labels">
+                  <span onclick="setThreshold(60)">60%</span>
+                  <span onclick="setThreshold(70)">70%</span>
+                  <span onclick="setThreshold(80)">80%</span>
+                  <span onclick="setThreshold(90)">90%</span>
+                  <span onclick="setThreshold(95)">95%</span>
+                </div>
+                <input type="range" min="60" max="95" step="5" value="80" id="thresholdSlider" oninput="updateThresholdLabel()">
+                <div style="text-align:center;margin-top:8px;font-size:0.88rem;color:var(--primary);font-family:'JetBrains Mono',monospace;" id="thresholdValue">80%</div>
+              </div>
+              <div class="setting-group">
+                <div class="setting-label">Exchange</div>
+                <select class="filter-select" id="autoExchange" style="width:100%;">
+                  <option value="Binance">Binance</option>
+                  <option value="Kraken">Kraken</option>
+                  <option value="Both">Both</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <div class="setting-group">
+                <div class="setting-label">Trading Pair</div>
+                <input type="text" class="filter-input" id="tradingPair" placeholder="BTC/USDT" style="width:100%;">
+              </div>
+              <div class="setting-group">
+                <div class="setting-label">Position Size (USD)</div>
+                <input type="number" class="filter-input" id="positionSize" placeholder="100" style="width:100%;" min="1">
+              </div>
+              <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="saveAutoTrade()">Save Settings</button>
+            </div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-header"><span class="section-title">📋 Recent Auto-Trades</span></div>
+          <table>
+            <thead><tr><th>Symbol</th><th>Side</th><th>Qty</th><th>Price</th><th>P&L</th><th>Time</th></tr></thead>
+            <tbody id="autoTradesTable"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">No auto-trades yet</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Portfolio View -->
+      <div class="view" id="view-portfolio">
+        <div class="section-card">
+          <div class="section-header"><span class="section-title">💼 Holdings</span></div>
+          <table>
+            <thead><tr><th>Asset</th><th>Quantity</th><th>Entry Price</th><th>Current Price</th><th>P&L</th><th>P&L %</th></tr></thead>
+            <tbody id="holdingsTable">
+              <tr><td>BTC/USDT</td><td class="mono">0.0542</td><td class="mono">$62,400</td><td class="mono">$64,180</td><td class="mono" style="color:var(--accent-green)">+$96.47</td><td class="mono" style="color:var(--accent-green)">+2.85%</td></tr>
+              <tr><td>ETH/USDT</td><td class="mono">1.8200</td><td class="mono">$3,420</td><td class="mono">$3,510</td><td class="mono" style="color:var(--accent-green)">+$163.80</td><td class="mono" style="color:var(--accent-green)">+2.63%</td></tr>
+              <tr><td>SOL/USDT</td><td class="mono">15.5000</td><td class="mono">$142</td><td class="mono">$138</td><td class="mono" style="color:var(--accent-red)">-$62.00</td><td class="mono" style="color:var(--accent-red)">-2.82%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="section-card">
+          <div class="section-header"><span class="section-title">📈 Performance Chart</span></div>
+          <canvas id="portfolioChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Reports View -->
+      <div class="view" id="view-reports">
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">📈 Monthly P&L Report</span>
+            <button class="btn btn-outline" onclick="exportCSV()">Export CSV</button>
+          </div>
+          <table>
+            <thead><tr><th>Month</th><th>Trades</th><th>Wins</th><th>Losses</th><th>Win Rate</th><th>Net P&L</th></tr></thead>
+            <tbody id="reportsTable">
+              <tr><td class="mono">Apr 2025</td><td class="mono">48</td><td class="mono" style="color:var(--accent-green)">37</td><td class="mono" style="color:var(--accent-red)">11</td><td class="mono" style="color:var(--accent-green)">77%</td><td class="mono" style="color:var(--accent-green)">+$3,241</td></tr>
+              <tr><td class="mono">Mar 2025</td><td class="mono">62</td><td class="mono" style="color:var(--accent-green)">49</td><td class="mono" style="color:var(--accent-red)">13</td><td class="mono" style="color:var(--accent-green)">79%</td><td class="mono" style="color:var(--accent-green)">+$5,120</td></tr>
+              <tr><td class="mono">Feb 2025</td><td class="mono">55</td><td class="mono" style="color:var(--accent-green)">42</td><td class="mono" style="color:var(--accent-red)">13</td><td class="mono" style="color:var(--accent-green)">76%</td><td class="mono" style="color:var(--accent-green)">+$2,890</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="section-card">
+          <div class="section-header"><span class="section-title">📋 Full Trade History</span></div>
+          <div class="filters" style="margin-bottom:16px;">
+            <select class="filter-select" id="tradeSymbol" onchange="loadTrades()">
+              <option value="">All Symbols</option>
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="SOL">SOL</option>
+            </select>
+            <select class="filter-select" id="tradeSide" onchange="loadTrades()">
+              <option value="">All Sides</option>
+              <option value="BUY">BUY</option>
+              <option value="SELL">SELL</option>
+            </select>
+          </div>
+          <table>
+            <thead><tr><th>Symbol</th><th>Side</th><th>Qty</th><th>Price</th><th>Exchange</th><th>P&L</th><th>Time</th></tr></thead>
+            <tbody id="tradeHistoryTable"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Settings View -->
+      <div class="view" id="view-settings">
+        <div class="section-card">
+          <div class="section-header"><span class="section-title">🔑 Exchange API Keys</span></div>
+          <div class="alert" id="apiAlert"></div>
+          <div class="api-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Exchange</label>
+                <select id="apiExchange">
+                  <option value="binance">Binance</option>
+                  <option value="kraken">Kraken</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>API Key</label>
+                <input type="text" id="apiKey" placeholder="Your exchange API key">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>API Secret</label>
+              <input type="password" id="apiSecret" placeholder="Your exchange API secret">
+            </div>
+            <button class="btn btn-primary" onclick="saveApiKey()">Save API Key</button>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-header"><span class="section-title">👤 Profile Settings</span></div>
+          <div class="alert" id="profileAlert"></div>
+          <div class="profile-grid">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="profileName" placeholder="Your name">
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" id="profilePhone" placeholder="+91 98765 43210">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="profileEmail" readonly style="opacity:0.6;cursor:not-allowed;">
+          </div>
+          <button class="btn btn-primary" onclick="saveProfile()">Update Profile</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const API = '/api';
+let token = localStorage.getItem('token');
+let user = JSON.parse(localStorage.getItem('user') || 'null');
+
+if (!token) { window.location.href = '/login.html'; }
+
+// Theme
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.getElementById('themeToggle').textContent = next === 'light' ? '🌙' : '☀️';
+  drawPortfolioChart();
+}
+const savedTheme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', savedTheme);
+document.getElementById('themeToggle').textContent = savedTheme === 'light' ? '🌙' : '☀️';
+
+// Sidebar toggle
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Auth helper
+async function apiFetch(url, opts = {}) {
+  const res = await fetch(API + url, {
+    ...opts,
+    headers: { ...(opts.headers||{}), 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+  });
+  if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
+  return res.json();
+}
+
+// Logout
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/login.html';
+}
+
+// Init user
+if (user) {
+  document.getElementById('userName').textContent = user.name || user.email;
+  document.getElementById('userPlan').textContent = user.plan || 'basic';
+  document.getElementById('userAvatar').textContent = (user.name || user.email).charAt(0).toUpperCase();
+  if (user.email) document.getElementById('profileEmail').value = user.email;
+  if (user.name) document.getElementById('profileName').value = user.name;
+  if (user.phone) document.getElementById('profilePhone').value = user.phone;
+}
+
+// Navigation
+function switchView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const view = document.getElementById('view-' + name);
+  if (view) view.classList.add('active');
+  document.querySelector(`.nav-item[data-view="${name}"]`)?.classList.add('active');
+  document.getElementById('topbarTitle').textContent = {
+    dashboard:'Dashboard', signals:'Signals', autotrade:'Auto-Trade',
+    portfolio:'Portfolio', reports:'Reports', settings:'Settings'
+  }[name] || 'Dashboard';
+  if (name === 'portfolio') setTimeout(drawPortfolioChart, 50);
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const v = item.dataset.view;
+    if (v) { switchView(v); if (window.innerWidth <= 900) document.getElementById('sidebar').classList.remove('open'); }
+  });
+});
+
+// Load dashboard data
+async function loadDashboard() {
+  try {
+    const data = await apiFetch('/customer/dashboard');
+    // Stats
+    const s = data.stats || {};
+    document.getElementById('statBalance').textContent = '$' + (s.totalPnl >= 0 ? (24000 + s.totalPnl).toFixed(2) : (24000 + s.totalPnl).toFixed(2));
+    document.getElementById('statPnl').textContent = (s.totalPnl >= 0 ? '+' : '') + '$' + (s.totalPnl || 0).toFixed(2);
+    document.getElementById('statPnl').className = 'stat-value ' + (s.totalPnl >= 0 ? 'green' : 'red');
+    document.getElementById('statSignals').textContent = s.executedSignals || 0;
+    const winRate = s.totalTrades > 0 ? Math.round((s.wins / s.totalTrades) * 100) : 0;
+    document.getElementById('statWinRate').textContent = winRate + '%';
+
+    // Signals table
+    const tbodyS = document.getElementById('signalsTable');
+    if (data.signals && data.signals.length > 0) {
+      tbodyS.innerHTML = data.signals.map(sig => `
+        <tr>
+          <td class="mono">${sig.symbol || '-'}</td>
+          <td><span class="badge ${(sig.direction||'').toLowerCase()}">${sig.direction || '-'}</span></td>
+          <td class="mono">${sig.confidence || 0}%</td>
+          <td>${sig.exchange || '-'}</td>
+          <td style="color:var(--text-muted);font-size:0.78rem;">${new Date(sig.created_at).toLocaleTimeString()}</td>
+          <td><span class="badge ${sig.status === 'executed' ? 'active' : 'pending'}">${sig.status || 'pending'}</span></td>
+        </tr>`).join('');
+    } else {
+      tbodyS.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">No signals yet. Subscribe to a plan to receive signals!</td></tr>';
+    }
+
+    // Trades table
+    const tbodyT = document.getElementById('tradesTable');
+    if (data.trades && data.trades.length > 0) {
+      tbodyT.innerHTML = data.trades.map(tr => `
+        <tr>
+          <td class="mono">${tr.symbol || '-'}</td>
+          <td><span class="badge ${(tr.side||'').toLowerCase()}">${tr.side || '-'}</span></td>
+          <td class="mono">${parseFloat(tr.quantity||0).toFixed(4)}</td>
+          <td class="mono">$${parseFloat(tr.price||0).toFixed(2)}</td>
+          <td class="mono" style="color:${parseFloat(tr.pnl||0)>=0?'var(--accent-green)':'var(--accent-red)'}">${parseFloat(tr.pnl||0)>=0?'+':''}$${parseFloat(tr.pnl||0).toFixed(2)}</td>
+          <td style="color:var(--text-muted);font-size:0.78rem;">${new Date(tr.created_at).toLocaleTimeString()}</td>
+        </tr>`).join('');
+    } else {
+      tbodyT.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">No trades yet</td></tr>';
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function loadSignals() {
+  try {
+    const exchange = document.getElementById('signalExchange').value;
+    const direction = document.getElementById('signalDirection').value;
+    let url = '/customer/signals?limit=50';
+    if (exchange) url += '&exchange=' + exchange;
+    const data = await apiFetch(url);
+    const tbody = document.getElementById('signalsFullTable');
+    if (data.signals && data.signals.length > 0) {
+      tbody.innerHTML = data.signals.filter(s => !direction || s.direction === direction).map(sig => `
+        <tr>
+          <td class="mono">${sig.symbol || '-'}</td>
+          <td><span class="badge ${(sig.direction||'').toLowerCase()}">${sig.direction || '-'}</span></td>
+          <td class="mono">${sig.confidence || 0}%</td>
+          <td>${sig.exchange || '-'}</td>
+          <td class="mono">${sig.news_percent || 0}%</td>
+          <td class="mono">${sig.chart_score || 0}</td>
+          <td><span class="badge ${sig.status === 'executed' ? 'active' : 'pending'}">${sig.status || 'pending'}</span></td>
+          <td style="color:var(--text-muted);font-size:0.78rem;">${new Date(sig.created_at).toLocaleString()}</td>
+        </tr>`).join('');
+    } else {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:24px;">No signals yet</td></tr>';
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function loadTrades() {
+  try {
+    const symbol = document.getElementById('tradeSymbol').value;
+    const side = document.getElementById('tradeSide').value;
+    let url = '/customer/trades?limit=100';
+    if (symbol) url += '&symbol=' + symbol;
+    if (side) url += '&side=' + side;
+    const data = await apiFetch(url);
+    const tbody = document.getElementById('tradeHistoryTable');
+    if (data.trades && data.trades.length > 0) {
+      tbody.innerHTML = data.trades.map(tr => `
+        <tr>
+          <td class="mono">${tr.symbol || '-'}</td>
+          <td><span class="badge ${(tr.side||'').toLowerCase()}">${tr.side || '-'}</span></td>
+          <td class="mono">${parseFloat(tr.quantity||0).toFixed(4)}</td>
+          <td class="mono">$${parseFloat(tr.price||0).toFixed(2)}</td>
+          <td>${tr.exchange || '-'}</td>
+          <td class="mono" style="color:${parseFloat(tr.pnl||0)>=0?'var(--accent-green)':'var(--accent-red)'}">${parseFloat(tr.pnl||0)>=0?'+':''}$${parseFloat(tr.pnl||0).toFixed(2)}</td>
+          <td style="color:var(--text-muted);font-size:0.78rem;">${new Date(tr.created_at).toLocaleString()}</td>
+        </tr>`).join('');
+    } else {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">No trades yet</td></tr>';
+    }
+  } catch(e) { console.error(e); }
+}
+
+// Auto-trade
+let autoTradeEnabled = false;
+function toggleAutoTrade() {
+  autoTradeEnabled = !autoTradeEnabled;
+  const toggle = document.getElementById('autoToggle');
+  toggle.classList.toggle('on', autoTradeEnabled);
+  document.getElementById('autoToggleLabel').textContent = autoTradeEnabled ? 'ON' : 'OFF';
+  document.getElementById('autoToggleLabel').style.color = autoTradeEnabled ? 'var(--accent-green)' : 'var(--text-muted)';
+}
+
+function setThreshold(val) {
+  document.getElementById('thresholdSlider').value = val;
+  document.getElementById('thresholdValue').textContent = val + '%';
+  document.querySelectorAll('.slider-labels span').forEach(s => {
+    s.classList.toggle('active', s.textContent === val + '%');
+  });
+}
+
+function updateThresholdLabel() {
+  const val = document.getElementById('thresholdSlider').value;
+  document.getElementById('thresholdValue').textContent = val + '%';
+}
+
+async function saveAutoTrade() {
+  const alertEl = document.getElementById('autoTradeAlert');
+  try {
+    const settings = {
+      enabled: autoTradeEnabled,
+      threshold: parseInt(document.getElementById('thresholdSlider').value),
+      exchange: document.getElementById('autoExchange').value,
+      trading_pair: document.getElementById('tradingPair').value,
+      position_size: parseFloat(document.getElementById('positionSize').value)
+    };
+    await apiFetch('/customer/settings', { method: 'PUT', body: JSON.stringify(settings) });
+    alertEl.textContent = '✓ Auto-trade settings saved successfully!';
+    alertEl.className = 'alert success';
+    alertEl.style.display = 'block';
+    setTimeout(() => alertEl.style.display = 'none', 3000);
+  } catch(e) {
+    alertEl.textContent = 'Error: ' + e.message;
+    alertEl.className = 'alert error';
+    alertEl.style.display = 'block';
+  }
+}
+
+// API Keys
+async function saveApiKey() {
+  const alertEl = document.getElementById('apiAlert');
+  try {
+    await apiFetch('/customer/api-keys', {
+      method: 'PUT',
+      body: JSON.stringify({
+        exchange: document.getElementById('apiExchange').value,
+        api_key: document.getElementById('apiKey').value,
+        api_secret: document.getElementById('apiSecret').value
+      })
+    });
+    alertEl.textContent = '✓ API key saved successfully!';
+    alertEl.className = 'alert success';
+    alertEl.style.display = 'block';
+    document.getElementById('apiKey').value = '';
+    document.getElementById('apiSecret').value = '';
+    setTimeout(() => alertEl.style.display = 'none', 3000);
+  } catch(e) {
+    alertEl.textContent = 'Error: ' + e.message;
+    alertEl.className = 'alert error';
+    alertEl.style.display = 'block';
+  }
+}
+
+// Profile
+async function saveProfile() {
+  const alertEl = document.getElementById('profileAlert');
+  try {
+    // Reload user info (simplified — just update local storage)
+    user.name = document.getElementById('profileName').value;
+    user.phone = document.getElementById('profilePhone').value;
+    localStorage.setItem('user', JSON.stringify(user));
+    document.getElementById('userName').textContent = user.name || user.email;
+    document.getElementById('userAvatar').textContent = (user.name || user.email).charAt(0).toUpperCase();
+    alertEl.textContent = '✓ Profile updated successfully!';
+    alertEl.className = 'alert success';
+    alertEl.style.display = 'block';
+    setTimeout(() => alertEl.style.display = 'none', 3000);
+  } catch(e) {
+    alertEl.textContent = 'Error: ' + e.message;
+    alertEl.className = 'alert error';
+    alertEl.style.display = 'block';
+  }
+}
+
+// CSV Export
+function exportCSV() {
+  const rows = [['Month', 'Trades', 'Wins', 'Losses', 'Win Rate', 'Net P&L'],
+    ['Apr 2025', 48, 37, 11, '77%', '$3,241'],
+    ['Mar 2025', 62, 49, 13, '79%', '$5,120'],
+    ['Feb 2025', 55, 42, 13, '76%', '$2,890']];
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'zummptrade-report.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Portfolio chart
+function drawPortfolioChart() {
+  const canvas = document.getElementById('portfolioChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.parentElement.offsetWidth || 800;
+  const h = 200;
+  canvas.width = w;
+  canvas.height = h;
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+  const data = [24000, 24350, 24100, 24680, 24450, 24920, 24700, 25100, 24800, 25250, 25000, 25480, 25200, 24815];
+  const max = Math.max(...data) * 1.002;
+  const min = Math.min(...data) * 0.998;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Grid
+  ctx.strokeStyle = isDark ? 'rgba(48,54,61,0.5)' : 'rgba(226,232,240,0.8)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = (h / 4) * i;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+    ctx.fillStyle = isDark ? '#8b949e' : '#64748b';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.fillText('$' + Math.round(max - (max - min) * (i / 4)), 6, y - 3);
+  }
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, 'rgba(63,185,80,0.2)');
+  grad.addColorStop(1, 'rgba(63,185,80,0)');
+
+  const step = w / (data.length - 1);
+  ctx.beginPath();
+  ctx.moveTo(0, h - ((data[0] - min) / (max - min)) * h);
+  data.forEach((v, i) => {
+    const x = i * step;
+    const y = h - ((v - min) / (max - min)) * h;
+    ctx.lineTo(x, y);
+  });
+  ctx.lineTo(w, h);
+  ctx.lineTo(0, h);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  data.forEach((v, i) => {
+    const x = i * step;
+    const y = h - ((v - min) / (max - min)) * h;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = '#3fb950';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+// Init
+loadDashboard();
+loadSignals();
+loadTrades();
+setThreshold(80);
+
+// Theme init
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+  }
+  const toggle = document.getElementById('themeToggle');
+  if (toggle && saved) toggle.textContent = saved === 'light' ? '🌙' : '☀️';
+})();
+
+loadDashboard();
+loadSignals();
+loadTrades();
+setThreshold(80);
+</script>
+</body>
+</html>

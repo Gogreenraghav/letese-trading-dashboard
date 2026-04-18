@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login - ZummpTrade</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:40px;width:440px;max-width:95vw;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.3);color:#f85149;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700;margin-bottom:16px}
+.logo{font-size:1.5rem;font-weight:800;margin-bottom:4px;color:#e6edf3}
+.logo span{color:#f85149}
+.sub{color:#8b949e;font-size:.88rem;margin-bottom:28px;font-weight:500}
+.f{margin-bottom:18px}
+.f label{display:block;font-size:.78rem;font-weight:700;margin-bottom:8px;color:#8b949e;text-transform:uppercase;letter-spacing:.05em}
+.f input{width:100%;padding:13px 14px;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;font-size:.95rem;font-family:inherit;outline:none}
+.f input:focus{border-color:#58a6ff}
+.btn{width:100%;padding:13px;border-radius:8px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;background:#f85149;color:#fff;font-family:inherit}
+.btn:hover{background:#e63e35}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.alert{padding:12px 14px;border-radius:8px;font-size:.85rem;margin-bottom:16px;display:none;font-weight:600}
+.alert.e{background:rgba(248,81,73,.12);border:1px solid rgba(248,81,73,.35);color:#f85149}
+.alert.s{background:rgba(63,185,80,.12);border:1px solid rgba(63,185,80,.35);color:#3fb950}
+.back{position:fixed;top:20px;left:20px;color:#8b949e;text-decoration:none;font-size:.85rem;font-weight:600}
+.back:hover{color:#58a6ff}
+</style>
+</head>
+<body>
+<a href="/" class="back">&larr; Back to ZummpTrade</a>
+<div class="card">
+  <div class="badge">&#128274; Super Admin Panel</div>
+  <div class="logo">Zummp<span>Trade</span></div>
+  <p class="sub">Sign in to admin control panel</p>
+  <div class="alert" id="alertBox"></div>
+  <form id="loginForm" autocomplete="off">
+    <div class="f">
+      <label>Email</label>
+      <input type="email" id="emailInput" placeholder="admin@zummptrade.com" required autofocus>
+    </div>
+    <div class="f">
+      <label>Password</label>
+      <input type="password" id="passwordInput" placeholder="Enter password" required>
+    </div>
+    <button type="submit" class="btn" id="submitBtn">Sign In to Admin</button>
+  </form>
+</div>
+<script>
+(function() {
+  var form = document.getElementById("loginForm");
+  var btn = document.getElementById("submitBtn");
+  var alertBox = document.getElementById("alertBox");
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    var email = document.getElementById("emailInput").value.trim();
+    var password = document.getElementById("passwordInput").value;
+    if (!email || !password) return;
+    btn.disabled = true;
+    btn.textContent = "Signing in...";
+    alertBox.style.display = "none";
+    fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, password: password })
+    }).then(function(r) { return r.json(); }).then(function(data) {
+      if (data.token && data.user) {
+        // Clear ALL tokens
+        localStorage.removeItem("token");
+        localStorage.removeItem("tiwari_token");
+        localStorage.removeItem("tiwari_user");
+        localStorage.removeItem("admin_role");
+        // Store fresh
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("tiwari_token", data.token);
+        localStorage.setItem("tiwari_user", JSON.stringify(data.user));
+        // Store role synchronously for instant verification
+        localStorage.setItem("admin_role", (data.user.role === "admin" ? "1" : "0"));
+        alertBox.className = "alert s";
+        alertBox.textContent = "Login successful! Opening admin panel...";
+        alertBox.style.display = "block";
+        setTimeout(function() { window.location.href = "/admin.html"; }, 600);
+      } else {
+        alertBox.className = "alert e";
+        alertBox.textContent = "Invalid credentials. Try again.";
+        alertBox.style.display = "block";
+        btn.disabled = false;
+        btn.textContent = "Sign In to Admin";
+      }
+    }).catch(function(err) {
+      alertBox.className = "alert e";
+      alertBox.textContent = "Network error. Is the server running?";
+      alertBox.style.display = "block";
+      btn.disabled = false;
+      btn.textContent = "Sign In to Admin";
+    });
+  });
+})();
+</script>
+</body>
+</html>
