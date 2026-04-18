@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZummpTrade — Auto-Trading Config</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#16213e;--t:#fff;--t2:#b8b8d1;--m:#00d4ff;--m2:rgba(0,212,255,.15);--s:#00ff88;--s2:rgba(0,255,136,.15);--r:#ff4757;--r2:rgba(255,71,87,.15);--y:#ffd32a;--y2:rgba(255,211,42,.15);--p:#a55eea;--p2:rgba(165,94,234,.15);--o:#ff9f43;--o2:rgba(255,159,67,.15)}
+body{font-family:'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
+.tb{background:linear-gradient(135deg,#1a1a2e,#16213e);border-bottom:2px solid var(--m);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(0,212,255,.2);position:sticky;top:0;z-index:200}
+.tb-logo{font-size:1.2rem;font-weight:800;background:linear-gradient(90deg,#00d4ff,#00ff88);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tb-sub{font-size:.68rem;font-weight:700;background:var(--m2);color:var(--m);padding:3px 10px;border-radius:20px;border:1px solid var(--m)}
+.tb-r{display:flex;gap:10px}
+.tb-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--t2);padding:6px 14px;border-radius:8px;font-size:.8rem;cursor:pointer;font-family:inherit;font-weight:600}
+.tb-btn:hover{background:rgba(255,255,255,.12)}
+.tb-btn.danger{color:var(--r)}
+.tb-btn.danger:hover{background:var(--r2)}
+.mc{padding:24px;max-width:800px;margin:0 auto}
+.sh{font-size:.95rem;font-weight:800;color:var(--t);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sh-icon{font-size:1.1rem}
+.card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;margin-bottom:20px}
+.card-head{font-size:.8rem;font-weight:800;color:var(--m);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--m2);display:flex;align-items:center;gap:8px}
+.card-head-icon{font-size:1rem}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.toggle-label{font-size:.9rem;font-weight:700;color:var(--t)}
+.toggle-desc{font-size:.78rem;color:var(--t2);margin-top:3px}
+.tog{width:52px;height:28px;background:rgba(255,255,255,.1);border-radius:14px;cursor:pointer;position:relative;transition:all .2s;border:2px solid rgba(255,255,255,.15)}
+.tog.on{background:rgba(0,255,136,.3);border-color:var(--s)}
+.tog::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:2px;left:2px;transition:all .2s}
+.tog.on::after{left:26px;background:var(--s)}
+.sf{margin-bottom:16px}
+.sf label{display:block;font-size:.75rem;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.slider-wrap{display:flex;align-items:center;gap:12px}
+.slider{flex:1;-webkit-appearance:none;height:6px;background:rgba(255,255,255,.1);border-radius:3px;outline:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--m);border-radius:50%;cursor:pointer;box-shadow:0 0 8px rgba(0,212,255,.5)}
+.slider-val{font-size:.85rem;font-weight:800;color:var(--m);min-width:36px;text-align:right}
+input,select{padding:10px 14px;background:var(--bg);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--t);font-size:.85rem;font-family:inherit;font-weight:500;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--m)}
+select option{background:var(--bg2)}
+select{width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.save-btn{width:100%;padding:14px;background:linear-gradient(135deg,#00d4ff,#0099cc);color:#000;font-weight:800;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;font-family:inherit;letter-spacing:.5px;box-shadow:0 6px 20px rgba(0,212,255,.35);transition:all .2s;margin-top:8px}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,212,255,.5)}
+.save-btn:active{transform:translateY(0)}
+.al{padding:12px 16px;border-radius:10px;font-size:.85rem;font-weight:700;margin-bottom:16px;display:none;text-align:center}
+.al.ok{background:var(--s2);border:1px solid var(--s);color:var(--s);display:block}
+.al.er{background:var(--r2);border:1px solid var(--r);color:var(--r);display:block}
+.loading{text-align:center;padding:40px;color:var(--t2);font-size:.9rem}
+.status-bar{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.status-dot{width:10px;height:10px;border-radius:50%;background:var(--r);display:inline-block;margin-right:8px;box-shadow:0 0 8px rgba(255,71,87,.5)}
+.status-dot.on{background:var(--s);box-shadow:0 0 8px rgba(0,255,136,.5);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.status-text{font-size:.85rem;font-weight:700}
+.status-text.on{color:var(--s)}
+.status-text.off{color:var(--r)}
+.reload-btn{background:var(--bg);border:1px solid rgba(255,255,255,.15);color:var(--t2);padding:6px 14px;border-radius:8px;font-size:.78rem;cursor:pointer;font-family:inherit;font-weight:600}
+.reload-btn:hover{background:var(--bg3);color:var(--t)}
+</style>
+</head>
+<body>
+
+<div class="tb">
+  <div class="tb-l">
+    <div class="tb-logo">ZummpTrade</div>
+    <div class="tb-sub">Auto-Trading</div>
+  </div>
+  <div class="tb-r">
+    <button class="tb-btn" onclick="window.location.href='/dashboard.html'">&#127968; Dashboard</button>
+    <button class="tb-btn danger" id="loBtn">&#128682; Logout</button>
+  </div>
+</div>
+
+<div class="mc">
+  <div class="sh"><span class="sh-icon">&#9889;</span> Auto-Trading Configuration</div>
+
+  <div class="status-bar">
+    <div>
+      <span class="status-dot" id="statusDot"></span>
+      <span class="status-text" id="statusText">Loading...</span>
+    </div>
+    <button class="reload-btn" onclick="loadConfig()">&#8635; Reload</button>
+  </div>
+
+  <div class="al" id="msgBox"></div>
+
+  <!-- MASTER TOGGLE -->
+  <div class="card">
+    <div class="card-head"><span class="card-head-icon">&#9889;</span> Master Switch</div>
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Enable Auto-Trading</div>
+        <div class="toggle-desc">When ON, bot will automatically execute trades based on your configured thresholds</div>
+      </div>
+      <div class="tog" id="autoTradeToggle" onclick="toggleAutoTrade()"></div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE & PAIR -->
+  <div class="card">
+    <div class="card-head"><span class="card-head-icon">&#128640;</span> Exchange & Trading Pair</div>
+    <div class="grid2">
+      <div class="sf">
+        <label>Exchange</label>
+        <select id="exchange">
+          <option value="binance">Binance</option>
+          <option value="bybit">Bybit</option>
+          <option value="okx">OKX</option>
+          <option value="coinDCX">CoinDCX</option>
+        </select>
+      </div>
+      <div class="sf">
+        <label>Trading Pair</label>
+        <select id="trading_pair">
+          <option value="BTCUSDT">BTC/USDT</option>
+          <option value="ETHUSDT">ETH/USDT</option>
+          <option value="BNBUSDT">BNB/USDT</option>
+          <option value="SOLUSDT">SOL/USDT</option>
+          <option value="XRPUSDT">XRP/USDT</option>
+          <option value="ADAUSDT">ADA/USDT</option>
+          <option value="DOGEUSDT">DOGE/USDT</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- POSITION & RISK -->
+  <div class="card">
+    <div class="card-head"><span class="card-head-icon">&#128185;</span> Position & Risk Management</div>
+    <div class="grid3">
+      <div class="sf">
+        <label>Position Size (%)</label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="posSlider" min="1" max="100" value="10" oninput="updateSlider(this,'posVal')">
+          <span class="slider-val" id="posVal">10%</span>
+        </div>
+        <div style="font-size:.72rem;color:var(--t2);margin-top:4px">Capital per trade</div>
+      </div>
+      <div class="sf">
+        <label>Stop Loss (%)</label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="slSlider" min="0.5" max="10" step="0.5" value="2" oninput="updateSlider(this,'slVal')">
+          <span class="slider-val" id="slVal">2%</span>
+        </div>
+        <div style="font-size:.72rem;color:var(--t2);margin-top:4px">Auto-cut loss</div>
+      </div>
+      <div class="sf">
+        <label>Take Profit (%)</label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="tpSlider" min="1" max="20" step="0.5" value="5" oninput="updateSlider(this,'tpVal')">
+          <span class="slider-val" id="tpVal">5%</span>
+        </div>
+        <div style="font-size:.72rem;color:var(--t2);margin-top:4px">Auto-book profit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THRESHOLDS -->
+  <div class="card">
+    <div class="card-head"><span class="card-head-icon">&#128200;</span> Signal Thresholds — Trade Hone Ke Liye Kitna Strong Signal Chahiye</div>
+    <div class="sf">
+      <label>Combined Score Threshold (%)</label>
+      <div class="slider-wrap">
+        <input type="range" class="slider" id="combSlider" min="30" max="95" value="70" oninput="updateSlider(this,'combVal')">
+        <span class="slider-val" id="combVal">70%</span>
+      </div>
+      <div style="font-size:.72rem;color:var(--t2);margin-top:4px">Higher = less trades but more accurate signals</div>
+    </div>
+    <div class="grid3" style="margin-top:16px">
+      <div class="sf">
+        <label>News Threshold (%)</label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="newsTSlider" min="20" max="95" value="70" oninput="updateSlider(this,'newsTVal')">
+          <span class="slider-val" id="newsTVal">70%</span>
+        </div>
+      </div>
+      <div class="sf">
+        <label>Chart Threshold (%)</label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="chartTSlider" min="20" max="95" value="60" oninput="updateSlider(this,'chartTVal')">
+          <span class="slider-val" id="chartTVal">60%</span>
+        </div>
+      </div>
+      <div class="sf">
+        <label>Whale Threshold (%)</label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="whaleTSlider" min="20" max="95" value="50" oninput="updateSlider(this,'whaleTVal')">
+          <span class="slider-val" id="whaleTVal">50%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEIGHTS -->
+  <div class="card">
+    <div class="card-head"><span class="card-head-icon">&#128340;</span> Signal Source Weights — Kis Signal Ko Kitna Importance Du</div>
+    <div class="grid3">
+      <div class="sf">
+        <label>News Weight (%)</label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="newsWSlider" min="0" max="100" value="40" oninput="updateSlider(this,'newsWVal')">
+          <span class="slider-val" id="newsWVal">40%</span>
+        </div>
+      </div>
+      <div class="sf">
+        <label>Chart Weight (%)</label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="chartWSlider" min="0" max="100" value="35" oninput="updateSlider(this,'chartWVal')">
+          <span class="slider-val" id="chartWVal">35%</span>
+        </div>
+      </div>
+      <div class="sf">
+        <label>Whale Weight (%)</label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="whaleWSlider" min="0" max="100" value="25" oninput="updateSlider(this,'whaleWVal')">
+          <span class="slider-val" id="whaleWVal">25%</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:.75rem;color:var(--t2);background:rgba(255,255,255,.04);padding:10px 14px;border-radius:8px">
+      &#9432; <b style="color:var(--y)">Weights total should ideally be 100%</b> — Combined Score = (News% x NewsWeight) + (Chart% x ChartWeight) + (Whale% x WhaleWeight)
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="saveConfig()">&#10004; Save Configuration</button>
+</div>
+
+<script>
+(function(){
+  var tok=localStorage.getItem('tiwari_token')||localStorage.getItem('token');
+  if(!tok){window.location.href='/login.html';return;}
+  document.getElementById('loBtn').onclick=function(){
+    localStorage.removeItem('tiwari_token');localStorage.removeItem('token');localStorage.removeItem('tiwari_user');
+    window.location.href='/login.html';
+  };
+  loadConfig();
+})();
+
+function gT(){return localStorage.getItem('tiwari_token')||localStorage.getItem('token')||'';}
+function api(url,opts){opts=opts||{};var h={'Authorization':'Bearer '+gT(),'Content-Type':'application/json'};var my={method:opts.m||'GET',headers:h};if(opts.b)my.body=JSON.stringify(opts.b);return fetch('/api'+url,my).then(function(r){if(r.status===401||r.status===403){window.location.href='/login.html';throw new Error('Auth');}return r.json();});}
+
+function updateSlider(el,valId){document.getElementById(valId).textContent=el.value+'%';}
+
+function loadConfig(){
+  api('/customer/auto-trade-config').then(function(d){
+    var on=d.auto_trade_enabled==1||d.auto_trade_enabled==='1';
+    document.getElementById('statusDot').className='status-dot'+(on?' on':'');
+    document.getElementById('statusText').className='status-text'+(on?' on':' off');
+    document.getElementById('statusText').textContent=on?'AUTO-TRADING ACTIVE — Bot will execute trades':'AUTO-TRADING DISABLED';
+    document.getElementById('autoTradeToggle').className='tog'+(on?' on':'');
+    document.getElementById('exchange').value=d.exchange||'binance';
+    document.getElementById('trading_pair').value=d.trading_pair||'BTCUSDT';
+    setSlider('pos',d.position_size_pct||10);
+    setSlider('sl',d.stop_loss_pct||2);
+    setSlider('tp',d.take_profit_pct||5);
+    setSlider('comb',d.combined_threshold_pct||70);
+    setSlider('newsT',d.news_threshold_pct||70);
+    setSlider('chartT',d.chart_threshold_pct||60);
+    setSlider('whaleT',d.whale_threshold_pct||50);
+    setSlider('newsW',d.news_weight_pct||40);
+    setSlider('chartW',d.chart_weight_pct||35);
+    setSlider('whaleW',d.whale_weight_pct||25);
+  }).catch(function(e){A('er','Failed to load config: '+e.message);});
+}
+
+function setSlider(id,val){var el=document.getElementById(id+'Slider');if(el){el.value=val;document.getElementById(id+'Val').textContent=val+'%';}}
+
+function toggleAutoTrade(){var tog=document.getElementById('autoTradeToggle');var isOn=tog.classList.contains('on');var newState=!isOn;tog.className='tog'+(newState?' on':'');document.getElementById('statusDot').className='status-dot'+(newState?' on':'');document.getElementById('statusText').className='status-text'+(newState?' on':' off');document.getElementById('statusText').textContent=newState?'AUTO-TRADING ACTIVE':'AUTO-TRADING DISABLED';}
+
+function A(tp,msg){var e=document.getElementById('msgBox');e.textContent=msg;e.className='al '+(tp==='ok'?'ok':'er');e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
+
+function saveConfig(){
+  var auto_enabled=document.getElementById('autoTradeToggle').classList.contains('on')?1:0;
+  var body={
+    auto_trade_enabled:auto_enabled,
+    exchange:document.getElementById('exchange').value,
+    trading_pair:document.getElementById('trading_pair').value,
+    position_size_pct:parseFloat(document.getElementById('posSlider').value),
+    stop_loss_pct:parseFloat(document.getElementById('slSlider').value),
+    take_profit_pct:parseFloat(document.getElementById('tpSlider').value),
+    combined_threshold_pct:parseFloat(document.getElementById('combSlider').value),
+    news_threshold_pct:parseFloat(document.getElementById('newsTSlider').value),
+    chart_threshold_pct:parseFloat(document.getElementById('chartTSlider').value),
+    whale_threshold_pct:parseFloat(document.getElementById('whaleTSlider').value),
+    news_weight_pct:parseFloat(document.getElementById('newsWSlider').value),
+    chart_weight_pct:parseFloat(document.getElementById('chartWSlider').value),
+    whale_weight_pct:parseFloat(document.getElementById('whaleWSlider').value),
+    mode:'combined'
+  };
+  api('/customer/auto-trade-config',{m:'PUT',b:body}).then(function(){
+    A('ok','Configuration saved successfully!');
+    loadConfig();
+  }).catch(function(e){A('er','Error: '+e.message);});
+}
+</script>
+</body>
+</html>

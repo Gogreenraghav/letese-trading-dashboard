@@ -99,14 +99,14 @@ router.put('/auto-trade-config', (req, res) => {
 router.put('/api-keys', (req, res) => {
   try {
     const uid = req.user.id;
-    const { exchange, api_key, secret, label } = req.body;
+    const { exchange, api_key, secret, api_secret, label } = req.body; var sec = secret || api_secret;
     const existing = db.prepare('SELECT id FROM customer_api_keys WHERE user_id = ? AND exchange = ?').get(uid, exchange);
     if (existing) {
       db.prepare('UPDATE customer_api_keys SET api_key_encrypted=?, secret_encrypted=?, label=?, status=? WHERE id=?')
-        .run(api_key, secret, label||exchange, 'connected', existing.id);
+        .run(api_key, sec, label||exchange, 'connected', existing.id);
     } else {
       db.prepare('INSERT INTO customer_api_keys (id, user_id, exchange, api_key_encrypted, secret_encrypted, label, status) VALUES (?,?,?,?,?,?,?)')
-        .run(randomUUID(), uid, exchange, api_key, secret, label||exchange, 'connected');
+        .run(randomUUID(), uid, exchange, api_key, sec, label||exchange, 'connected');
     }
     res.json({ success: true });
   } catch (err) { console.error(err); res.status(500).json({ error: 'Server error' }); }

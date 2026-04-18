@@ -495,6 +495,7 @@ function switchView(name) {
     portfolio:'Portfolio', reports:'Reports', settings:'Settings'
   }[name] || 'Dashboard';
   if (name === 'portfolio') setTimeout(drawPortfolioChart, 50);
+    if (name === 'autotrade') loadAutoTrade();
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -505,6 +506,21 @@ document.querySelectorAll('.nav-item').forEach(item => {
 });
 
 // Load dashboard data
+async function loadAutoTrade() {
+  try {
+    const d = await apiFetch('/customer/auto-trade-config');
+    const tog = document.getElementById('autoToggle');
+    if (tog) tog.classList.toggle('on', d.auto_trade_enabled == 1);
+    const lbl = document.getElementById('autoToggleLabel');
+    if (lbl) { lbl.textContent = d.auto_trade_enabled == 1 ? 'ON' : 'OFF'; lbl.style.color = d.auto_trade_enabled == 1 ? 'var(--accent-green)' : 'var(--text-muted)'; }
+    if (document.getElementById('thresholdSlider')) { document.getElementById('thresholdSlider').value = d.combined_threshold_pct || 70; }
+    if (document.getElementById('thresholdValue')) { document.getElementById('thresholdValue').textContent = (d.combined_threshold_pct || 70) + '%'; }
+    if (document.getElementById('autoExchange')) document.getElementById('autoExchange').value = d.exchange || 'binance';
+    if (document.getElementById('tradingPair')) document.getElementById('tradingPair').value = d.trading_pair || 'BTCUSDT';
+    if (document.getElementById('positionSize')) document.getElementById('positionSize').value = d.position_size_pct || 10;
+  } catch(e) { console.error('AutoTrade load error:', e); }
+}
+
 async function loadDashboard() {
   try {
     const data = await apiFetch('/customer/dashboard');
@@ -636,7 +652,7 @@ async function saveAutoTrade() {
       trading_pair: document.getElementById('tradingPair').value,
       position_size: parseFloat(document.getElementById('positionSize').value)
     };
-    await apiFetch('/customer/settings', { method: 'PUT', body: JSON.stringify(settings) });
+    await apiFetch('/customer/auto-trade-config', { method: 'PUT', body: JSON.stringify({ auto_trade_enabled: settings.enabled ? 1 : 0, combined_threshold_pct: parseInt(settings.threshold), exchange: settings.exchange, trading_pair: settings.trading_pair, position_size_pct: parseFloat(settings.position_size) }) });
     alertEl.textContent = '✓ Auto-trade settings saved successfully!';
     alertEl.className = 'alert success';
     alertEl.style.display = 'block';

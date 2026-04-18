@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZummpTrade — Exchange API Keys</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#16213e;--t:#fff;--t2:#b8b8d1;--m:#00d4ff;--m2:rgba(0,212,255,.15);--s:#00ff88;--s2:rgba(0,255,136,.15);--r:#ff4757;--r2:rgba(255,71,87,.15);--y:#ffd32a;--y2:rgba(255,211,42,.15);--p:#a55eea;--p2:rgba(165,94,234,.15);--o:#ff9f43}
+body{font-family:'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
+.tb{background:linear-gradient(135deg,#1a1a2e,#16213e);border-bottom:2px solid var(--m);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 4px 20px rgba(0,212,255,.2)}
+.tb-logo{font-size:1.2rem;font-weight:800;background:linear-gradient(90deg,#00d4ff,#00ff88);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tb-sub{font-size:.68rem;font-weight:700;background:var(--m2);color:var(--m);padding:3px 10px;border-radius:20px;border:1px solid var(--m)}
+.tb-r{display:flex;gap:10px}
+.tb-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--t2);padding:6px 14px;border-radius:8px;font-size:.8rem;cursor:pointer;font-family:inherit;font-weight:600}
+.tb-btn:hover{background:rgba(255,255,255,.12)}
+.tb-btn.danger{color:var(--r)}
+.tb-btn.danger:hover{background:var(--r2)}
+.mc{padding:24px;max-width:800px;margin:0 auto}
+.sh{font-size:.95rem;font-weight:800;color:var(--t);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sh-icon{font-size:1.1rem}
+.card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;margin-bottom:20px}
+.card-head{font-size:.8rem;font-weight:800;color:var(--m);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--m2);display:flex;align-items:center;gap:8px}
+.card-head-icon{font-size:1rem}
+.warn-box{background:linear-gradient(135deg,rgba(255,211,42,.12),rgba(255,159,67,.12));border:1px solid rgba(255,211,42,.3);border-radius:12px;padding:16px;margin-bottom:20px;font-size:.83rem;color:var(--t2);line-height:1.6}
+.warn-box strong{color:var(--y);display:block;margin-bottom:6px;font-size:.9rem}
+.success-box{background:var(--s2);border:1px solid rgba(0,255,136,.3);border-radius:12px;padding:16px;margin-bottom:20px;font-size:.83rem;color:var(--s);line-height:1.6}
+.success-box strong{display:block;margin-bottom:6px;font-size:.9rem}
+.sf{margin-bottom:14px}
+.sf label{display:block;font-size:.75rem;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+input,select{padding:10px 14px;background:var(--bg);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--t);font-size:.85rem;font-family:inherit;font-weight:500;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--m)}
+input::placeholder{color:var(--t2);font-weight:400}
+select option{background:var(--bg2)}
+.add-btn{width:100%;padding:13px;background:linear-gradient(135deg,#00d4ff,#0099cc);color:#000;font-weight:800;font-size:.9rem;border:none;border-radius:12px;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(0,212,255,.3);transition:all .2s;margin-top:4px}
+.add-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,212,255,.5)}
+.add-btn:active{transform:translateY(0)}
+.al{padding:12px 16px;border-radius:10px;font-size:.85rem;font-weight:700;margin-bottom:16px;display:none;text-align:center}
+.al.ok{background:var(--s2);border:1px solid var(--s);color:var(--s);display:block}
+.al.er{background:var(--r2);border:1px solid var(--r);color:var(--r);display:block}
+.al.ye{background:var(--y2);border:1px solid var(--y);color:var(--y);display:block}
+.key-list{list-style:none;padding:0;margin:0}
+.key-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.key-info{flex:1}
+.key-exchange{font-size:.95rem;font-weight:800;color:var(--t);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.key-label{font-size:.78rem;color:var(--t2);margin-bottom:6px}
+.key-meta{font-size:.72rem;color:var(--t2);display:flex;gap:16px}
+.key-status{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:6px;display:inline-block;margin-right:8px}
+.key-status.connected{background:var(--s2);color:var(--s);border:1px solid rgba(0,255,136,.3)}
+.key-status.pending{background:var(--y2);color:var(--y);border:1px solid rgba(255,211,42,.3)}
+.key-status.failed{background:var(--r2);color:var(--r);border:1px solid rgba(255,71,87,.3)}
+.del-btn{background:var(--r2);border:1px solid rgba(255,71,87,.4);color:var(--r);padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:12px;flex-shrink:0}
+.del-btn:hover{background:var(--r);color:#fff}
+.empty{text-align:center;padding:40px;color:var(--t2);font-size:.9rem}
+.empty-icon{font-size:3rem;margin-bottom:12px;opacity:.3}
+</style>
+</head>
+<body>
+
+<div class="tb">
+  <div class="tb-l">
+    <div class="tb-logo">ZummpTrade</div>
+    <div class="tb-sub">API Keys</div>
+  </div>
+  <div class="tb-r">
+    <button class="tb-btn" onclick="window.location.href='/dashboard.html'">&#127968; Dashboard</button>
+    <button class="tb-btn" onclick="window.location.href='/autotrade.html'">&#9889; Auto-Trade</button>
+    <button class="tb-btn danger" id="loBtn">&#128682; Logout</button>
+  </div>
+</div>
+
+<div class="mc">
+  <div class="sh"><span class="sh-icon">&#128273;</span> Exchange API Key Management</div>
+
+  <!-- Warning -->
+  <div class="warn-box">
+    <strong>&#9888; Important Security Notice</strong>
+    Only add API keys with <strong style="color:var(--y)">Read + Trade permission</strong> (NOT Withdrawal permission). Never share your API Secret with anyone. All keys are encrypted and stored securely.
+  </div>
+
+  <div class="al" id="msgBox"></div>
+
+  <!-- ADD KEY FORM -->
+  <div class="card">
+    <div class="card-head"><span class="card-head-icon">&#128381;</span> Add Exchange API Key</div>
+
+    <div class="sf">
+      <label>Exchange</label>
+      <select id="exchange">
+        <option value="binance">Binance</option>
+        <option value="bybit">Bybit</option>
+        <option value="okx">OKX</option>
+        <option value="coinDCX">CoinDCX</option>
+      </select>
+    </div>
+
+    <div class="sf">
+      <label>API Key</label>
+      <input type="text" id="apiKey" placeholder="Enter your exchange API Key (e.g. abc123xyz...)" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="sf">
+      <label>API Secret</label>
+      <input type="password" id="apiSecret" placeholder="Enter your API Secret" autocomplete="off">
+    </div>
+
+    <div class="sf">
+      <label>Label (Optional)</label>
+      <input type="text" id="label" placeholder="e.g. Main Trading Account, Savings...">
+    </div>
+
+    <div class="success-box">
+      <strong>&#9889; What permissions does the API key need?</strong>
+      Enable these on your exchange:<br>
+      &#10003; Read User Info &nbsp; &#10003; Enable Trading &nbsp; &#10003; Enable Futures (optional)<br>
+      &#10007; <span style="color:var(--r);text-decoration:line-through">Withdrawal</span> — NEVER enable withdrawal!
+    </div>
+
+    <button class="add-btn" onclick="addKey()">&#9889; Connect Exchange</button>
+  </div>
+
+  <!-- EXISTING KEYS -->
+  <div class="card">
+    <div class="card-head"><span class="card-head-icon">&#128273;</span> Connected Exchanges</div>
+    <ul class="key-list" id="keyList">
+      <li class="empty"><div class="empty-icon">&#128273;</div>No API keys connected yet.<br>Add your first exchange above.</li>
+    </ul>
+  </div>
+
+  <!-- BINANCE GUIDE -->
+  <div class="card" style="border-color:rgba(255,211,42,.2)">
+    <div class="card-head" style="color:var(--y)"><span class="card-head-icon">&#128240;</span> How to Get Binance API Key</div>
+    <div style="font-size:.83rem;color:var(--t2);line-height:1.8">
+      1. Log in to <strong style="color:var(--t)">Binance.com</strong><br>
+      2. Go to <strong style="color:var(--t)">Profile Icon → API Management</strong><br>
+      3. Click <strong style="color:var(--t)">Create API</strong><br>
+      4. Choose <strong style="color:var(--t)">System Generated</strong><br>
+      5. Name your key (e.g. "ZummpTrade Bot")<br>
+      6. <strong style="color:var(--y)">Enable: Read + Trading</strong><br>
+      7. <strong style="color:var(--r)">DO NOT enable: Withdrawals</strong><br>
+      8. Complete security verification<br>
+      9. Copy <strong style="color:var(--t)">API Key</strong> and <strong style="color:var(--t)">Secret Key</strong> and paste above
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var tok=localStorage.getItem('tiwari_token')||localStorage.getItem('token');
+  if(!tok){window.location.href='/login.html';return;}
+  document.getElementById('loBtn').onclick=function(){
+    localStorage.removeItem('tiwari_token');localStorage.removeItem('token');localStorage.removeItem('tiwari_user');
+    window.location.href='/login.html';
+  };
+  loadKeys();
+})();
+
+function gT(){return localStorage.getItem('tiwari_token')||localStorage.getItem('token')||'';}
+function api(url,opts){opts=opts||{};var h={'Authorization':'Bearer '+gT(),'Content-Type':'application/json'};var my={method:opts.m||'GET',headers:h};if(opts.b)my.body=JSON.stringify(opts.b);return fetch('/api'+url,my).then(function(r){if(r.status===401||r.status===403){window.location.href='/login.html';throw new Error('Auth');}return r.json();});}
+
+function A(tp,msg){var e=document.getElementById('msgBox');e.textContent=msg;e.className='al '+(tp==='ok'?'ok':tp==='ye'?'ye':'er');e.style.display='block';setTimeout(function(){e.style.display='none';},6000);}
+
+function addKey(){
+  var exch=document.getElementById('exchange').value;
+  var key=document.getElementById('apiKey').value.trim();
+  var secret=document.getElementById('apiSecret').value.trim();
+  var label=document.getElementById('label').value.trim();
+  if(!key){A('er','Please enter API Key');return;}
+  if(!secret){A('er','Please enter API Secret');return;}
+  if(key.length<10){A('er','API Key seems too short. Please check.');return;}
+  api('/customer/api-keys',{m:'PUT',b:{exchange:exch,api_key:key,secret:secret,label:label||exch+' Account'}}).then(function(){
+    A('ok','API Key connected successfully!');
+    document.getElementById('apiKey').value='';
+    document.getElementById('apiSecret').value='';
+    document.getElementById('label').value='';
+    loadKeys();
+  }).catch(function(e){A('er','Error: '+e.message);});
+}
+
+function loadKeys(){
+  api('/customer/api-keys').then(function(d){
+    var keys=d.apiKeys||[];
+    if(!keys.length){
+      document.getElementById('keyList').innerHTML='<li class="empty"><div class="empty-icon">&#128273;</div>No API keys connected yet.<br>Add your first exchange above.</li>';
+      return;
+    }
+    var html='';
+    keys.forEach(function(k){
+      var st=k.status||'connected';
+      var stClass=st==='connected'?'connected':st==='pending'?'pending':'failed';
+      var created=k.created_at?new Date(k.created_at).toLocaleDateString('en-IN'):'-';
+      var last=k.last_used_at?new Date(k.last_used_at).toLocaleDateString('en-IN'):'Never';
+      var maskKey=k.api_key_encrypted?k.api_key_encrypted.substring(0,6)+'****'+k.api_key_encrypted.substring(k.api_key_encrypted.length-4):'****';
+      html+='<li class=key-item><div class=key-info><div class=key-exchange><span style="font-size:1.1rem">'+getExIcon(k.exchange)+'</span> '+esc(k.exchange.toUpperCase())+' <span class="key-status '+stClass+'">'+st.toUpperCase()+'</span></div><div class=key-label>'+esc(k.label||k.exchange+' Account')+'</div><div class=key-meta><span>&#128273; Key: <code style="font-family:monospace;font-size:.7rem;color:var(--m)">'+maskKey+'</code></span><span>&#128197; Added: '+created+'</span><span>&#128260; Last used: '+last+'</span></div></div><button class=del-btn onclick="if(confirm(\'Remove this API key?\'))delKey(\''+k.id+'\')">Delete</button></li>';
+    });
+    document.getElementById('keyList').innerHTML=html;
+  }).catch(function(e){A('er','Failed to load keys: '+e.message);});
+}
+
+function delKey(id){api('/customer/api-keys/'+id,{m:'DELETE'}).then(function(){A('ye','API Key removed');loadKeys();}).catch(function(e){A('er','Error: '+e.message);});}
+
+function getExIcon(ex){var m={'binance':'&#129684;','bybit':'&#128640;','okx':'&#128200;','coinDCX':'&#128181;'};return m[ex]||'&#128640;';}
+function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>
